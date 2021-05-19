@@ -90,3 +90,6 @@ export const bellInactive = '/assets/notification/bell.png';
 
 //Review
 export const ratingBanner = '/assets/car-review/rating.png';
+
+//Menu
+export const menuLogin = '/assets/menu-icon/Nologin.png';

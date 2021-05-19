@@ -71,12 +71,12 @@ const DealerProfile = (props) => {
             <Row type="flex" align="middle" className='background-white'>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} >
                     <Tabs defaultActiveKey="1"
-                        tabBarExtraContent={
-                            _.get(props.user, ['info', 'user', '_id']) && _.get(props.user, ['info', 'user', '_id']) == profile._id && (_.get(profile, ['role']) != 'normaluser' && _.get(profile, ['role']) != 'mobile-user') ?
-                                <Button className=" background-ccar-button-yellow black border-ccar-button-yellow text-align-center" shape="round" href={frontUrl} >Manage My Ads</Button>
-                                :
-                                null
-                        }
+                        // tabBarExtraContent={
+                        //     _.get(props.user, ['info', 'user', '_id']) && _.get(props.user, ['info', 'user', '_id']) == profile._id && (_.get(profile, ['role']) != 'normaluser' && _.get(profile, ['role']) != 'mobile-user') ?
+                        //         <Button className=" background-ccar-button-yellow black border-ccar-button-yellow text-align-center" shape="round" href={frontUrl} >Manage My Ads</Button>
+                        //         :
+                        //         null
+                        // }
                     >
                         <TabPane tab="Cars For Sale" key="1">
                             <Row gutter={[20, 10]} className='margin-top-md'>

@@ -11,7 +11,7 @@ import { v4 } from 'uuid';
 import { arrayLengthCount, convertParameterToProductListUrl, notEmptyLength } from '../../common-function';
 import client from '../../feathers';
 import { checkEnv, checkEnvReturnWebAdmin } from '../../functionContent';
-import { ccarLogo, bellInactive, wishList, wishlistIconActived, ccarWebLogo2 } from '../../icon';
+import { ccarLogo, bellInactive, wishList, wishlistIconActived, ccarWebLogo2, menuLogin } from '../../icon';
 import { loading, loginMode, quickSearchProductsList, registerMode, setApplyMileage, setApplyPrice, setApplyYear, setDisableWindowScroll, setMenuHeight, setNotificationToken, setNotificationTokenTimeOutDate, updateActiveMenu } from '../../redux/actions/app-actions';
 import { fetchCompareNewCarLimit } from '../../redux/actions/newcars-actions';
 import { clearProductFilterOptions, fetchCompareCarLimit } from '../../redux/actions/productsList-actions';
@@ -93,6 +93,7 @@ class LayoutV2 extends React.Component {
             seenNotifications: [],
             notificationBoxVisible: false,
             notificationTabKey: 'carfreaks',
+            loginType:'user',
         }
 
     }
@@ -495,7 +496,7 @@ class LayoutV2 extends React.Component {
                                                             <span className='d-inline-block margin-x-sm'>
                                                                 {menu.icon}
                                                             </span>
-                                                            <span className='d-inline-block black headline subtitle1   cursor-pointer margin-x-sm' >
+                                                            <span className='d-inline-block black headline subtitle1 cursor-pointer margin-x-sm' >
                                                                 {menu.text}
                                                             </span>
                                                         </div>
@@ -537,9 +538,12 @@ class LayoutV2 extends React.Component {
             );
         } else {
             return (
-                <span style={{ color: "#1890ff" }} className='flex-items-align-center subtitle1 cursor-pointer ' onClick={() => { this.props.loginMode(true) }}>
+                // <span style={{ color: "#1890ff" }} className='flex-items-align-center subtitle1 cursor-pointer ' >
+                <span>
                     {/* <img src="/assets/CarListingIcon/login@3x-2.png" style={{ width: 20 }} className="margin-right-xs" /> */}
-                    Login
+                    <Button className=" background-ccar-button-yellow black border-ccar-button-yellow text-align-center cursor-pointer round-border" onClick={() => { this.props.loginMode(true) }}>
+                        Login
+                    </Button>
                 </span>
             )
         }
@@ -891,7 +895,7 @@ class LayoutV2 extends React.Component {
                 ...routePaths.logout
             },
         ];
-
+        
         return (
             <Layout>
                 {/* <WindowScrollDisableWrapper> */}
@@ -916,32 +920,186 @@ class LayoutV2 extends React.Component {
                                             <Button type="primary" onClick={this.showDrawer} style={{ marginBottom: 0, float: 'right' }} >
                                                 <Icon type="menu" />
                                             </Button>
-                                            <Drawer
-                                                title="Main Menu"
+
+                                                <Drawer
+                                                className="login-drawer"
+                                                title={null}
                                                 placement="right"
                                                 closable={true}
                                                 onClose={this.onClose}
                                                 visible={this.state.visible}
+                                                width = {'100%'}
                                             >
-                                                <div className="margin-bottom-md">
-                                                    {this._renderUserRes(profileMenu)}
+                                                {this.props.user.info.authenticated == 'user' ?
+                                                <div>
+                                                <div className="margin-bottom-xs padding-sm" style={{backgroundImage: `url("${menuLogin}")`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', height: '15vh', backgroundPosition:'center'}}>
+                                                    <div>
+                                                        <span style={{marginRight:'10px'}}>
+                                                            <img src="https://img.icons8.com/windows/32/ffffff/user-male-circle.png"/>
+                                                        </span>
+                                                        <span style={{color:'#ffffff', fontWeight:'700'}}>Login to access more features now!</span> 
+                                                    </div>
+                                                    <div className="flex-justify-center">
+                                                        {this._renderUserRes(profileMenu)}
+                                                    </div>
                                                 </div>
 
-                                            <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '1' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/')}}> Home</div>
-                                            <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '2' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/car-market-homepage/index')}}> CarMarket</div>
-                                            <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '3' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/newcar')}}> All-NewCar</div>
-                                            <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '4' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/live')}}> <p className="background-red padding-x-md" style={{ borderRadius: '10px', marginBottom:'0px', width:'40%' }}>LIVE</p> </div>
-                                            <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '12' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/car-review') }} > Car Review</div>
-                                            <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '6' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/car-freaks')}}> CarFreaks</div>
-                                            <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '5' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/socialNews')}}> Social News </div>
-                                            <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '9' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/socialVideos')}}> Social Videos</div>
-                                            <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '7' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/petrolprice')}}> Petrol Price</div>
-                                            <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '8' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/kpp')}}> Driving School</div>
+                                                {/* <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '1' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/')}}> Home</div> */}
+
+                                            <div className="padding-md">
+                                                <Row className="margin-bottom-md">
+                                                    <Col span={11} className="thickBorder round-border">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '2' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/car-market-homepage/index')}}> 
+                                                            <img src="/assets/menu-icon/buy-car.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}> CarMarket </p>
+                                                        </div>
+                                                    </Col>
+                                                    <Col span={11} offset={2} className="thickBorder round-border ">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '3' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/newcar')}}> 
+                                                            <img src="/assets/menu-icon/new-car.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}>All-NewCar</p>
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+
+                                                <Row className="margin-bottom-md">
+                                                    <Col span={11} className="thickBorder round-border">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '6' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/car-freaks')}}> 
+                                                            <img src="/assets/menu-icon/carfreaks.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}>CarFreaks</p>
+                                                        </div>
+                                                    </Col>
+                                                    <Col span={11} offset={2} className="thickBorder round-border">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '4' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/live')}}> 
+                                                            <img src="/assets/menu-icon/live.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}>LIVE</p> 
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+
+                                                <Row className="margin-bottom-md">
+                                                    <Col span={11} className="thickBorder round-border">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '5' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/socialNews')}}> 
+                                                            <img src="/assets/menu-icon/social-news.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}>Social News </p>
+                                                        </div>
+                                                    </Col>
+                                                    <Col span={11} offset={2} className="thickBorder round-border">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '9' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/socialVideos')}}> 
+                                                            <img src="/assets/menu-icon/social-videos.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}>Social Videos </p>
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+
+                                                <Row className="margin-bottom-md">
+                                                    <Col span={11} className="thickBorder round-border">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '8' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/kpp')}}> 
+                                                            <img src="/assets/menu-icon/driving-school.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}>Driving School</p>
+                                                        </div>
+                                                    </Col>
+                                                    <Col span={11} offset={2} className="thickBorder round-border">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '7' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/petrolprice')}}> 
+                                                            <img src="/assets/menu-icon/fuel.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}>Petrol Price</p>
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                            </div>
+
+                                            : 
+            
+                                            <div>
+                                                <div className="margin-bottom-xs padding-sm" style={{backgroundImage: `url("${menuLogin}")`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', height: '15vh', backgroundPosition:'center'}}>
+                                                    <div>
+                                                        <span style={{marginRight:'10px'}}>
+                                                            <img src="https://img.icons8.com/windows/32/ffffff/user-male-circle.png"/>
+                                                        </span>
+                                                        <span style={{color:'#ffffff', fontWeight:'700'}}>Login to access more features now!</span> 
+                                                    </div>
+                                                    <div className="flex-justify-center">
+                                                        {this._renderUserRes(profileMenu)}
+                                                    </div>
+                                                </div>
+
+                                                {/* <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '1' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/')}}> Home</div> */}
+
+                                            <div className="padding-md">
+                                                <Row className="margin-bottom-md">
+                                                    <Col span={11} className="thickBorder round-border">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '2' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/car-market-homepage/index')}}> 
+                                                            <img src="/assets/menu-icon/buy-car.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}> CarMarket </p>
+                                                        </div>
+                                                    </Col>
+                                                    <Col span={11} offset={2} className="thickBorder round-border ">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '3' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/newcar')}}> 
+                                                            <img src="/assets/menu-icon/new-car.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}>All-NewCar</p>
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+
+                                                <Row className="margin-bottom-md">
+                                                    <Col span={11} className="thickBorder round-border">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '6' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/car-freaks')}}> 
+                                                            <img src="/assets/menu-icon/carfreaks.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}>CarFreaks</p>
+                                                        </div>
+                                                    </Col>
+                                                    <Col span={11} offset={2} className="thickBorder round-border">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '4' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/live')}}> 
+                                                            <img src="/assets/menu-icon/live.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}>LIVE</p> 
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+
+                                                <Row className="margin-bottom-md">
+                                                    <Col span={11} className="thickBorder round-border">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '5' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/socialNews')}}> 
+                                                            <img src="/assets/menu-icon/social-news.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}>Social News </p>
+                                                        </div>
+                                                    </Col>
+                                                    <Col span={11} offset={2} className="thickBorder round-border">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '9' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/socialVideos')}}> 
+                                                            <img src="/assets/menu-icon/social-videos.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}>Social Videos </p>
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+
+                                                <Row className="margin-bottom-md">
+                                                    <Col span={11} className="thickBorder round-border">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '8' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/kpp')}}> 
+                                                            <img src="/assets/menu-icon/driving-school.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}>Driving School</p>
+                                                        </div>
+                                                    </Col>
+                                                    <Col span={11} offset={2} className="thickBorder round-border">
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '7' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/petrolprice')}}> 
+                                                            <img src="/assets/menu-icon/fuel.png" style={{width:'40%'}}></img>
+                                                            <p style={{marginBottom:'0px', color:'#000000'}}>Petrol Price</p>
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+                                                <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '12' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/car-review') }} > Car Review</div>
+                                                <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '11' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/about-us')}}> About Us</div>
+                                                <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '10' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/contact-us')}}> Contact Us</div>
+                                                <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '10' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/faq')}}> FAQ</div>
+                                            </div>
+                                            </div>}
+
+                                            {/* <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '12' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/car-review') }} > Car Review</div>
                                             <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '11' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/about-us')}}> About Us</div>
                                             <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '10' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/contact-us')}}> Contact Us</div>
-                                            <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '10' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/faq')}}> FAQ</div>
+                                            <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '10' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/faq')}}> FAQ</div> */}
 
                                             </Drawer>
+                                            
                                         </div>
                                     </Col>
                                 </Row>

@@ -78,14 +78,14 @@ const ProfileHomePage = (props) => {
                 <div className="container-version3" style={{ touchAction: 'pan-y' }}>
                     {
                         userType == 'user' ?
-                            <UserProfile data={profile} isOwn={isOwn} onChangeCoverPhoto={(url) => {
+                            <UserProfile data={profile} isOwn={isOwn} onChangeCoverPhoto={(url) => { 
                                 setProfile({ ...profile, profileCoverPhoto: url })
                             }}
                             />
                             :
                             userType == 'dealer' ?
                             <DealerProfile data={profile} isOwn={isOwn} onChangeCoverPhoto={(url) => {
-                                setProfile({ ...profile, profileCoverPhoto: url })
+                                setProfile({ ...profile, profileCoverPhoto: url })  
                             }} 
                             />
                             :

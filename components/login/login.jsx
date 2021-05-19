@@ -118,27 +118,28 @@ class LoginModal extends React.Component {
         visible={_.get(this.props, ['app', 'loginMode'])}
         onOk={() => (this.refClick.click())}
         onCancel={() => this.props.loginMode(false)}
-        style={{ borderRadius: '100px' }}
+        style={{ borderRadius: '100px', marginLeft:'60px' }}
         footer={null}
         bodyStyle={{ padding: 0 }}
-        className="modal-body-background-transparent"
+        className="modal-body-background-transparent relative-wrapper"
         centered
+        width={300}
       >
-        <div className="padding-lg round-border relative-wrapper" style={{
+        <div className="padding-sm round-border relative-wrapper" style={{
           backgroundImage: `url(${loginBackground})`,
           backgroundRepeat: 'no-repeat',
           backgroundSize: '100% 100%',
         }} >
 
 
-          <Row gutter={[20, 40]}>
-            <Col span={24} style={{ paddingTop: '25px', paddingBottom: '15px', paddingLeft: '10px', paddingRight: '10px' }}>
+          <Row>
+            <Col span={24}>
               <Row>
-                <Col xs={{ span: 3, offset: 0 }} sm={{ span: 3, offset: 0 }} md={{ span: 3, offset: 4 }} lg={{ span: 3, offset: 4 }} xl={{ span: 3, offset: 4 }} style={{ marginRight: 10 }}>
+                <Col xs={{ span: 4, offset: 0 }} sm={{ span: 4, offset: 0 }} md={{ span: 3, offset: 4 }} lg={{ span: 3, offset: 4 }} xl={{ span: 3, offset: 4 }}>
                   {/* <Row>
                               <Col style={{ marginLeft: 'auto', marginRight: 'auto', display: 'block' }} className="col-centered" xs={6} sm={6} md={24} lg={24} xl={24}> */}
                   <div className="wrap-login-logo">
-                    <img alt="ccar" className="w-100" src="/assets/Ccar-logo.png" />
+                    <img style={{marginLeft:'48px'}} alt="ccar" className="w-100" src="/assets/Ccar-logo.png" />
                     {/* <img alt="ccar" className="w-100" src={cnyLogo} /> */}
                   </div>
                   {/* </Col>
@@ -146,25 +147,25 @@ class LoginModal extends React.Component {
                 </Col>
                 <Col xs={20} sm={20} md={16} lg={16} xl={16}>
                   <div className="wrap-login-title flex-wrap">
-                    <h2 style={{ marginBottom: '15px', color: '#ffffff' }}>Welcome to CCAR</h2>
-                    <p style={{ color: '#ffffff' }}>{`Connect with your ${this.state.tab == 'socialMediaLogin' ? 'social media' : 'dealer account'}`}</p>
+                    <p style={{ marginBottom: '15px', textAlign:'center', color:'#ffffff'}}>Welcome to CCAR</p>
+                    <p style={{textAlign:'center', color:'#ffffff', marginTop:'30px', lineHeight:1.5 }}>{`Connect with your ${this.state.tab == 'socialMediaLogin' ? 'social media' : 'dealer account'}`}</p>
                   </div>
                 </Col>
               </Row>
             </Col>
           </Row>
 
-          <div className="width-100" >
+          <div className="width-100 relative-wrapper">
             {
               this.state.tab == 'socialMediaLogin' ?
                 <div key="social-media-login-form" className='fill-parent'>
-                  <Row gutter={[20, 20]} className='fill-parent' type="flex" justify="center" align="middle" style={{ paddingLeft: '60px', paddingRight: '40px' }}>
+                  <Row gutter={[20, 20]} className='fill-parent' type="flex" justify="center" align="middle">
                     <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                       <GoogleLogin
                         clientId={googleClientId}
                         buttonText="Login"
                         render={renderProps => (
-                          <button className="google-btn w-100" onClick={renderProps.onClick} disabled={renderProps.disabled}>
+                          <button style={{backgroundColor:'#ffffff'}} className="google-btn w-100" onClick={renderProps.onClick} disabled={renderProps.disabled}>
                             <div className="wrap-social-login-btn-child">
                               <img src={googleLogo} />
                               <span>GOOGLE</span>
@@ -239,8 +240,8 @@ class LoginModal extends React.Component {
             }
 
           </div>
-          <Divider orientation="center" style={{ color: '#333', fontWeight: 'normal', paddingLeft: '50px', paddingRight: '40px' }}>
-            <div><p style={{ marginBottom: 0, color: '#ffffff' }}>or</p></div>
+          <Divider orientation="center" style={{fontWeight: 'normal'}}>
+            <div><p style={{ marginBottom: 0, color: 'rgb(142, 142, 142)' }}>or</p></div>
           </Divider>
 
           <div className="wrap-register-link">
@@ -248,9 +249,9 @@ class LoginModal extends React.Component {
                 <Divider type="vertical"/> */}
             {
               this.state.tab == 'socialMediaLogin' ?
-                <a onClick={(e) => { this.setState({ tab: 'dealerLogin' }) }}> Login as Business Owner</a>
+                <a style={{color:'#ffffff'}} onClick={(e) => { this.setState({ tab: 'dealerLogin' }) }}> Login as Business Owner</a>
                 :
-                <a onClick={(e) => { this.setState({ tab: 'socialMediaLogin' }) }}> Login as Normal User</a>
+                <a style={{color:'#ffffff'}} onClick={(e) => { this.setState({ tab: 'socialMediaLogin' }) }}> Login as Normal User</a>
             }
           </div>
           {/* 
@@ -295,7 +296,9 @@ class LoginModal extends React.Component {
 
 
           {/* <img src={tbhCny} style={{ width: 283, height: 400,position: 'absolute', left: -115, bottom: -30, margin : 'auto' }}></img> */}
-          <img src={tbh} style={{ width: 200, height: 330, position: 'absolute', left: -120, bottom: 0, margin: 'auto' }}></img>
+          <div className="relative-wrapper">
+            <img src={tbh} style={{ width: 166, height: 330, position: 'absolute', left: -102, bottom: -6, margin : 'auto' }}></img>
+          </div>
           {/* <img src={tbh2Cny} style={{ width: 150, height: 100,position: 'absolute', left: -15, bottom: 8, margin : 'auto' }}></img> */}
           {/* <img src={cnyLionHead} style={{ width: 100, height: 150, position: 'absolute', right: -30, top: -95 }}></img> */}
         </div>

@@ -1,4 +1,4 @@
-import { Button, Col, Divider, Form, Icon, message, Modal, Rate, Row, Upload } from 'antd';
+import { Button, Col, Divider, Form, Icon, message, Modal, Rate, Row, Upload, Drawer } from 'antd';
 import axios from 'axios';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -76,7 +76,7 @@ const ProfileDetailsBox = (props) => {
         setVisible(true);
     }
 
-    function onCancel() {
+    const onClose = () => {
         setVisible(false);
     }
 
@@ -275,11 +275,34 @@ const ProfileDetailsBox = (props) => {
                                     </div>
                                 </Col>
                                 <Col xs={20} sm={20} md={20} lg={20} xl={20}>
-                                    <div className='flex-items-no-shrink text-align-start white font-weight-bold subtitle1 margin-sm width-100'>
+                                    <div className='flex-items-no-shrink text-align-start white font-weight-bold subtitle1 margin-x-sm margin-bottom-sm width-100'>
                                         {getUserName(profile, 'freakId')}
                                     </div>
-                                    
+
                                 {
+                                    props.showProfileActions ?
+                                    <div>
+                                        {/* <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                            <Upload {...props} showUploadList={false} onChange={(e) => { handleSumbitCoverPhoto(e.file); }} multiple={false} accept="image/*">
+                                                <Button className='margin-right-md white background-grey-opacity-30' style={{paddingRight:'5px', paddingLeft:'5px'}}> <Icon type="camera" /> Edit Cover Photo </Button>
+                                            </Upload>
+                                        </Col> */}
+                                        <Col className="margin-bottom-md" xs={24} sm={24} md={24} lg={24} xl={24} style={{marginLeft:'8px'}}>
+                                            <Button onClick={(e) => {
+                                                if (_.get(profile, ['userurlId'])) {
+                                                    props.router.push(`/profile/${profile.userurlId}/details`)
+                                                }
+                                                }} className='round-border white background-grey-opacity-30' style={{paddingRight:'5px', paddingLeft:'5px'}}> 
+                                                {/* <Icon type="user"/>  */}
+                                                Edit Profile 
+                                            </Button>
+                                        </Col>                                    
+                                    </div>
+                                        :
+                                        null
+                                }
+                                    
+                                {/* {
                                     props.type == 'dealer' ?
                                         [
                                             <div className="avatar flex-justify-center flex-items-align-center" style={{float:'right', backgroundColor:'#FFCC32', height:'25px', width:'25px'}} onClick={() => { showModal() }}>
@@ -296,7 +319,8 @@ const ProfileDetailsBox = (props) => {
                                         ]
                                         :
                                         null
-                                    }
+                                } */}
+
                                     {
                                     !props.showProfileActions ?
                                         <Col xs={24} sm={24} md={24} lg={24} xl={24} style={{marginTop:'10px'}}>
@@ -322,42 +346,7 @@ const ProfileDetailsBox = (props) => {
                                 </Row>
                         </Col>
 
-                        <Col span={24} className="margin-bottom-sm margin-top-sm">
-                            <div className='flex-justify-center flex-items-align-center fill-parent'>
-                                <span className='d-inline-block' >
-                                    <div className='white font-weight-light text-align-center'>
-                                        {!isValidNumber(_.get(profile, ['totalPost'])) ? 0 : formatNumber(_.get(profile, ['totalPost']), null, false, 0, false)}
-                                    </div>
-                                    <div className='white subtitle1 text-align-center'>
-                                        Posts
-                                    </div>
-                                </span>
-                                <span className='d-inline-block margin-x-sm height-100' >
-                                    <Divider orientation="center" type="vertical" className="background-color-white border-white thin-border" style={{ height: '30px' }}></Divider>
-                                </span>
-                                <span className='d-inline-block cursor-pointer' onClick={(e) => { setFollowerModalVisible(true) }}  >
-                                    <div className='white font-weight-light text-align-center'>
-                                        {!isValidNumber(_.get(profile, ['totalFollower'])) ? 0 : formatNumber(_.get(profile, ['totalFollower']), 'auto', true, 0, true)}
-                                    </div>
-                                    <div className='white subtitle1 text-align-center'>
-                                        Followers
-                                    </div>
-                                </span>
-                                <span className='d-inline-block margin-x-sm' >
-                                    <Divider orientation="center" type="vertical" className="background-color-white border-white thin-border" style={{ height: '30px' }}></Divider>
-                                </span>
-                                <span className='d-inline-block cursor-pointer' onClick={() => { setFollowingModalVisible(true) }} >
-                                    <div className='white font-weight-light text-align-center'>
-                                        {!isValidNumber(_.get(profile, ['totalFollowingUser'])) ? 0 : formatNumber(_.get(profile, ['totalFollowingUser']), 'auto', true, 0, true)}
-                                    </div>
-                                    <div className='white subtitle1 text-align-center'>
-                                        Following
-                                    </div>
-                                </span>
-                            </div>
-                        </Col>
-
-                        {
+                        {/* {
                             _.isArray(clubs) && !_.isEmpty(clubs) ?
                                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                                     <Scrollbars autoHeight style={{ width: '100%' }} >
@@ -384,7 +373,7 @@ const ProfileDetailsBox = (props) => {
                                 </Col>
                                 :
                                 null
-                        }
+                        } */}
 
                         {
                             props.type == 'dealer' ?
@@ -418,42 +407,132 @@ const ProfileDetailsBox = (props) => {
                             null
                         }
 
-                            <Col xs={24} sm={24} md={24} lg={24} xl={24} style={{marginTop:'10px'}}>
-                                <Scrollbars style={{ height: 70, maxWidth: '100%'}} autoHide>
+                            <Col xs={18} sm={18} md={18} lg={18} xl={18} style={{marginTop:'10px'}}>
+                                <Scrollbars style={{ height: 30, maxWidth: '100%'}} autoHide>
                                     <div className="width-100 flex-justify-start flex-items-align-start text-overflow-break headline white">
                                         {_.get(profile, ['bio']) || ''}
                                     </div>
                                 </Scrollbars>
                             </Col>
-
+                            <Col span={6}>
                                 {
-                                    props.showProfileActions ?
-                                    <div>
-                                        <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                                            <Upload {...props} showUploadList={false} onChange={(e) => { handleSumbitCoverPhoto(e.file); }} multiple={false} accept="image/*">
-                                                <Button className='margin-right-md white background-grey-opacity-30' style={{paddingRight:'5px', paddingLeft:'5px'}}> <Icon type="camera" /> Edit Cover Photo </Button>
-                                            </Upload>
-                                        </Col>
-                                        <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                                            <Button onClick={(e) => {
-                                                if (_.get(profile, ['userurlId'])) {
-                                                    props.router.push(`/profile/${profile.userurlId}/details`)
-                                                }
-                                                }} className='white background-grey-opacity-30' style={{paddingRight:'5px', paddingLeft:'5px'}}> <Icon type="user" /> 
-                                                Manage My Account 
-                                            </Button>
-                                        </Col>                                    
-                                    </div>
+                                    props.type == 'dealer' ?
+                                        [
+                                            <div className="avatar flex-justify-center flex-items-align-center" style={{float:'right', backgroundColor:'#FFCC32', height:'25px', width:'25px'}} onClick={() => { showModal() }}>
+                                            <Icon type="info" style={{color:'#000000', marginLeft:'1px'}}/>
+                                            </div>,
+                                        ]
                                         :
                                         null
                                 }
+                            </Col>
+
+                            <Col span={24} className="margin-bottom-sm margin-top-sm">
+                            <div className='flex-justify-center flex-items-align-center fill-parent'>
+                                <span className='d-inline-block' >
+                                    <div className='white font-weight-light text-align-center'>
+                                        {!isValidNumber(_.get(profile, ['totalPost'])) ? 0 : formatNumber(_.get(profile, ['totalPost']), null, false, 0, false)}
+                                    </div>
+                                    <div className='white subtitle1 text-align-center'>
+                                        Posts
+                                    </div> 
+                                </span>
+                                <span className='d-inline-block margin-x-sm height-100' >
+                                    <Divider orientation="center" type="vertical" className="background-color-white border-white thin-border" style={{ height: '30px' }}></Divider>
+                                </span>
+                                <span className='d-inline-block cursor-pointer' onClick={(e) => { setFollowerModalVisible(true) }}  >
+                                    <div className='white font-weight-light text-align-center'>
+                                        {!isValidNumber(_.get(profile, ['totalFollower'])) ? 0 : formatNumber(_.get(profile, ['totalFollower']), 'auto', true, 0, true)}
+                                    </div>
+                                    <div className='white subtitle1 text-align-center'>
+                                        Followers
+                                    </div>
+                                </span>
+                                <span className='d-inline-block margin-x-sm' >
+                                    <Divider orientation="center" type="vertical" className="background-color-white border-white thin-border" style={{ height: '30px' }}></Divider>
+                                </span>
+                                <span className='d-inline-block cursor-pointer' onClick={() => { setFollowingModalVisible(true) }} >
+                                    <div className='white font-weight-light text-align-center'>
+                                        {!isValidNumber(_.get(profile, ['totalFollowingUser'])) ? 0 : formatNumber(_.get(profile, ['totalFollowingUser']), 'auto', true, 0, true)}
+                                    </div>
+                                    <div className='white subtitle1 text-align-center'>
+                                        Following
+                                    </div>
+                                </span>
+                            </div>
+                        </Col>
                         </Row>
 
-                        <Modal 
+                        <Drawer
+                            title={null}
+                            placement="right"
+                            closable={true}
+                            onClose={onClose}
+                            visible={visible}
+                            width = {'100%'}
+                            className="login-drawer"
+                        >
+                        {
+                            props.type == 'dealer' ?
+                            <div style={{backgroundColor:'#ffffff'}} className="padding-md">
+                                <div className="relative-wrapper background-black-opacity-40" style={{ height: 150, width: 400, maxWidth: '100%', maxHeight: '20%' }}>
+                                    <img src={
+                                        _.isArray(_.get(profile, ['companyId', 'bannerUrl'])) && notEmptyLength(_.get(profile, ['companyId', 'bannerUrl'])) ?
+                                            profile.companyId.bannerUrl[0].url
+                                            :
+                                            ccarWebLogo400X150
+                                    } className={`fill-parent ${_.isArray(_.get(profile, ['companyId', 'bannerUrl'])) && notEmptyLength(_.get(profile, ['companyId', 'bannerUrl'])) ? 'absolute-center-img-no-stretch' : 'absolute-center'}`} />
+                                </div>
+
+                                <div>
+                                    <p style={{marginBottom:'0px'}}>Address</p>
+                                    <div className="thickBorder round-border padding-sm">
+                                        {`${_.get(profile, ['companyId', 'address']) || ''}, ${_.get(profile, ['companyId', 'area']) || ''}, ${_.get(profile, ['companyId', 'postCode']) || ''}, ${_.get(profile, ['companyId', 'state']) || ''}`}
+                                    </div>
+
+                                    <p style={{marginBottom:'0px', marginTop:'5px'}}>Location</p>
+                                    <div className="thickBorder round-border padding-sm">
+                                        {`${_.get(profile, ['companyId', 'area']) || ''}`}
+                                    </div>
+
+                                    <p style={{marginBottom:'0px', marginTop:'5px'}}>Working Hours</p>
+                                    <div className="thickBorder round-border padding-sm">
+                                        {_renderBusinessHour(_.get(profile, ['companyId', 'businessHour']) || [])}
+                                    </div>
+
+                                    <p style={{marginBottom:'0px', marginTop:'5px'}}>Mobile No.</p>
+                                    <div className="thickBorder round-border padding-sm">
+                                        {`${_.get(profile, ['contactNoPrimary']) || ''}`}
+                                    </div>
+
+                                    <p style={{marginBottom:'0px', marginTop:'5px'}}>Office No.</p>
+                                    <div className="thickBorder round-border padding-sm">
+                                        company no 
+                                    </div>
+
+                                    <p style={{marginBottom:'0px', marginTop:'5px'}}>Email</p>
+                                    <div className="thickBorder round-border padding-sm">
+                                        {`${_.get(profile, ['email']) || ''}`}
+                                    </div>
+
+                                    <p style={{marginBottom:'0px', marginTop:'5px'}}>Website</p>
+                                    <div className="thickBorder round-border padding-sm">
+                                        {`${_.get(profile, ['companyId', 'website']) || ''}`}
+                                    </div>
+
+                                </div>
+                            </div>
+                                    :
+                                    null
+                            }
+                        </Drawer>
+
+                        {/* <Modal 
                             title="Company Details"
                             visible={visible}
                             onCancel={() => { onCancel()}}
                             footer={false}
+                            width={'100%'}
                         >
                              {
                                 props.type == 'dealer' ?
@@ -513,7 +592,7 @@ const ProfileDetailsBox = (props) => {
                                     :
                                     null
                             }
-                        </Modal>
+                        </Modal> */}
             </div>
 
 

@@ -98,7 +98,7 @@ const UserProfile = (props) => {
                 </Col>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                     <Divider className="no-margin" />
-                    {_renderMenu(profile)}
+                    {_renderMenu(profile)} 
                 </Col>
             </Row>
         </React.Fragment>

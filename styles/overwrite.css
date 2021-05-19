@@ -429,3 +429,11 @@ video {
 .price .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
     padding: 10px 10px;
 }
+
+.login-drawer .ant-drawer-body{
+    padding: 0px;
+}
+
+.login-drawer .ant-drawer-close .anticon svg {
+    color: #ffffff;
+}
