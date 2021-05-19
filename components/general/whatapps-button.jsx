@@ -39,13 +39,20 @@ const WhatsAppButton = (props) => {
 
         return (
             <>
+            <div  onClick={() => { setVisible(true) }}>
+            {
+                props.button ?
+                props.button() :
                 <Button
                     type="normal"
                     className="w-100 ads-purchase-button ccar-product-btn-car"
                     style={{ padding: 0 }}
-                    onClick={() => { setVisible(true) }}>
+                   >
                     <img src="/assets/profile/icon-list/carmarket-bar-icon/whatsapp.png" style={{ width: '20px' }} />
                 </Button>
+
+            }
+            </div>
                 <Modal
                     title="Contact Seller"
                     visible={visible}

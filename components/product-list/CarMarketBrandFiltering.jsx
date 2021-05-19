@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Menu } from 'antd';
-import InfiniteScroll from 'react-infinite-scroller';
-import { carBrandsList } from '../../../params/carBrandsList';
-import _ from 'lodash';
-import { notEmptyLength, isValidNumber, formatNumber } from '../../../common-function';
-import Link from 'next/link';
-import { routePaths } from '../../../route';
+import { Button, Col, Drawer, Empty, Form, Menu, Row } from 'antd';
 import Axios from 'axios';
-import client from '../../../feathers';
+import _ from 'lodash';
+import { withRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import Highlighter from 'react-highlight-words';
+import { connect } from 'react-redux';
+import { formatNumber, isValidNumber, notEmptyLength } from '../../common-function';
+import client from '../../feathers';
+import { carspecNotFoundImage } from '../../icon';
+import { carBrandsList } from '../../params/carBrandsList';
 
 
 function getWindowDimensions() {
@@ -36,7 +37,7 @@ function useWindowDimensions() {
 }
 
 
-const MakeModal = (props) => {
+const CarMarketBrandFiltering = (props) => {
     const { height, width } = useWindowDimensions();
     const [groupedCarBrandsList, setGroupedCarBrandsList] = useState([])
     const [modelVisible, setModelVisible] = useState(false)
@@ -46,6 +47,7 @@ const MakeModal = (props) => {
     const [selectedValue, setSelectedValue] = useState({});
     const [modelOptions, setModelOptions] = useState([]);
     const [modelLoading, setModelLoading] = useState(false);
+
 
     useEffect(() => {
         if (props.options != null && _.isArray(props.options)) {
@@ -71,7 +73,6 @@ const MakeModal = (props) => {
             setSelectedValue({});
             setModelOptions([]);
         }
-
     }, [modelVisible])
 
 
@@ -163,99 +164,95 @@ const MakeModal = (props) => {
         }
     }
 
-    // useEffect(() => {
+    const _renderModelList = (models) => {
+        if (_.isArray(models) && !_.isEmpty(models)) {
+            let uniqBodyTypes = _.cloneDeep(_.uniqBy(models, 'bodyType').map((v, i) => {
+                v.data = []
+                return v
+            }))
 
-    //     if (notEmptyLength(props.brands)) {
-    //         groupCarBrandsList(props.brands)
-    //     } else {
-    //         if (props.default) {
-    //             groupCarBrandsList(carBrandsList);
-    //         } else {
-    //             groupCarBrandsList(null);
-    //         }
-    //     }
-    // }, [props.brands]);
+            uniqBodyTypes = uniqBodyTypes.map((v) => {
+                models.map((v1) => {
+                    if (v.bodyType == v1.bodyType) {
+                        v.data.push(v1)
+                    }
+                })
+                v.data = _.reverse(_.sortBy(v.data, ['count', 'model']))
+                return v;
+            })
 
-    // function onSelect(value) {
-    //     if (props.onSelect) {
-    //         props.onSelect(value);
-    //     }
-    // }
-    // function groupCarBrandsList(data) {
+            return _.map(uniqBodyTypes || [], function (item, index) {
+                return (
+                    <div style={{ margin: '10px 0px' }} key={index} >
+                        <p style={{ fontWeight: '600', fontSize: '16px', textAlign: 'left', textTransform: 'capitalize' }}>{item.bodyType}</p>
+                        {item.data.map((v, i) => {
+                            return (
+                                <div className="flex-justify-space-between flex-items-align-center cursor-pointer"
+                                    key={i}
+                                    onClick={() => {
+                                        if (props.onSelect) {
+                                            setModelVisible(false);
+                                            props.onSelect(selectedValue.brand, v)
+                                        }
+                                    }}>
+                                    <span className='flex-justify-start flex-items-align-center width-100 padding-right-md' >
+                                        <img className="obj-fit-c margin-right-md" style={{ width: 50, height: 50 }} src={v.uri || carspecNotFoundImage} />
+                                        <span className='d-inline-block text-overflow-break uppercase' >
+                                            <Highlighter
+                                                style={{ textTransform: 'uppercase', textOverflow: 'break-word' }}
+                                                highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                                                searchWords={[searchKeyword]}
+                                                autoEscape
+                                                textToHighlight={v.model}
+                                            />
+                                        </span>
+                                    </span>
+                                </div>
+                                // <Row
+                                //     // gutter={[10, 10]} 
+                                //     className={_.toLower(props.selectedValue) == _.toLower(v.model) ? "selectedRow" : "selectRow"}
+                                //     onClick={() => selectedValue(v.model, index, i)}
+                                //     style={{ height: '5em', lineHeight: '5em' }}>
+                                //     <Col span={8} style={{ height: '100%', padding: 5, lineHeight: 0 }}>
+                                //         <img className="w-100 h-100 obj-fit-c" src={v.uri} />
+                                //     </Col>
+                                //     <Col span={10} style={{ height: '100%' }}>
+                                //     </Col>
+                                //     <Col span={4} style={{ height: '100%' }}>
+                                //         <div className="fill-parent flex-justify-end flex-items-align-center">
+                                //         </div>
+                                //     </Col>
+                                // </Row>
+                            )
+                        })}
+                    </div>
+                );
+            })
 
-    //     let start = 'A';
-    //     let end = 'Z';
-    //     let groupedData = [];
-
-
-    //     if (notEmptyLength(data)) {
-    //         for (let index = start.charCodeAt(0); index <= end.charCodeAt(0); index++) {
-    //             let selectedCarBrands = data.filter(function (brand) {
-    //                 let firstLetter = _.upperCase(brand.value.substr(0, 1));
-    //                 return firstLetter == String.fromCharCode(index);
-    //             })
-
-    //             if (notEmptyLength(selectedCarBrands)) {
-    //                 let item = {
-    //                     title: String.fromCharCode(index),
-    //                     index: index,
-    //                     data: selectedCarBrands,
-    //                 }
-    //                 groupedData.push(item);
-    //             }
-    //         }
-
-    //         setGroupedCarBrandsList(groupedData);
-    //     } else {
-    //         setGroupedCarBrandsList([]);
-    //     }
-    // }
-
+        } else {
+            return (
+                <div className="fill-parent flex-items-align-center flex-justify-center">
+                    <Empty description={modelLoading ? 'Getting Result...' : 'No Data'} />
+                </div>
+            )
+        }
+    }
     return (
-        // <Row>
-        //     <Col span={24}>
-        //         <Menu className="brand" defaultOpenKeys={['sub1']} mode="inline">
-        //             {groupedCarBrandsList.map(function (item, parentsIndex) {
-        //                 return (
-        //                     <Menu.ItemGroup title={item.title} className="newcar-menu-header" id={parentsIndex + 'direction'}>
-        //                         {item.data.map(function (row2, childIndex) {
-        //                             return (
-        //                                 <Menu.Item className={props.selected == _.toLower(row2.value) ? 'brandpics background-yellow-lighten-5' : "brandpics"} id={parentsIndex + '' + childIndex} key={parentsIndex + '' + childIndex}>
-        //                                     <Link shallow={false} href={routePaths.newCarFilter.to || '/'} as={typeof (routePaths.newCarFilter.as) == 'function' ? routePaths.newCarFilter.as({make : row2.value}) : '/'} passHref>
-        //                                         <a>
-        //                                             <div className={props.selected == _.toLower(row2.value) ? 'flex-items-align-center cursor-pointer ccar-yellow' : 'flex-items-align-center cursor-pointer'}
-        //                                                 onClick={(e) => { onSelect(row2.value) }}
-        //                                                 >
-        //                                                     <img src={row2.icon} />
-        //                                                     {row2.value}
-        //                                                 </div>
-        //                                             </a>
-        //                                     </Link>
-        //                                 </Menu.Item>
-        //                                 )
-        //                             })
-        //                             }
-        //                     </Menu.ItemGroup>
-        //                 )
-        //             })
-        //             }
-        //         </Menu>
-        //     </Col>
-        // </Row>
+        <div style={{ touchAction: 'pan-y' }}>
+            <Row>
 
-        <Row>
-            <Col span={24}>
-                <div>
-                    <Menu className="brand" defaultOpenKeys={['sub1']} mode="inline">
-                        {
-                            filteredOptions.length > 0 ?
-                                filteredOptions.map(function (item, parentsIndex) {
-                                    return (
-                                        <Menu.ItemGroup title={item.title} className="newcar-menu-header" id={parentsIndex + 'direction'}>
-                                            {item.data.map(function (row2, childIndex) {
-                                                return (
-                                                    <Menu.Item className={props.selected == _.toLower(row2.value) ? 'brandpics background-yellow-lighten-5' : "brandpics"} id={parentsIndex + '' + childIndex} key={parentsIndex + '' + childIndex}>
-                                                        <span className="d-inline-block cursor-pointer" onClick={(e) => {
+                <Col span={24}>
+                    <div>
+                        <Menu className="brand" defaultOpenKeys={['sub1']} mode="inline">
+                            {
+                                filteredOptions.length > 0 ?
+                                    filteredOptions.map(function (item, parentsIndex) {
+                                        return (
+                                            <Menu.ItemGroup title={item.title} className="newcar-menu-header" id={parentsIndex + 'direction'}>
+                                                {item.data.map(function (row2, childIndex) {
+                                                    return (
+                                                        <Menu.Item className={props.selected == _.toLower(row2.value) ? 'brandpics background-yellow-lighten-5' : "brandpics"} id={parentsIndex + '' + childIndex} key={parentsIndex + '' + childIndex}>
+                                                            <span className="d-inline-block cursor-pointer" onClick={(e) => {
 
                                                                 if(props.showModel !== false){
                                                                     setSelectedValue({
@@ -297,7 +294,41 @@ const MakeModal = (props) => {
                     </div>
                 </Col>
             </Row>
+
+            <Drawer
+                title={
+                    <div className="width-100 flex-justify-space-between flex-items-align-center">
+                        <span className='d-inline-block ' >
+                            Model List
+                        </span>
+                        <Button className=" round-border-big border-ccar-button-yellow background-ccar-button-yellow white" onClick={(e) => {
+                            setModelVisible(false);
+                            if (props.onSelect) {
+                                props.onSelect(selectedValue.brand)
+                            }
+                        }} >Show All</Button>
+                    </div>
+                }
+                placement="right"
+                closable={false}
+                onClose={() => {
+                    setModelVisible(false);
+                }}
+                visible={modelVisible}
+            >
+                {
+                    _renderModelList(modelOptions || [])
+                }
+            </Drawer>
+        </div>
     );
 }
 
-export default MakeModal;
+const mapStateToProps = state => ({
+    productsList: state.productsList,
+    app: state.app,
+});
+
+const mapDispatchToProps = {
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(withRouter(CarMarketBrandFiltering)));

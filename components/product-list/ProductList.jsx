@@ -174,7 +174,7 @@ const ProductList = (props) => {
           <Link shallow={false} passHref href={routePaths.viewCarDetails.to || '/'} as={typeof (routePaths.viewCarDetails.as) == 'function' ? routePaths.viewCarDetails.as(v) : '/'} >
             <a>
               <React.Fragment>
-                <div className="wrap-product-ads-img-horizontal">
+                <div className="wrap-product-ads-img-horizontal width-100">
                   <img src={v.carUrl[v.currentImg].url} className="head-product-ads-img" />
                 </div>
               </React.Fragment>
@@ -186,7 +186,7 @@ const ProductList = (props) => {
           <Link shallow={false} passHref href={routePaths.viewCarDetails.to || '/'} as={typeof (routePaths.viewCarDetails.as) == 'function' ? routePaths.viewCarDetails.as(v) : '/'} >
             <a>
               <React.Fragment>
-                <div className="wrap-product-ads-img-horizontal">
+                <div className="wrap-product-ads-img-horizontal width-100">
                   <div className="overlay">
                     <img src="/assets/Ccar-logo.png" />
                   </div>
@@ -260,6 +260,7 @@ const ProductList = (props) => {
   }
 
   const _renderCondition = (v) => {
+    
     let value = v.condition.toUpperCase()
     if (v.condition == 'new') {
       return (
@@ -377,7 +378,7 @@ const ProductList = (props) => {
         if (addon.addonType === 'spicydeal' && addon.showPrice === 'show') {
           return (
             <div className="wrap-product-ads-price">
-              <span style={{ textDecoration: 'line-through', fontSize: '12px', color: '#000000'}}>RM {formatMoney((v.price).toString())}</span> {_renderDiscount(v)}
+              <span style={{ textDecoration: 'line-through', fontSize: '12px', color: '#000000' }}>RM {formatMoney((v.price).toString())}</span> {_renderDiscount(v)}
               <h4 style={{ color: '#000000' }}>RM {formatMoney((addon.discountedPrice).toString())}</h4>
               {/* <Row>
                 <Col xs={14} sm={14} md={16} lg={16} xl={16}>
@@ -402,7 +403,7 @@ const ProductList = (props) => {
             <div className="wrap-product-ads-price">
               <Row>
                 <Col xs={24} sm={24} md={16} lg={18} xl={16}>
-                  <p style={{ color: '#000000', fontSize:'12px' }}>RM {formatMoney((calMonth(v.price)).toString())}/month</p>
+                  <p style={{ color: '#000000', fontSize: '12px' }}>RM {formatMoney((calMonth(v.price)).toString())}/month</p>
                 </Col>
               </Row>
 
@@ -421,7 +422,7 @@ const ProductList = (props) => {
                 <h4 style={{ color: '#d62828' }}>RM {formatMoney((addon2.discountedPrice).toString())}</h4>
                 <Row>
                   <Col xs={24} sm={24} md={16} lg={18} xl={16}>
-                    <p style={{ color: 'black', fontSize:'12px'  }}>RM {formatMoney((calMonth(addon2.discountedPrice)).toString())}/month</p>
+                    <p style={{ color: 'black', fontSize: '12px' }}>RM {formatMoney((calMonth(addon2.discountedPrice)).toString())}/month</p>
                   </Col>
                 </Row>
               </div>
@@ -445,7 +446,7 @@ const ProductList = (props) => {
           <div className="wrap-product-ads-price">
             <Row>
               <Col xs={24} sm={24} md={16} lg={18} xl={16}>
-                <p style={{color: '#000000', fontSize:'12px'  }}>RM {formatMoney((calMonth(v.price)).toString())}/month</p>
+                <p style={{ color: '#000000', fontSize: '12px' }}>RM {formatMoney((calMonth(v.price)).toString())}/month</p>
               </Col>
             </Row>
 
@@ -459,7 +460,7 @@ const ProductList = (props) => {
         <div className="wrap-product-ads-price">
           <Row>
             <Col xs={24} sm={24} md={16} lg={18} xl={16}>
-              <span style={{color: '#000000', fontSize:'12px'  }}>RM {formatMoney((calMonth(v.price)).toString())}/month</span>
+              <span style={{ color: '#000000', fontSize: '12px' }}>RM {formatMoney((calMonth(v.price)).toString())}/month</span>
             </Col>
           </Row>
 
@@ -557,7 +558,7 @@ const ProductList = (props) => {
 
       return (
         data.map((v, i) =>
-          <Col key={i} xs={24} style={{marginBottom:'10px'}} className="gutter-row, box-shadow-thin" sm={24} md={24} lg={24} xl={24}>
+          <Col key={i} xs={24} style={{ marginBottom: '10px' }} className="gutter-row box-shadow-thin thin-border round-border" sm={24} md={24} lg={24} xl={24}>
             {/* <div className="wrap-product-ads-horizontal"> */}
             <div className={`${_renderLayout(v)} relative-wrapper`} id={_renderTextTitle(v)}>
               {
@@ -594,7 +595,7 @@ const ProductList = (props) => {
                           v.priority === 'addonSpotlight' || v.priority === 'addonKingadType3' ?
                             <img src={rayaFood} style={{ width: 50, height: 50 }} />
                             :
-                            <img src="/assets/Ccar-Spotlight.gif" style={{ width: 35, height: 35, padding:'4px' }} />
+                            <img src="/assets/Ccar-Spotlight.gif" style={{ width: 35, height: 35, padding: '4px' }} />
                       }
                     </span>
                   </div>
@@ -610,79 +611,77 @@ const ProductList = (props) => {
                 <Col span={14}>
                   <Row>
                     <Col span={24} className="relative-wrapper">
-                    {
+                      {
                         v.priority === 'addonSpicydeal' || v.priority === 'addonKingadType' || v.priority === 'addonKingadType2' ?
-                          <img src={rayaMosque} style={{ width: 70, height: 70, position: 'absolute', bottom: 0, right: 0, zIndex : 0, }} />
+                          <img src={rayaMosque} style={{ width: 70, height: 70, position: 'absolute', bottom: 0, right: 0, zIndex: 0, }} />
                           :
                           v.priority === 'addonSpotlight' || v.priority === 'addonKingadType3' ?
-                            <img src={rayaPeople} style={{ width: 70, height: 70, position: 'absolute', bottom: 0, right: 0, zIndex : 0 }} />
+                            <img src={rayaPeople} style={{ width: 70, height: 70, position: 'absolute', bottom: 0, right: 0, zIndex: 0 }} />
                             :
                             null
                       }
                       <div className="wrap-product-ads-title-horizontal relative-wrapper">
                         <Link href={routePaths.viewCarDetails.to || '/'} as={typeof (routePaths.viewCarDetails.as) == 'function' ? routePaths.viewCarDetails.as(v) : '/'} >
                           <a target="_blank">
-                            <div className="text-truncate-twoline" style={{ lineHeight: 1.2 }}>
+                            <div className="text-truncate-twoline small-text" style={{ lineHeight: 1.2 }}>
                               <label>
                                 {v.title}
                               </label>
                             </div>
                           </a>
                         </Link>
-                      <div className="relative-wrapper">
-                        <p style={{ marginBottom: '0px' }}>
-                          {v.carspecsAll ?
-                            v.carspecsAll.transmission + ' | ' +
-                            renderMileageRange(v.mileage, v.mileage2) + ' | ' +
-                            (v.color ? v.color.toUpperCase() : '')
-                            : ''}
-                        </p>
+                        <div className="relative-wrapper">
+                          <p style={{ marginBottom: '0px' }} className="small-text">
+                            {v.carspecsAll ?
+                              v.carspecsAll.transmission + ' | ' +
+                              renderMileageRange(v.mileage, v.mileage2) + ' | ' +
+                              (v.color ? v.color.toUpperCase() : '')
+                              : ''}
+                          </p>
+                        </div>
                       </div>
-                    </div>
 
-                    <Row gutter={0} style={{ paddingLeft: '10px', paddingRight: '10px' }}>
-                      <Col xs={24} sm={24} md={18} lg={18} xl={18} >
-                        <Row >
-                          <Col span={24}>
-                            <p style={{ marginBottom: '0px', fontWeight: '700', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', lineHeight: 1.2 }}>{v.createdBy ? v.createdBy.namePrefix : null} {v.createdBy ? v.createdBy.firstName : null} {v.createdBy ? v.createdBy.lastName : null} </p>
-                          </Col>
-                        </Row>
-                        <Row >
-                          <Col span={24}>
-                            <p style={{ fontSize: '14px' }} className="product-ads-company">{v.companys ? v.companys.name : null} </p>
-                          </Col>
-                        </Row>
-                        <Row style={{height:'42px'}}>
-                          <Col span={24}>
-                            {_renderPrice(v)}
-                          </Col>
-                        </Row>
-                      </Col>
-                    </Row>
+                      <Row gutter={0} style={{ paddingLeft: '10px', paddingRight: '10px' }}>
+                        <Col xs={24} sm={24} md={18} lg={18} xl={18} >
+                          <Row >
+                            <Col span={24}>
+                              <p style={{ marginBottom: '0px', fontWeight: '700', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', lineHeight: 1.2 }} className="small-text">{v.createdBy ? v.createdBy.namePrefix : null} {v.createdBy ? v.createdBy.firstName : null} {v.createdBy ? v.createdBy.lastName : null} </p>
+                            </Col>
+                          </Row>
+                          <Row >
+                            <Col span={24}>
+                              <p className="product-ads-company small-text">{v.companys ? v.companys.name : null} </p>
+                            </Col>
+                          </Row>
+                          <Row style={{ height: '42px' }}>
+                            <Col span={24}>
+                              {_renderPrice(v)}
+                            </Col>
+                          </Row>
+                        </Col>
+                      </Row>
                     </Col>
                   </Row>
 
-                  <Row gutter={[5, 0]} className="padding-x-sm padding-y-xs flex-items-align-end flex-justify-end">
+                  <Row gutter={[5, 0]} type="flex" justify="end" align="middle" className="padding-x-sm padding-y-xs">
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
                       {
                         _.isArray(v.registrationUrl) && notEmptyLength(v.registrationUrl) ?
                           <RegisterCard key='register' button={
-                            <Button type="normal" className="w-100 ads-purchase-button" style={{ padding: 0, background: 'rgb(209 ,110, 132)', borderColor: 'rgb(209 ,110, 132)' }}><img src="/assets/CarListingIconMobile/registration-card.png" /></Button>
+                            <Button type="normal" size="small" className="w-100" style={{ padding: 0, background: 'rgb(209 ,110, 132)', borderColor: 'rgb(209 ,110, 132)' }}><img src="/assets/CarListingIconMobile/registration-card.png" style={{ width: '65%', height: '100%' }} /></Button>
                           } registrationUrl={v.registrationUrl} />
                           :
                           <div className="width-100">
-                            <Button type="normal" className="width-100 ads-purchase-button cursor-not-allowed" style={{ padding: 0, background: 'rgb(237, 236, 234)', borderColor: 'rgb(237, 236, 234)' }}><img src="/assets/CarListingIconMobile/registration-card.png" /></Button>
+                            <Button type="normal" size="small" className="width-100 cursor-not-allowed" style={{ padding: 0, background: 'rgb(237, 236, 234)', borderColor: 'rgb(237, 236, 234)' }}><img src="/assets/CarListingIconMobile/registration-card.png" style={{ width: '65%', height: '100%' }} /></Button>
                           </div>
                       }
                     </Col>
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
                       <CalculatorModal key='calculator' button={() => {
                         return <Tooltip placement="top" title={`Calculate This Car Monthly Pay`}>
-                          <Button style={{ paddingLeft: '9px', paddingRight: '9px' }} className='width-100' >
-                            <div className='fill-parent flex-items-align-center width-100 flex-justify-center' >
-                              <Icon type="calculator" className='ccar-yellow cursor-pointer' style={{ fontSize: '20px' }} />
-                            </div>
-                          </Button>
+                          <div className="padding-x-xs cursor-pointer background-white thin-border flex-justify-center flex-items-align-center" style={{ borderRadius: '2px' }}>
+                            <Icon type="calculator" className='ccar-yellow cursor-pointer' style={{ fontSize: '20px' }} />
+                          </div>
                         </Tooltip>
                       }} data={{ price: v.price, downpayment: v.price * 0.1, loanPeriod: 9, interestRate: 3 }} />
                     </Col>
@@ -690,17 +689,66 @@ const ProductList = (props) => {
 
                   <Row gutter={[5, 0]} className="padding-sm">
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
-                      <WhatsAppButton mobileNumber={v ? v : null} />
+                      <WhatsAppButton mobileNumber={v ? v : null} button={() => {
+                        return (<div
+                          className="w-100 ccar-product-btn-car padding-xs cursor-pointer flex-items-align-center flex-justify-center"
+                          style={{ borderRadius: '5px' }}
+                        >
+                          <img src="/assets/profile/icon-list/carmarket-bar-icon/whatsapp.png" style={{ width: '16px', height : '16px' }} />
+                        </div>)
+                      }
+                      } >
+                      </WhatsAppButton>
                     </Col>
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
-                      <ContactList companys={v.companys ? v.companys : null} contactPerson={notEmptyLength(v.createdBy) ? v.createdBy : null} />
+                      <ContactList companys={v.companys ? v.companys : null} contactPerson={notEmptyLength(v.createdBy) ? v.createdBy : null} 
+                      button={() => {
+                        return (
+                          <div
+                            className="w-100 ccar-product-btn-car padding-xs cursor-pointer flex-items-align-center flex-justify-center"
+                            style={{ borderRadius: '5px' }}
+                          >
+                            <img src="/assets/profile/icon-list/carmarket-bar-icon/call.png" style={{ width: '16px', height : '16px' }} />
+                          </div>
+                        )
+                      }
+                      } />
                     </Col>
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
-                      <AddCompareProductButton data={v} />
+                      <AddCompareProductButton data={v} 
+                      savedButton={() => {
+                        return (
+                          <div
+                            className="padding-xs cursor-pointer flex-items-align-center flex-justify-center"
+                            style={{ background: 'rgb(89, 54, 26)',borderRadius: '5px' }}
+                          >
+                            <img  src="/assets/profile/icon-list/carmarket-bar-icon/compare.png" alt="compare"  style={{ width: '16px', height : '16px' }} />
+                          </div>
+                        )
+                      }
+                      }
+                      saveButton={() => {
+                        return (
+                          <div
+                            className="padding-xs cursor-pointer flex-items-align-center flex-justify-center ads-purchase-compare-btn"
+                            style={{ borderRadius: '5px' }}
+                          >
+                            <img  src="/assets/profile/icon-list/carmarket-bar-icon/compare.png" alt="compare" style={{ width: '16px', height : '16px' }} />
+                          </div>
+                        )
+                      }
+                      }
+                      
+                      />
                     </Col>
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
                       <Car360ViewButton id={v.xmlUrl ? v._id : null}>
-                        <Button type="normal" className={`w-100 ads-purchase-button ${v.xmlUrl ? 'cursor-pointer' : 'cursor-not-allowed '}`} style={{ padding: 0, background: v.xmlUrl ? 'rgb(85,204,212)' : 'rgb(237, 236, 234)', borderColor: v.xmlUrl ? 'rgb(85,204,212)' : 'rgb(237, 236, 234)' }}><img src="/assets/profile/icon-list/Ccar-360_1.gif" /></Button>
+                          <div
+                            className={`padding-xs flex-items-align-center flex-justify-center ${v.xmlUrl ? 'cursor-pointer' : 'cursor-not-allowed '}`}
+                            style={{  background: v.xmlUrl ? 'rgb(85,204,212)' : 'rgb(237, 236, 234)', borderColor: v.xmlUrl ? 'rgb(85,204,212)' : 'rgb(237, 236, 234)', borderRadius: '5px' }}
+                          >
+                            <img  src="/assets/profile/icon-list/Ccar-360_1.gif" alt="car360View" style={{ width: '16px', height : '16px' }} />
+                          </div>
                       </Car360ViewButton>
                     </Col>
                   </Row>
