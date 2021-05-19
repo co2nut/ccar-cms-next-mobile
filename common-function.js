@@ -1006,9 +1006,9 @@ export function convertRangeFormatToText(formatedRange, valueFormat) {
         let parameter2 = formatedRange[1];
         let text = '';
 
-        if (parameter2 == defaultRangeBigger) {
+        if (parameter2 == '>=' || parameter2 == '>' || (!parameter2 && parameter1)) {
             text = `above ${convertValue(parameter1, valueFormat)}`
-        } else if (parameter2 == defaultRangeSmaller) {
+        } else if (parameter2 == '<=' || parameter2 == '<') {
             text = `below ${convertValue(parameter1, valueFormat)}`
         } else {
             text = `between ${convertValue(parameter1, valueFormat)} and ${convertValue(parameter2, valueFormat)}`
@@ -1106,6 +1106,11 @@ export function convertProductRouteParamsToFilterObject(routeParams) {
         view = 'gridView';
     }
 
+    try {
+        sorting = JSON.parse(sorting);
+    } catch (error) {
+        
+    }
 
     if (!_.get(sorting, ['carspec.year']) && !_.get(sorting, ['mileageFilter']) && !_.get(sorting, ['searchPrice'])) {
         sorting = {};

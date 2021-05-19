@@ -6,6 +6,8 @@ import _ from 'lodash';
 import { notEmptyLength, isValidNumber, formatNumber } from '../../../common-function';
 import Link from 'next/link';
 import { routePaths } from '../../../route';
+import Axios from 'axios';
+import client from '../../../feathers';
 
 
 function getWindowDimensions() {

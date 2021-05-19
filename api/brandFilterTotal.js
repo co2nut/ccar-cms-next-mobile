@@ -23,6 +23,9 @@ export default async function (modal, data) {
     if (_.isArray(modal) && !_.isEmpty(modal)) {
 
         if (!_.has(data, ['filterGroup'])) {
+            if (!_.isPlainObject(data)) {
+                data = {}
+            }
             data.filterGroup = {};
         } else {
             data.filterGroup = _.cloneDeep(data.filterGroup)
@@ -70,7 +73,7 @@ export default async function (modal, data) {
 
         data.filterGroup = objectRemoveEmptyValue(data.filterGroup);
         let match = { $match: { ...data.filterGroup } }
- 
+
         let promises = [];
         _.forEach(modal, function (modal) {
             promises.push(
@@ -87,7 +90,7 @@ export default async function (modal, data) {
                     options[`${modal[index]}List`] = response.data.uniqueInfo[`${modal[index]}List`];
                 })
 
-             
+
                 return options;
 
             }

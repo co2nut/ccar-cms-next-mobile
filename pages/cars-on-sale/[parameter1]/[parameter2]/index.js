@@ -8,6 +8,8 @@ import { loading } from '../../../../redux/actions/app-actions'
 import { convertProductRouteParamsToFilterObject, formatNumber, getCarMarketSeoData } from '../../../../common-function'
 import ReduxPersistWrapper from '../../../../components/general/ReduxPersistWrapper'
 import { getCarBrand } from '../../../../params/carBrandsList'
+import groupCarAds from '../../../../api/groupCarAds'
+import { carMarketRevalidateTime, groupArrayItems } from '../../../../config'
 
 const modals = ['make', 'model', 'state', 'area', 'bodyType', 'color', 'fuelType'];
 const antIcon = <img src="/assets/Ccar-logo.png" style={{ fontSize: 60 }} />;
@@ -33,57 +35,76 @@ const Index = (props) => {
 }
 
 
-export async function getServerSideProps(context) {
-
-    const { parameter1, parameter2, parameter3 } = context.params;
-
-    let filterObj = context.query || {};
-    if (filterObj.data) {
-        try {
-            filterObj.data = JSON.parse(filterObj.data) || {};
-            filterObj = {
-                ...filterObj.data,
-                ...filterObj,
+export async function getStaticPaths() {
+    let group = {
+        make: '$carspec.make',
+        state: '$company.state',
+        area: '$company.area',
+    };
+    let match = {
+        condition: ''
+    };
+    let groupedRes = await groupCarAds(group, match);
+    groupedRes = _.map(groupedRes.data || [], '_id');
+    groupedRes = groupArrayItems(groupedRes, 'make');
+    let paths = [];
+    _.forIn(groupedRes, (value, key) => {
+        paths = _.union(paths, [{
+            params: {
+                parameter1: _.toLower(key),
+                parameter2: `malaysia`,
             }
-        } catch (error) {
-
-        }
-        delete filterObj.data;
+        }])
+        _.forEach(value, function (item, index) {
+            paths = _.union(paths, [{
+                params: {
+                    parameter1: _.toLower(key),
+                    parameter2: `malaysia_${_.toLower(item.state)}`,
+                }
+            }])
+            if (_.get(item, `area`)) {
+                paths = _.union(paths, [{
+                    params: {
+                        parameter1: _.toLower(key),
+                        parameter2: `malaysia_${_.toLower(item.state)}_${_.toLower(item.area)}`,
+                    }
+                }])
+            }
+        })
+    })
+    return {
+        paths: paths,
+        fallback: true
     }
-    if (filterObj.sorting) {
-        try {
-            filterObj.sorting = JSON.parse(filterObj.sorting) || {};
-        } catch (error) {
+}
 
-        }
-    }
-    filterObj = convertProductRouteParamsToFilterObject(filterObj);
+
+
+export async function getStaticProps(context) {
+    let filterObj = {};
+    filterObj = convertProductRouteParamsToFilterObject(context.params);
     if (_.get(filterObj, ['filterGroup'])) {
         filterObj.filterGroup.condition = '';
     }
 
     let promises = [];
     promises.push(carAdsFilter(_.cloneDeep(filterObj), PAGESIZE));
-    promises.push(brandFilterTotal(modals, filterObj));
 
-    let [carAdsRes, brandFilterRes] = await Promise.all(promises)
-
+    let [carAdsRes] = await Promise.all(promises)
 
     let seoData = getCarMarketSeoData(_.get(filterObj, 'filterGroup') || {}, _.get(carAdsRes, 'total') || 0);
+
     return {
         props: {
             cookie: _.get(context, ['req', 'headers', 'cookie']) || null,
-            productList: _.get(carAdsRes, ['data']) || [],
-            productListTotal: _.get(carAdsRes, ['total']) || 0,
-            filterGroup: _.get(filterObj, ['filterGroup']) || {},
-            config: _.get(filterObj, ['config']) || {},
-            availableOptions: brandFilterRes || {},
             seoData: {
                 ...seoData
             }
-        }
+        },
+        unstable_revalidate: carMarketRevalidateTime
     }
 }
+
 
 
 const mapStateToProps = state => ({
