@@ -600,6 +600,7 @@
 
 .thickBorder {
     border-width: thick;
+    border: solid #dedede 2px;
 }
 
 .thin-border {
