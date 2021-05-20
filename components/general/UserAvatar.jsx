@@ -21,9 +21,6 @@ const UserAvatar = (props) => {
                     if (props.onClick) {
                         props.onClick(e)
                     }
-
-                    console.log(props.data);
-                    console.log(props.data.userurlId);
                     if (_.get(props.data, ['userurlId']) && props.redirectProfile) {
                         if (props.onRedirect) {
                             props.onRedirect()
@@ -36,7 +33,7 @@ const UserAvatar = (props) => {
                     {
                         (data, setCurrentIndex, setVisible) => {
                             return (
-                                <Tooltip title={_.isPlainObject(props.data) && !_.isEmpty(props.data) ? _.get(props.data, ['name']) ? _.get(props.data, ['name']) || '' : _.get(props.data, ['firstName', 'lastName']) || '' : ''} visible={tooltipVisible} onVisibleChange={(visible) => {
+                                <Tooltip placement={props.toolTipPlacement || 'top'} title={_.isPlainObject(props.data) && !_.isEmpty(props.data) ? _.get(props.data, ['name']) ? _.get(props.data, ['name']) || '' : _.get(props.data, ['firstName', 'lastName']) || '' : ''} visible={tooltipVisible} onVisibleChange={(visible) => {
                                     if (props.showTooltip) {
                                         setTooltipVisible(visible)
                                     }

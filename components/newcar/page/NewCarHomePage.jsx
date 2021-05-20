@@ -518,7 +518,7 @@ class NewCarVersion3 extends React.Component {
                                         <div className="type cursor-pointer" onClick={() => {
                                             this.setState({ bodyType: (v.value).toLowerCase() }
                                             );
-                                            this.props.router.push(`/newcar/filter?${queryStringifyNestedObject({ bodyType: v.value.toLowerCase() })}`)
+                                            this.props.router.push(`/newcar/filter?${queryStringifyNestedObject({ bodyType: v.value.toLowerCase(), page: 1 })}`)
                                         }
                                         }>
                                             <img src={v.icon} />
@@ -542,7 +542,7 @@ class NewCarVersion3 extends React.Component {
                                             this.setState({ fuelType: (v.value).toLowerCase() }
                                                 // ,()=>this.getData(0) 
                                             );
-                                            this.props.router.push(`/newcar/filter?${queryStringifyNestedObject({ fuelType: v.value.toLowerCase() })}`)
+                                            this.props.router.push(`/newcar/filter?${queryStringifyNestedObject({ fuelType: v.value.toLowerCase(), page: 1 })}`)
                                         }
                                         }>
                                             <img src={v.icon} />
@@ -559,7 +559,7 @@ class NewCarVersion3 extends React.Component {
                                             this.setState({ fuelType: (v.value).toLowerCase() }
                                                 // ,()=>this.getData(0) 
                                             );
-                                            this.props.router.push(`/newcar/filter?${queryStringifyNestedObject({ fuelType: v.value.toLowerCase() })}`)
+                                            this.props.router.push(`/newcar/filter?${queryStringifyNestedObject({ fuelType: v.value.toLowerCase(), page: 1 })}`)
                                         }
                                         }>
                                             <img src={v.icon} />
@@ -580,7 +580,7 @@ class NewCarVersion3 extends React.Component {
                                 _.map(priceRangeOptions, function (priceRange) {
                                     return (
                                         <Button className="margin-x-sm" onClick={() => {
-                                            self.props.router.push(`/newcar/filter?${queryStringifyNestedObject({ priceRange: priceRange })}`)
+                                            self.props.router.push(`/newcar/filter?${queryStringifyNestedObject({ priceRange: priceRange, page: 1 })}`)
                                         }}>
                                             {
                                                 !priceRange[1] || priceRange[1] == '<' || priceRange[1] == '<=' ?
@@ -640,7 +640,7 @@ class NewCarVersion3 extends React.Component {
                                 // if (quickFilterType == 'carMarket') {
                                 //     path = convertParameterToProductListUrl(null, null);
                                 // } else {
-                                    path = `/newcar/filter`
+                                path = `/newcar/filter`
                                 // }
                                 this.props.router.push(path);
                             }} >
@@ -670,18 +670,18 @@ class NewCarVersion3 extends React.Component {
                             <Col xs={24} sm={24} md={19} lg={19} xl={19} style={{ marginBottom: '-15px' }}>
                                 {this.renderSearchFilter()}
                             </Col>
-                            <Col span={24} style={{marginTop:'5px'}}>
-                                <BrandFiltering 
+                            <Col span={24} style={{ marginTop: '5px' }}>
+                                <BrandFiltering
                                     showCount={false}
                                     showModel={false}
                                     options={notEmptyLength(this.state.filterCarBrands) ? this.state.filterCarBrands : []}
                                     onSelect={(brand, model) => {
-                                        if(_.get(brand, 'value')){
-                                            this.props.router.push(`/newcar/filter?${queryStringifyNestedObject({ make: brand.value.toLowerCase() })}`)
+                                        if (_.get(brand, 'value')) {
+                                            this.props.router.push(`/newcar/filter?${queryStringifyNestedObject({ make: brand.value.toLowerCase(), page: 1 })}`)
                                         }
-                                    }} 
+                                    }}
                                 />
-                            </Col> 
+                            </Col>
                         </Row>
                     </div>
                 </div>

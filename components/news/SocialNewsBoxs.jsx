@@ -57,41 +57,23 @@ const SocialNewsBoxs = (props) => {
                     <Row gutter={[10, 10]}>
                         <div key='newsList' className="padding-x-md " style={{ height: '500px' }}>
                             {news.map(function (item, i) {
-                                if (i % 5 == 0) {
-                                    return (
-                                        <Col key={'newsListChildMain' + i} xs={24} sm={24} md={12} lg={12} xl={12}>
-                                            {/* {item.title} */}
+                                return (
+                                    <Col key={'newsListChildMain' + i} xs={24} sm={24} md={12} lg={12} xl={12}>
+                                        <div className="width-100 thin-border round-border box-shadow-normal" >
                                             <a target="_blank" href={item.originalUrl} >
                                                 <div className="social">
                                                     <img src={item.thumbnailUrl} style={{ width: "100%" }} />
-                                                    <div className="overlay-news">
-                                                        <p> {item.title} </p>
-                                                    </div>
                                                 </div>
                                             </a>
-                                        </Col>
-                                    )
-                                } else {
-                                    return (
-                                        <Col key={'newsListChildSub' + i} xs={24} sm={24} md={12} lg={12} xl={12}>
-                                            <a target="_blank" href={item.originalUrl} >
-                                                <Row className="fnews1">
-                                                    <Col span={12} className="inews">
-                                                        <img src={item.thumbnailUrl} style={{ width: "100%" }} />
-                                                    </Col>
-                                                    <Col span={12} className="ftitle">
-                                                        <h4>{item.title}</h4>
-                                                        <p>
-                                                            {renderContent(item)}
-                                                        </p>
-
-                                                        <span style={{ textTransform: 'capitalize' }}>{item.authorId ? item.authorId.name : null} | {moment(item.publishedAt).format('DD-MM-YYYY')}</span>
-                                                    </Col>
-                                                </Row>
-                                            </a>
-                                        </Col>
-                                    )
-                                }
+                                            <div className="font-weight-bold caption text-overflow-break padding-sm">
+                                                {item.title}
+                                            </div>
+                                            <div className="font-weight-thin caption text-truncate-fiftheenline margin-sm pre-wrap">
+                                                {renderContent(item)}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                )
                             })
                             }
                         </div>

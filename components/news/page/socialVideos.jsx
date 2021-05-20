@@ -334,7 +334,7 @@ const SocialVideos = (props) => {
                     <Row gutter={[0, 10]}>
                         <Col xs={4} sm={4} md={4} lg={4} xl={4}>
                             <div className="background-white margin-top-md padding-sm width-100">
-                                <AuthorList authors={videoAuthors} size={30} avatarClassName={`thin-border border-grey cursor-pointer`} selectedAuthor={videoSelectedAuthor} onClick={(author) => {
+                                <AuthorListScroll authors={videoAuthors} size={30} avatarClassName={`thin-border border-grey cursor-pointer`} selectedAuthor={videoSelectedAuthor} onClick={(author) => {
                                     let nextActiveLanguage = getNextActiveLanguage(author);
                                             setVideoFilterGroup({
                                                 ...videoFilterGroup,

@@ -660,6 +660,14 @@
     overflow: hidden;
 }
 
+.text-truncate-fiftheenline {
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 15;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 .text-truncate-oneline {
     text-overflow: ellipsis;
     display: -webkit-box;

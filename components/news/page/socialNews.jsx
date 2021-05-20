@@ -1,22 +1,19 @@
 import { Col, Form, Icon, message, Row, Tabs } from 'antd';
 import axios from 'axios';
 import _ from 'lodash';
-import queryString from 'query-string';
+import { withRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
-import { getLanguages, languageCount, languageExisted } from './config';
-import { loading, updateActiveMenu } from '../../../redux/actions/app-actions';
-import client from '../../../feathers';
-import { withRouter } from 'next/router';
-import LayoutV2 from '../../general/LayoutV2';
 import { arrayLengthCount, notEmptyLength, objectRemoveEmptyValue } from '../../../common-function';
+import client from '../../../feathers';
+import { loading, updateActiveMenu } from '../../../redux/actions/app-actions';
+import LayoutV2 from '../../general/LayoutV2';
 import AuthorList from '../AuthorList';
-import SocialNewsBoxs from '../SocialNewsBoxs';
-import SocialVideoBoxs from '../SocialVideoBoxs';
-import InfiniteScroll from 'react-infinite-scroller';
 import AuthorListScroll from '../AuthorListScroll';
+import SocialNewsBoxs from '../SocialNewsBoxs';
+import { getLanguages, languageCount, languageExisted } from './config';
 
 
 const Desktop = ({ children }) => {
@@ -184,6 +181,7 @@ const SocialNews = (props) => {
             )
 
             Promise.all(promises).then(([newsAuthorRes, videoAuthorRes]) => {
+                console.log(newsAuthorRes);
                 if (notEmptyLength(newsAuthorRes.data.data)) {
                     newsAuthorRes.data.data = _.concat([{
                         name: 'All',
@@ -335,7 +333,7 @@ const SocialNews = (props) => {
 
                             <Col xs={4} sm={4} md={4} lg={4} xl={4}>
                                 <div className="background-white margin-top-md padding-sm width-100">
-                                    <AuthorList authors={newsAuthors } size={30} avatarClassName={`thin-border border-grey cursor-pointer`} selectedAuthor={newsSelectedAuthor} onClick={(author) => {
+                                    <AuthorListScroll authors={newsAuthors } size={30} avatarClassName={`thin-border border-grey cursor-pointer`} selectedAuthor={newsSelectedAuthor} onClick={(author) => {
                                         let nextActiveLanguage = getNextActiveLanguage(author);
                                             setNewsFilterGroup({
                                                 ...newsFilterGroup,

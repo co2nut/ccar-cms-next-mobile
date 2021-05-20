@@ -32,9 +32,22 @@ const Index = (props) => {
 
   useEffect(() => {
 
-    if (_.isArray(props.productLists) && !_.isEmpty(props.productLists)) {
-      props.fetchProductsListHome(props.productLists);
-    }
+
+    axios.get(`${client.io.io.uri}brandFilterTotalV3`, {
+      params: {
+        filterType: 'make'
+      },
+    }).then(brandRes => {
+      let brands = _.isArray(_.get(brandRes, ['data', 'uniqueInfo', 'makeList'])) && !_.isEmpty(_.get(brandRes, ['data', 'uniqueInfo', 'makeList'])) ? _.get(brandRes, ['data', 'uniqueInfo', 'makeList']) : [];
+      brands = _.reverse(_.sortBy(brands, ['count', 'value']));
+      brands = _.map(brands, 'value').slice(10)
+      setBrandList(brands)
+    })
+
+    axios.get(`${client.io.io.uri}displayKingAds`).then(kingAdsRes => {
+      kingAdsRes = _.get(kingAdsRes, ['data']) || [];
+      props.fetchProductsListHome(kingAdsRes);
+    })
 
   }, [])
 
@@ -292,26 +305,12 @@ const _renderProductListSecond = () => {
 }
 
 
-export async function getServerSideProps(context) {
+export async function getStaticProps(context) {
 
-  let brandRes = await axios.get(`${client.io.io.uri}brandFilterTotalV3`, {
-    params: {
-      filterType: 'make'
-    },
-  })
-
-  let brands = _.isArray(_.get(brandRes, ['data', 'uniqueInfo', 'makeList'])) && !_.isEmpty(_.get(brandRes, ['data', 'uniqueInfo', 'makeList'])) ? _.get(brandRes, ['data', 'uniqueInfo', 'makeList']) : [];
-  brands = _.reverse(_.sortBy(brands, ['count', 'value']));
-  brands = _.map(brands, 'value').slice(10)
-
-  let kingAdsRes = await axios.get(`${client.io.io.uri}displayKingAds`)
-  kingAdsRes = _.get(kingAdsRes, ['data']) || [];
 
   return {
     props: {
       cookie: _.get(context, ['req', 'headers', 'cookie']) || null,
-      brands: brands,
-      productLists: kingAdsRes,
       seoData: {
         description: ''
       }
