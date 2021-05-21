@@ -437,3 +437,12 @@ video {
 .login-drawer .ant-drawer-close .anticon svg {
     color: #ffffff;
 }
+
+.kpp .ant-drawer-body{
+    padding: 0px;
+}
+
+.kpp .ant-drawer-close .anticon svg {
+    color: #000000;
+}
+

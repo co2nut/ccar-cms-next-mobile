@@ -1030,13 +1030,13 @@ class LayoutV2 extends React.Component {
                                                 <Row className="margin-bottom-md">
                                                     <Col span={11} className="thickBorder round-border">
                                                         <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '2' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/car-market-homepage/index')}}> 
-                                                            <img src="/assets/menu-icon/buy-car.png" style={{width:'40%'}}></img>
+                                                            <img src="/assets/menu-icon/buy-car.png" style={{width:'30%'}}></img>
                                                             <p style={{marginBottom:'0px', color:'#000000'}}> CarMarket </p>
                                                         </div>
                                                     </Col>
                                                     <Col span={11} offset={2} className="thickBorder round-border ">
                                                         <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '3' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/newcar')}}> 
-                                                            <img src="/assets/menu-icon/new-car.png" style={{width:'40%'}}></img>
+                                                            <img src="/assets/menu-icon/new-car.png" style={{width:'30%'}}></img>
                                                             <p style={{marginBottom:'0px', color:'#000000'}}>All-NewCar</p>
                                                         </div>
                                                     </Col>
@@ -1045,13 +1045,13 @@ class LayoutV2 extends React.Component {
                                                 <Row className="margin-bottom-md">
                                                     <Col span={11} className="thickBorder round-border">
                                                         <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '6' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/car-freaks')}}> 
-                                                            <img src="/assets/menu-icon/carfreaks.png" style={{width:'40%'}}></img>
+                                                            <img src="/assets/menu-icon/carfreaks.png" style={{width:'30%'}}></img>
                                                             <p style={{marginBottom:'0px', color:'#000000'}}>CarFreaks</p>
                                                         </div>
                                                     </Col>
                                                     <Col span={11} offset={2} className="thickBorder round-border">
                                                         <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '4' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/live')}}> 
-                                                            <img src="/assets/menu-icon/live.png" style={{width:'40%'}}></img>
+                                                            <img src="/assets/menu-icon/live.png" style={{width:'30%'}}></img>
                                                             <p style={{marginBottom:'0px', color:'#000000'}}>LIVE</p> 
                                                         </div>
                                                     </Col>
@@ -1060,13 +1060,13 @@ class LayoutV2 extends React.Component {
                                                 <Row className="margin-bottom-md">
                                                     <Col span={11} className="thickBorder round-border">
                                                         <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '5' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/socialNews')}}> 
-                                                            <img src="/assets/menu-icon/social-news.png" style={{width:'40%'}}></img>
+                                                            <img src="/assets/menu-icon/social-news.png" style={{width:'30%'}}></img>
                                                             <p style={{marginBottom:'0px', color:'#000000'}}>Social News </p>
                                                         </div>
                                                     </Col>
                                                     <Col span={11} offset={2} className="thickBorder round-border">
                                                         <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '9' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/socialVideos')}}> 
-                                                            <img src="/assets/menu-icon/social-videos.png" style={{width:'40%'}}></img>
+                                                            <img src="/assets/menu-icon/social-videos.png" style={{width:'30%'}}></img>
                                                             <p style={{marginBottom:'0px', color:'#000000'}}>Social Videos </p>
                                                         </div>
                                                     </Col>
@@ -1075,21 +1075,24 @@ class LayoutV2 extends React.Component {
                                                 <Row className="margin-bottom-md">
                                                     <Col span={11} className="thickBorder round-border">
                                                         <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '8' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/kpp')}}> 
-                                                            <img src="/assets/menu-icon/driving-school.png" style={{width:'40%'}}></img>
+                                                            <img src="/assets/menu-icon/driving-school.png" style={{width:'30%'}}></img>
                                                             <p style={{marginBottom:'0px', color:'#000000'}}>Driving School</p>
                                                         </div>
                                                     </Col>
                                                     <Col span={11} offset={2} className="thickBorder round-border">
                                                         <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '7' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/petrolprice')}}> 
-                                                            <img src="/assets/menu-icon/fuel.png" style={{width:'40%'}}></img>
+                                                            <img src="/assets/menu-icon/fuel.png" style={{width:'30%'}}></img>
                                                             <p style={{marginBottom:'0px', color:'#000000'}}>Petrol Price</p>
                                                         </div>
                                                     </Col>
                                                 </Row>
-                                                <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '12' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/car-review') }} > Car Review</div>
-                                                <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '11' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/about-us')}}> About Us</div>
-                                                <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '10' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/contact-us')}}> Contact Us</div>
+                                                <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '10' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/profile/:id/details/wishlists')}}> My Wishlist</div>
+                                                <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '10' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/contact-us')}}> Setting </div>
                                                 <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '10' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/faq')}}> FAQ</div>
+                                                {/* <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '12' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/car-review') }} > Car Review</div>
+                                                <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '11' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/about-us')}}> About Us</div>
+                                                <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '10' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/contact-us')}}> Contact Us</div> */}
+                                                
                                             </div>
                                             </div>}
 

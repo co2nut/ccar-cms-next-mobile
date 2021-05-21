@@ -51,15 +51,15 @@ const DealerProfile = (props) => {
     const _renderDealerDetailsBox = () => {
         return (
             <Row gutter={[20, 20]}>
-                <Col xs={0} sm={0} md={24} lg={24} xl={24}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                     <CommunityBox data={profile} />
                 </Col>
-                <Col xs={0} sm={0} md={24} lg={24} xl={24}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                     <RatingBox data={profile} />
                 </Col>
                 <Col xs={0} sm={0} md={24} lg={24} xl={24}>
                     <div>
-                        <img className="w-100" src={adsverImg} />
+                        <img className="w-100" src={adsverImg} /> 
                     </div>
                 </Col>
             </Row>
@@ -88,22 +88,32 @@ const DealerProfile = (props) => {
                         <TabPane tab="CarFreaks" key="2">
                             <Row gutter={[20, 10]} className='margin-top-md'>
                                 <Col xs={24} sm={24} md={24} lg={18} xl={18}>
-                                    <UserCarFreakPosts data={profile} /> 
+                                    <UserCarFreakPosts data={profile} />  
                                 </Col>
                             </Row>
                         </TabPane>
                         <TabPane tab="Social Board" key="3">
                             <Row gutter={[20, 10]} className='margin-top-md'>
                                 <Col xs={24} sm={24} md={24} lg={18} xl={18}>
-                                    <UserSocialBoard data={profile} className="margin-y-lg" /> 
+                                    <UserSocialBoard data={profile} />  
+                                </Col>
+                            </Row>
+                        </TabPane>
+                        <TabPane tab="Reviews" key="4">
+                            <Row gutter={[20, 10]} className='margin-top-md padding-x-sm'>
+                            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                    {_renderDealerDetailsBox()}
+                                </Col>
+                                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                    <UserReceivedReview data={profile} /> 
                                 </Col>
                             </Row>
                         </TabPane>
                         {
                             _.get(props.user, ['info', 'user', '_id']) && _.get(props.user, ['info', 'user', '_id']) == _.get(profile, ['_id']) ?
-                                <TabPane tab="Saved CarFreaks" key="4">
-                                    <Col xs={18} sm={18} md={24} lg={18} xl={18}>
-                                        <UserSavedCarFreakPosts data={profile} className="margin-y-lg" />
+                                <TabPane tab="Saved CarFreaks" key="5">
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24} className="padding-x-sm">
+                                        <UserSavedCarFreakPosts data={profile}/>  
                                     </Col>
                                 </TabPane>
                                 :
@@ -111,13 +121,13 @@ const DealerProfile = (props) => {
                         }
                         {
                             _.get(props.user, ['info', 'user', '_id']) && _.get(props.user, ['info', 'user', '_id']) == _.get(profile, ['_id']) ?
-                                <TabPane tab="Saved Social Board" key="5">
-                                    <Col xs={18} sm={18} md={24} lg={18} xl={18}>
-                                        <UserSavedSocialBoard data={profile} className="margin-y-lg" />
+                                <TabPane tab="Saved Social Board" key="6">
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <UserSavedSocialBoard data={profile}/>
                                     </Col>
-                                    <Col xs={6} sm={6} md={0} lg={6} xl={6}>
+                                    {/* <Col xs={6} sm={6} md={0} lg={6} xl={6}>
                                         {_renderDealerDetailsBox()}
-                                    </Col>
+                                    </Col> */}
                                 </TabPane>
                                 :
                                 null
@@ -156,16 +166,6 @@ const DealerProfile = (props) => {
                                 </Col>
                             </Row>
                         </TabPane> */}
-                        <TabPane tab="Reviews" key="6">
-                            <Row gutter={[20, 10]} className='margin-top-md padding-x-sm'>
-                            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                    {_renderDealerDetailsBox()}
-                                </Col>
-                                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                    <UserReceivedReview data={profile} />
-                                </Col>
-                            </Row>
-                        </TabPane>
                     </Tabs>
                 </Col>
             </Row>

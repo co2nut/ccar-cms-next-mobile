@@ -129,7 +129,7 @@ const UserCarFreakPosts = (props) => {
                     hasMore={!postLoading && arrayLengthCount(posts) < postTotal}
 
                 >
-                    <UserPosts
+                    <UserPosts 
                         posts={posts}
                         postLikes={postLikes}
                         showAddPostCard={_.get(props.user, ['authenticated']) ? _.get(profile, ['_id']) == _.get(props.user, ['info', 'user', '_id']) : false}

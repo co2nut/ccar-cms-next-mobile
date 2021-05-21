@@ -83,7 +83,7 @@ const ProfileHomePage = (props) => {
                             }}
                             />
                             :
-                            userType == 'dealer' ?
+                            userType == 'dealer' ? 
                             <DealerProfile data={profile} isOwn={isOwn} onChangeCoverPhoto={(url) => {
                                 setProfile({ ...profile, profileCoverPhoto: url })  
                             }} 

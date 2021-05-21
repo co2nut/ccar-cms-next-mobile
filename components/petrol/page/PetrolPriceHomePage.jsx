@@ -334,6 +334,13 @@ const fuelpriceindex = (props) => {
                 <div className="section-version3">
                     <div className="container-version3 padding-x-md padding-y-md" style={{marginTop:'40px'}}>
                         <Row>
+                            <Link href={'/history-price' || '/'}>
+                                <a>
+                                    <img src="https://img.icons8.com/fluent-systems-filled/30/ffcc32/time-machine.png" style={{float:'right'}}/>
+                                </a>
+                            </Link>
+                        </Row>
+                        <Row>
                             <Col span={12}>
                                 <p style={{fontSize:'20px', fontWeight:'bold'}}>Petrol</p>
                             </Col>
@@ -429,13 +436,13 @@ const fuelpriceindex = (props) => {
                             </Col>
                         </Row>
 
-                        <Row>
+                        {/* <Row>
                             <Link href={'/history-price' || '/'}>
                                 <a>
                                     <Button style={{float:'right'}}>History</Button>
                                 </a>
                             </Link>
-                        </Row>
+                        </Row> */}
 
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-import { Button, Col, Divider, Empty, Icon, message, Modal, Row } from 'antd';
+import { Button, Col, Divider, Empty, Icon, message, Modal, Row, Drawer} from 'antd';
 import axios from 'axios';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -29,6 +29,12 @@ const KPPIndex = (props) => {
     const [showBmRevisionModal, setShowBmRevisionModal] = useState(false)
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [bmModalVisible, setBmModalVisible] = useState(false)
+
+    // onClose = () => {
+    //     this.setState({
+    //         visible: false,
+    //     });
+    // };
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -131,22 +137,74 @@ const KPPIndex = (props) => {
         })
         return (
             <React.Fragment>
-                <div className='relative-wrapper fill-parent' style={{ height: '450px' }}>
-                    <img src={`/${banner}`} className='fill-parent absolute-center'></img>
+                <div className='relative-wrapper fill-parent'>
+                    <div className="margin-top-sm">We are using questions sets from real test sheet provided by KPP(Kurikulum Pendidikan Pemandu) which approved by Jabatan Pengangkutan Jalan Malaysia</div>
+
+                    <div className="relative-wrapper thickBorder round-border margin-top-md padding-sm " onClick={(e) => { setShowEnRevisionModal(true) }} style={{width:'95%', backgroundImage: `url('/assets/kpp/1.jpg')`, backgroundSize:'100%', backgroundPosition:'center' }}>
+                        <div>
+                            <p style={{marginBottom:'0px', color:'#ffffff', fontWeight:'bold'}}>Revision (EN)</p>
+                            <p style={{marginBottom:'5px', color:'#ffffff'}}>Come with questions and answers to help you study effectively.</p>
+                        </div>
+                        <span className="flex-items-align-center" style={{position:'absolute', top:0, bottom:0, right:'-15px', margin:'auto'}}>
+                            <Icon type="right-circle" theme="filled" style={{color:'#ffcc32', fontSize:'30px', backgroundColor:'#ffffff', borderRadius:'16px'}} />
+                            {/* <Icon type="right-circle" theme="twoTone" /> */}
+                        </span>
+                    </div>
+
+                    <div className="relative-wrapper thickBorder round-border margin-top-md padding-sm" onClick={(e) => { setShowBmRevisionModal(true) }} style={{width:'95%', backgroundImage: `url('/assets/kpp/2.jpg')`, backgroundSize:'100%', backgroundPosition:'center'}}>
+                        <div>
+                            <p style={{marginBottom:'0px', color:'#ffffff', fontWeight:'bold'}}>Ulang Kaji (BM)</p>
+                            <p style={{marginBottom:'5px', color:'#ffffff'}}>Lengkap dengan soalan dan jawapan untuk membantu anda belajar dengan lebih efektif.</p>
+                        </div>
+                        <span className="flex-items-align-center" style={{position:'absolute', top:0, bottom:0, right:'-15px', margin:'auto'}}>
+                            <Icon type="right-circle" theme="filled" style={{color:'#ffcc32', fontSize:'30px', backgroundColor:'#ffffff', borderRadius:'16px'}} />
+                        </span>
+                    </div>
+
+                    <div className="relative-wrapper thickBorder round-border margin-top-md padding-sm" onClick={showModal} style={{width:'95%', backgroundImage: `url('/assets/kpp/3.jpg')`, backgroundSize:'100%', backgroundPosition:'center'}}>
+                        <div>
+                            <p style={{marginBottom:'0px', color:'#ffffff', fontWeight:'bold'}}>Simulation Test (EN)</p>
+                            <p style={{marginBottom:'5px', color:'#ffffff'}}>Consists of 50 random questions with 4 categories. Duration is 45 minutes.</p>
+                        </div>
+                        <span className="flex-items-align-center" style={{position:'absolute', top:0, bottom:0, right:'-15px', margin:'auto'}}>
+                            <Icon type="right-circle" theme="filled" style={{color:'#ffcc32', fontSize:'30px', backgroundColor:'#ffffff', borderRadius:'16px'}} />
+                        </span>
+                    </div>
+
+                    <div className="relative-wrapper thickBorder round-border margin-top-md padding-sm" onClick={(e) => {setBmModalVisible(true)}} style={{width:'95%', backgroundImage: `url('/assets/kpp/4.jpg')`, backgroundSize:'100%', backgroundPosition:'center'}}>
+                        <div>
+                            <p style={{marginBottom:'0px', color:'#ffffff', fontWeight:'bold'}}>Ujian Simulasi (BM)</p>
+                            <p style={{marginBottom:'5px', color:'#ffffff'}}>Mengandungi 50 soalan dengan 4 jenis kategori. Masa yang diberikan adalah 45 minit.</p>
+                        </div>
+                        <span className="flex-items-align-center" style={{position:'absolute', top:0, bottom:0, right:'-15px', margin:'auto'}}>
+                            <Icon type="right-circle" theme="filled" style={{color:'#ffcc32', fontSize:'30px', backgroundColor:'#ffffff', borderRadius:'16px'}} />
+                        </span>
+                    </div>
+
+                <Link href="/kpp/sistem-kejara">
+                    <a>
+                    <div className="relative-wrapper thickBorder round-border margin-top-md padding-sm" style={{width:'95%', backgroundImage: `url('/assets/kpp/5.jpg')`, backgroundSize:'100%', backgroundPosition:'center'}}>
+                        <div>
+                            <p style={{marginBottom:'0px', color:'#ffffff', fontWeight:'bold'}}>Sistem KEJARA</p>
+                            <p style={{marginBottom:'5px', color:'#ffffff'}}>An explanation of merit-demerit system to the drivers according to their wrongdoings.</p>
+                        </div>
+                        <span className="flex-items-align-center" style={{position:'absolute', top:0, bottom:0, right:'-15px', margin:'auto'}}>
+                            <Icon type="right-circle" theme="filled" style={{color:'#ffcc32', fontSize:'30px', backgroundColor:'#ffffff', borderRadius:'16px'}} />
+                        </span>
+                    </div> 
+                    </a>
+                </Link>
+
+                    {/* <img src={`/${banner}`} className='fill-parent absolute-center'></img> */}
                     {/* <div className='fill-parent absolute-center background-black opacity-60'>
                     </div> */}
-                    <div className='fill-parent absolute-center padding-lg flex-items-align-center'>
-                        <Row type="flex" justify="center" align="middle" gutter={[0, 20]}>
+                    {/* <div className='fill-parent absolute-center padding-lg flex-items-align-center'> */}
+                        {/* <Row type="flex" justify="center" align="middle" gutter={[0, 20]}>
                             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                                 <div className='fill-parent h5 font-weight-bold white text-align-center opacity-100 flex-justify-center flex-items-align-center'>
                                     {_.upperCase(props.handleChange) == 'BM' ? 'Ujian Komputer Lesen Memandu' : 'Driving License Computer Test'}
                                 </div>
                             </Col>
-                            {/* <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                <div className='fill-parent h6 font-weight-bold white text-align-center opacity-100 flex-justify-center flex-items-align-center'>
-                                    Choose Your Language
-                                </div>
-                            </Col> */}
                             <Col xs={0} sm={0} md={24} lg={24} xl={24}>
                                 <div className='fill-parent flex-justify-center flex-items-align-center padding-x-lg'>
                                     <CustomTabs
@@ -166,9 +224,6 @@ const KPPIndex = (props) => {
                                         <p style={{ color: '#ffffff', marginBottom: '2px' }}> Come with questions and answers to help you study effectively </p>
                                         <Button onClick={(e) => { setShowEnRevisionModal(true) }} style={{ marginLeft: '-11px', width: '129px' }} type="primary"> Revision </Button>
                                     </Col>
-                                    {/* <Col span={6}>
-                                    <Button onClick={(e) => {setShowEnRevisionModal(true)}} style={{marginLeft:'-11px', width:'129px'}} type="primary"> Revision </Button>
-                                    </Col> */}
                                 </Row>
                                 <Row style={{ marginBottom: '6px' }}>
                                     <Col span={24} style={{ textAlign: 'center' }}>
@@ -181,22 +236,12 @@ const KPPIndex = (props) => {
                                     <Col span={24} style={{ textAlign: 'center' }}>
                                         <p style={{ color: '#ffffff', marginBottom: '2px' }}> English KPP Test Paper </p>
                                         <Button onClick={showModal} style={{marginLeft:'-11px', width:'129px'}} type="primary"> KPP Test (EN) </Button>
-                                        {/* <Link shallow={false}  href={routePaths.kppEn.to || '/'} as={typeof (routePaths.kppEn.as) == 'function' ? routePaths.kppEn.as() : '/'} >
-                                            <a>
-                                                <Button style={{ marginLeft: '-11px', width: '129px' }} type="primary"> KPP Test (EN) </Button>
-                                            </a>
-                                        </Link> */}
                                     </Col>
                                 </Row>
                                 <Row style={{ marginBottom: '6px' }}>
                                     <Col span={24} style={{ textAlign: 'center' }}>
                                         <p style={{ color: '#ffffff', marginBottom: '2px' }}> Kertas Ujian KPP Bahasa Melayu </p>
                                         <Button onClick={(e) => {setBmModalVisible(true)}} style={{marginLeft:'-12px'}} type="primary"> Ujian Kpp (BM) </Button>
-                                        {/* <Link shallow={false}  href={routePaths.kppBm.to || '/'} as={typeof (routePaths.kppBm.as) == 'function' ? routePaths.kppBm.as() : '/'}  >
-                                            <a>
-                                                <Button style={{ marginLeft: '-12px' }} type="primary"> Ujian Kpp (BM) </Button>
-                                            </a>
-                                        </Link> */}
                                     </Col>
                                 </Row>
                             </Col>
@@ -206,7 +251,7 @@ const KPPIndex = (props) => {
                                     <Button onClick={(e) => { handlePage() }} shape="round" className="padding-x-xl background-yellow border-ccar-yellow black font-weight-bold subtitle1">{tabIndex == 1 || tabIndex == 3 ? 'Mula' : 'Start'}</Button>
                                 </div>
                             </Col>
-                        </Row>
+                        </Row> */}
 
                         <Modal centered title={false} visible={isModalVisible} onOk={handleOk} okText={'Start'} onCancel={handleCancel}>
                             <div>
@@ -225,7 +270,7 @@ const KPPIndex = (props) => {
                                 <p> Masa ujian yang diberikan ialah 45 minit</p>
                             </div>
                         </Modal>
-                    </div>
+                    {/* </div> */}
                 </div>
             </React.Fragment>
         )
@@ -260,150 +305,139 @@ const KPPIndex = (props) => {
         <React.Fragment>
             <LayoutV2>
                 <div className='section-version3' style={{touchAction:'pan-y'}}>
-                    <div className='container-version3 padding-sm'>
+                    <div className='container-version3 padding-md'>
                         <Row type="flex" justify="center" gutter={[10, 0]}>
                             <Col className='margin-bottom-md ' xs={24} sm={24} md={24} lg={18} xl={18}>
                                 {_renderBanner()}
                             </Col>
-                            <Col xs={{ span: 24, offsetTop: '10px' }} sm={{ span: 24, offsetTop: '10px' }} md={{ span: 24, offsetTop: '0px' }} lg={{ span: 6, offsetTop: '0px' }} xl={{ span: 6, offsetTop: '0px' }}>
-                                {_renderQuestion(questions[0])}
-                                <div className='margin-top-md relative-wrapper' style={{ height: '160px' }}>
-                                    <img src={`/${ads}`} className='fill-parent absolute-center'></img>
-                                </div>
-                            </Col>
                         </Row>
                     </div>
                 </div>
-                <Modal
+
+                <Drawer
+                    className="kpp"
                     visible={showEnRevisionModal}
                     centered
-                    maskClosable
                     footer={null}
-                    closable={false}
-                    maskStyle={{
-                        backdropFilter: 'blur(4px)'
-                    }}
-                    onCancel={(e) => { setShowEnRevisionModal(false) }}
+                    closable={true}
+                    onClose={(e) => { setShowEnRevisionModal(false) }}
+                    width = {'100%'}
                 >
-                    <div className='padding-xs'>
+                <div className='padding-md'>
                         <Row type="flex" align="middle" gutter={[10, 20]}>
                             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                                 <div className='flex-justify-center flex-items-align-center subtitle1 font-weight-bold black'>
-                                    TOPIC
+                                    Revision
                                 </div>
                             </Col>
                             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
 
-                                <div className='flex-justify-center flex-items-align-center subtitle1 black'>
+                                <div className='flex-justify-center flex-items-align-center black'>
                                     We are using question sets from real test sheet provided by KPP (Kurikulum Pendidikan Pemandu) which approved by Jabatan Pengangkutan Jalan Malaysia.
                                 </div>
                             </Col>
 
-                            <Col xs={0} sm={0} md={24} lg={24} xl={24}>
-                                <div className='flex-justify-space-around flex-items-align-center padding-top-md'>
-                                    <Link shallow={false}  href={routePaths.kppRevision.to || '/'} as={typeof (routePaths.kppRevision.as) == 'function' ? routePaths.kppRevision.as({group : 0, language : 'en'}) : '/'} >
-                                        <a>
-                                            <Button className='border-ccar-yellow background-ccar-yellow white font-weight-bold'>Section A</Button>
-                                        </a>
-                                    </Link>
-                                    <Link shallow={false}   href={routePaths.kppRevision.to || '/'} as={typeof (routePaths.kppRevision.as) == 'function' ? routePaths.kppRevision.as({group : 1, language : 'en'}) : '/'}>
-                                        <a>
-                                            <Button className='border-ccar-yellow background-ccar-yellow white font-weight-bold'>Section B</Button>
-                                        </a>
-                                    </Link>
-                                    <Link shallow={false}   href={routePaths.kppRevision.to || '/'} as={typeof (routePaths.kppRevision.as) == 'function' ? routePaths.kppRevision.as({group : 2, language : 'en'}) : '/'} >
-                                        <a>
-                                            <Button className='border-ccar-yellow background-ccar-yellow white font-weight-bold'>Section C</Button>
-                                        </a>
-                                    </Link>
-                                </div>
-                            </Col>
                             <Col xs={24} sm={24} md={0} lg={0} xl={0}>
                                 <Link shallow={false}  href={routePaths.kppRevision.to || '/'} as={typeof (routePaths.kppRevision.as) == 'function' ? routePaths.kppRevision.as({group : 0, language : 'en'}) : '/'} >
-                                    <div className='flex-justify-space-around flex-items-align-center padding-top-md'>
-                                        <Button className='border-ccar-yellow background-ccar-yellow white font-weight-bold' >Section A</Button>
+                                    <div>
+                                        <span style={{display:'inline-block'}}>
+                                            Section A
+                                        </span>
+                                        <span style={{display:'inline-block', float:'right'}} className="flex-items-align-center">
+                                            <Icon type="right" />
+                                        </span>
                                     </div>
                                 </Link>
+                                <Divider style={{marginTop:10, marginBottom:10, marginLeft:0, marginRight:0}}/>
                                 <Link shallow={false}   href={routePaths.kppRevision.to || '/'} as={typeof (routePaths.kppRevision.as) == 'function' ? routePaths.kppRevision.as({group : 1, language : 'en'}) : '/'} >
-                                    <div className='flex-justify-space-around flex-items-align-center padding-top-md'>
-                                        <Button className='border-ccar-yellow background-ccar-yellow white font-weight-bold' >Section B</Button>
+                                    <div>
+                                        <span style={{display:'inline-block'}}>
+                                            Section B
+                                        </span>
+                                        <span style={{display:'inline-block', float:'right'}} className="flex-items-align-center">
+                                            <Icon type="right"/>
+                                        </span>
                                     </div>
                                 </Link>
+                                <Divider style={{marginTop:10, marginBottom:10, marginLeft:0, marginRight:0}}/>
                                 <Link shallow={false}   href={routePaths.kppRevision.to || '/'} as={typeof (routePaths.kppRevision.as) == 'function' ? routePaths.kppRevision.as({group : 2, language : 'en'}) : '/'} >
-                                    <div className='flex-justify-space-around flex-items-align-center padding-top-md'>
-                                        <Button className='border-ccar-yellow background-ccar-yellow white font-weight-bold'>Section C</Button>
+                                    <div>
+                                        <span style={{display:'inline-block'}}>
+                                            Section C
+                                        </span>
+                                        <span style={{display:'inline-block', float:'right'}} className="flex-items-align-center">
+                                            <Icon type="right"/>
+                                        </span>
                                     </div>
                                 </Link>
+                                <Divider style={{marginTop:10, marginBottom:10, marginLeft:0, marginRight:0}}/>
                             </Col>
 
                         </Row>
                     </div>
-                </Modal>
-                <Modal
+                </Drawer>
+
+                <Drawer
+                    className="kpp"
                     visible={showBmRevisionModal}
                     centered
-                    maskClosable
                     footer={null}
-                    closable={false}
-                    maskStyle={{
-                        backdropFilter: 'blur(4px)'
-                    }}
-                    onCancel={(e) => { setShowBmRevisionModal(false) }}
+                    closable={true}
+                    onClose={(e) => { setShowBmRevisionModal(false) }}
+                    width = {'100%'}
                 >
-                    <div className='padding-xs'>
+                <div className='padding-md'>
                         <Row type="flex" align="middle" gutter={[10, 20]}>
                             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                                 <div className='flex-justify-center flex-items-align-center subtitle1 font-weight-bold black'>
-                                    TOPIK
+                                    Ulang Kaji
                                 </div>
                             </Col>
                             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
 
-                                <div className='flex-justify-center flex-items-align-center subtitle1 black'>
+                                <div className='flex-justify-center flex-items-align-center black'>
                                     Kami menggunakan set soalan ujian sebenar KPP (Kurikulum Pendidikan Pemandu) yang diluluskan oleh Jabatan Pengangkutan Jalan Malaysia.
                                 </div>
                             </Col>
 
-                            <Col xs={0} sm={0} md={24} lg={24} xl={24}>
-                                <div className='flex-justify-space-around flex-items-align-center padding-top-md flex-wrap'>
+                            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                                     <Link shallow={false}   href={routePaths.kppRevision.to || '/'} as={typeof (routePaths.kppRevision.as) == 'function' ? routePaths.kppRevision.as({group : 0, language : 'bm'}) : '/'} >
-                                        <a>
-                                            <Button className='border-ccar-yellow background-ccar-yellow white font-weight-bold' >Bahagian A</Button>
-                                        </a>
+                                    <div>
+                                        <span style={{display:'inline-block'}}>
+                                            Bahagian A
+                                        </span>
+                                        <span style={{display:'inline-block', float:'right'}} className="flex-items-align-center">
+                                            <Icon type="right" />
+                                        </span>
+                                    </div>
                                     </Link>
+                                    <Divider style={{marginTop:10, marginBottom:10, marginLeft:0, marginRight:0}}/>
                                     <Link shallow={false}  href={routePaths.kppRevision.to || '/'} as={typeof (routePaths.kppRevision.as) == 'function' ? routePaths.kppRevision.as({group : 1, language : 'bm'}) : '/'} >
-                                        <a>
-                                            <Button className='border-ccar-yellow background-ccar-yellow white font-weight-bold' >Bahagian B</Button>
-                                        </a>
+                                    <div>
+                                        <span style={{display:'inline-block'}}>
+                                            Bahagian B
+                                        </span>
+                                        <span style={{display:'inline-block', float:'right'}} className="flex-items-align-center">
+                                            <Icon type="right" />
+                                        </span>
+                                    </div>
                                     </Link>
+                                    <Divider style={{marginTop:10, marginBottom:10, marginLeft:0, marginRight:0}}/>
                                     <Link shallow={false}  href={routePaths.kppRevision.to || '/'} as={typeof (routePaths.kppRevision.as) == 'function' ? routePaths.kppRevision.as({group : 2, language : 'bm'}) : '/'} >
-                                        <a>
-                                            <Button className='border-ccar-yellow background-ccar-yellow white font-weight-bold' >Bahagian C</Button>
-                                        </a>
+                                    <div>
+                                        <span style={{display:'inline-block'}}>
+                                            Bahagian C
+                                        </span>
+                                        <span style={{display:'inline-block', float:'right'}} className="flex-items-align-center">
+                                            <Icon type="right" />
+                                        </span>
+                                    </div>
                                     </Link>
-                                </div>
+                                    <Divider style={{marginTop:10, marginBottom:10, marginLeft:0, marginRight:0}}/>
                             </Col>
-                            <Col xs={24} sm={24} md={0} lg={0} xl={0}>
-                                <Link shallow={false}  href={routePaths.kppRevision.to || '/'} as={typeof (routePaths.kppRevision.as) == 'function' ? routePaths.kppRevision.as({group : 0, language : 'bm'}) : '/'} >
-                                    <div className='flex-justify-space-around flex-items-align-center padding-top-md'>
-                                        <Button className='border-ccar-yellow background-ccar-yellow white font-weight-bold' >Bahagian A</Button>
-                                    </div>
-                                </Link>
-                                <Link shallow={false}  href={routePaths.kppRevision.to || '/'} as={typeof (routePaths.kppRevision.as) == 'function' ? routePaths.kppRevision.as({group : 1, language : 'bm'}) : '/'} >
-                                    <div className='flex-justify-space-around flex-items-align-center padding-top-md'>
-                                        <Button className='border-ccar-yellow background-ccar-yellow white font-weight-bold' >Bahagian B</Button>
-                                    </div>
-                                </Link>
-                                <Link shallow={false}  href={routePaths.kppRevision.to || '/'} as={typeof (routePaths.kppRevision.as) == 'function' ? routePaths.kppRevision.as({group : 2, language : 'bm'}) : '/'} >
-                                    <div className='flex-justify-space-around flex-items-align-center padding-top-md'>
-                                        <Button className='border-ccar-yellow background-ccar-yellow white font-weight-bold'>Bahagian C</Button>
-                                    </div>
-                                </Link>
-                            </Col>
-
                         </Row>
                     </div>
-                </Modal>
+                </Drawer>
             </LayoutV2>
         </React.Fragment>
     )

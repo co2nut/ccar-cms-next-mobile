@@ -65,12 +65,12 @@ const CommunityBox = (props) => {
     return (
 
         <div>
-            <div style={{ height: '30px' }} className="background-ccar-yellow round-border-top flex-items-align-center padding-lg">
-                <div className="headline   white font-weight-bold text-overflow-break">
+            <div style={{ height: '30px', backgroundColor:'#D3D1D1' }} className="flex-items-align-center padding-lg round-border-top">
+                <div className="headline black font-weight-bold text-overflow-break">
                     Community
                     </div>
             </div>
-            <div style={{ backgroundColor: '#FFFFFF' }} className="round-border-bottom flex-items-align-center padding-md">
+            <div className="flex-items-align-center padding-md thickBorder round-border-bottom">
                 {_renderComunityDetails()}
             </div>
         </div>

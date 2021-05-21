@@ -231,7 +231,7 @@ const ProfileLayout = (props) => {
             <LayoutV2>
                 <div className="section-version3" style={{marginTop:'50px'}}>
                     <div className="container-version3 padding-sm" style={{touchAction:'pan-y'}}>
-                        <Breadcrumb>
+                        {/* <Breadcrumb>
                             <Breadcrumb.Item>
                                 <Link shallow={false} href="/">
                                     <a>
@@ -245,12 +245,11 @@ const ProfileLayout = (props) => {
                                         Profile
                                     </a>
                                 </Link>
-                                {/* <a onClick={(e) => { setStep('dashboard') }}>Profile</a> */}
                             </Breadcrumb.Item>
                             {
                                 navItems
                             }
-                        </Breadcrumb>
+                        </Breadcrumb> */}
 
                         <Row gutter={[10, 10]} type="flex" justify="center" align="top" >
                             <Col className="gutter-row" xs={24} sm={24} md={24} lg={6} xl={6} >
@@ -288,7 +287,7 @@ const ProfileLayout = (props) => {
                                         </div>
                                     </Col>
 
-                                    <Divider style={{marginTop:'5px', marginBottom:'5px'}}/>
+                                    {/* <Divider style={{marginTop:'5px', marginBottom:'5px'}}/> */}
 
                                     {/* Profile Menu */}
                                     <Col span={24}>

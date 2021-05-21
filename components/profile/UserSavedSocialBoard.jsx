@@ -151,23 +151,21 @@ const UserSocialBoard = (props) => {
                 >
                     {
                         _.isArray(posts) && !_.isEmpty(posts) ?
-                            <Row gutter={[10, 20]} className="padding-md">
+                            <Row gutter={[10, 20]} className="padding-x-md">
                                 {
                                     _.map(posts, function (post) {
-                                        return <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                                            <SocialBoardCard data={post} redirectPost
+                                        return <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                            <SocialBoardCard data={post} redirectPost 
                                                 onEditClick={(post) => {
                                                     setWriteModalVisible(true);
                                                     setSelectedPost(post);
                                                     setEditMode('edit');
                                                 }}
-
                                                 onRemoveClick={(post) => {
                                                     confirmDelete(post)
                                                 }}
                                             />
                                         </Col>
-
                                     })
                                 }
                             </Row>

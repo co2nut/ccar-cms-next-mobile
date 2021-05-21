@@ -53,7 +53,7 @@ const SocialBoardCard = (props) => {
     return (
         notEmptyLength(objectRemoveEmptyValue(post)) ?
             <React.Fragment>
-                <div className={` thin-border box-shadow-heavy round-border background-white flex-items-align-start flex-justify-start padding-md cursor-pointer ${props.className ? props.className : ''}`} style={{ ...props.style, height: height }} onClick={(e) => {
+                <div className={`background-white flex-items-align-start flex-justify-start cursor-pointer ${props.className ? props.className : ''}`} style={{ ...props.style, height: height }} onClick={(e) => {
                     redirectToPost(post)
                 }}>
                     <span className='d-inline-block margin-right-md' >
@@ -61,9 +61,9 @@ const SocialBoardCard = (props) => {
                     </span>
                     <span className='d-inline-block width-70' >
                         <div className="width-100">
-                            <ParseTag data={_.get(post, ['title']) || ''} className="subtitle1 font-weight-bold text-truncate" />
+                            <ParseTag data={_.get(post, ['title']) || ''} className="font-weight-bold text-truncate" />
                         </div>
-                        <div className="flex-justify-start flex-items-align-center headline text-truncate">
+                        <div className="flex-justify-start flex-items-align-center text-truncate">
                             <span className="black" >
                                 {getUserName(_.get(post, ['userId']), 'freakId')}
                             </span>
@@ -88,20 +88,20 @@ const SocialBoardCard = (props) => {
                         </div>
                     </span>
                 </div>
-                <span className='d-inline-block' style={{ position: 'absolute', top: 30, right: 20 }} >
+                {/* <span className='d-inline-block' style={{ position: 'absolute', top: 30, right: 20 }} >
                     <PostMenu post={post}
                         onEditPostClick={() => {
                             if (props.onEditClick) {
                                 props.onEditClick(post)
                             }
-                        }}
+                        }} 
                         onRemovePostClick={() => {
                             if (props.onRemoveClick) {
                                 props.onRemoveClick(post);
                             }
                         }}
                     />
-                </span>
+                </span> */}
             </React.Fragment>
             :
             null
