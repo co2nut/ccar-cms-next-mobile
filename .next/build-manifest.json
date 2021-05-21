@@ -27,10 +27,6 @@
     "/kpp": [
       "static/runtime/webpack.js",
       "static/runtime/main.js"
-    ],
-    "/petrolprice": [
-      "static/runtime/webpack.js",
-      "static/runtime/main.js"
     ]
   }
 }

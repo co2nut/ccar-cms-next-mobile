@@ -100,33 +100,31 @@ const AuthorListScroll = (props) => {
                         </Col>
                         :
                         null
-
                 }
-                <Scrollbars autoHide autoHeight>
-                    <div className="width-100 padding-x-md flex-items-align-center">
-                        {
-                            _.isArray(authors) && notEmptyLength(authors) ?
-                                _.map(authors, function (author) {
-                                    return (
+                <Scrollbars autoHide autoHeight autoHeightMax={(_.get(window , `innerHeight`) || 500) * 0.7}>
+                    {
+                        _.isArray(authors) && notEmptyLength(authors) ?
+                            _.map(authors, function (author) {
+                                return (
+                                    <div className="width-100">
                                         <span style={{ textAlign: 'center' }} className={`relative-wrapper d-inline-block cursor-pointer margin-right-xl`} onClick={(e) => {
                                             handleOnClick(author)
                                         }}>
                                             <UserAvatar
-                                                showTooltip
                                                 size={isValidNumber(props.size) ? props.size : 80}
                                                 showName={!props.showName || props.showName == false ? false : true}
                                                 textClassName={`text-truncate margin-top-md ${props.textClassName ? props.textClassName : ''} ${!props.selectedAuthor || props.selectedAuthor._id != author._id ? '' : 'ccar-yellow underline'}`}
                                                 avatarClassName={`${props.avatarClassName ? props.avatarClassName : ''} `}
                                                 data={{ avatar: author.avatar || author.thumbnailUrl, name: author.name }} />
                                         </span>
-                                    )
-                                })
-                                :
-                                <div>
-                                    <Empty></Empty>
-                                </div>
-                        }
-                    </div>
+                                    </div>
+                                )
+                            })
+                            :
+                            <div>
+                                <Empty></Empty>
+                            </div>
+                    }
                 </Scrollbars>
             </div>
         </React.Fragment>

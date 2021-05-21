@@ -7,7 +7,7 @@ import queryString from 'query-string';
 import React from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
-import { formatNumber, isValidNumber, notEmptyLength, numberToFixed, objectRemoveEmptyValue, queryStringifyNestedObject } from '../../../common-function';
+import { convertRangeFormatToText, formatNumber, isValidNumber, notEmptyLength, numberToFixed, objectRemoveEmptyValue, queryStringifyNestedObject } from '../../../common-function';
 import client from '../../../feathers';
 import { carBrandsList } from '../../../params/carBrandsList';
 import { bodyTypeOri } from '../../../params/bodyTypeOri';
@@ -41,7 +41,7 @@ const PAGESIZE = 12
 
 const ARRAY_SEPERATOR = '|'
 
-const priceRangeOptions = [[30000, '<'], [30000, 50000], [50000, 70000], [70000, 90000], [90000, 110000], [110000, '>='],
+const priceRangeOptions = [[50000, '<'], [50000, 100000], [100000, 200000], [200000, 400000], [400000, 600000], [600000, 800000], [800000, 1000000], [1000000, '>='],
 ];
 
 const monthlyPaymentOptions = [[0, 500], [500, 1000], [1000, 1500], [1500, 2000], [2000, 2500], [2500, 3000], [3000, 3500], [3500, '>='],
@@ -102,8 +102,6 @@ class Filter extends React.Component {
     UNSAFE_componentWillMount() {
 
         this.props.updateActiveMenu('3');
-        this.getDataFromUrl();
-        this.updateFilterGroupFromUrl();
         this.props.loading(true)
         axios.get(`${client.io.io.uri}getPriceRangeSearchCarBrands`, {
             params: {
@@ -116,6 +114,11 @@ class Filter extends React.Component {
             this.props.loading(false);
             message.error(err.message)
         });
+    }
+
+    componentDidMount(){
+        this.getDataFromUrl();
+        this.updateFilterGroupFromUrl();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -155,11 +158,14 @@ class Filter extends React.Component {
         }
 
         if (!_.isEqual(prevState.filterGroup, this.state.filterGroup)) {
+            console.log('here');
             this.pushParameterToUrl();
         }
 
         if (!_.isEqual(prevProps.router.query, this.props.router.query)) {
+            console.log(this.props.router.query);
             this.getDataFromUrl();
+            this.updateFilterGroupFromUrl();
         }
     }
 
@@ -273,6 +279,7 @@ class Filter extends React.Component {
 
         this.props.loading(true)
 
+        console.log(filterGroup);
         axios.get(`${client.io.io.uri}priceRangeSearchNew`,
             {
                 params: {
@@ -284,6 +291,7 @@ class Filter extends React.Component {
                 }
             }
         ).then((res) => {
+            console.log(res);
             this.props.loading(false);
             if (notEmptyLength(res.data.data)) {
                 this.setState({
@@ -432,7 +440,6 @@ class Filter extends React.Component {
                     filterGroup.engineCapacityRange = convertRangeFormatToText(filterGroup.engineCapacityRange, 'engineCapacity');
                 }
                 filterGroup = Object.entries(filterGroup) || [];
-                console.log(filterGroup)
                 return (
                     <Scrollbars autoHide autoHeight>
                         <div className=" flex-items-align-center flex-justify-start">
