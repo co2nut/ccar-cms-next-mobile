@@ -89,7 +89,6 @@ const ProfileLayout = (props) => {
     const [navItems, setNavItems] = useState()
 
     useEffect(() => {
-
         let path = props.router.asPath.split('/')[4];
         setStep(path);
     }, [props.router.asPath])

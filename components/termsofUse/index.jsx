@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Tabs } from 'antd';
 import LayoutV2 from '../general/LayoutV2';
-
 import PrivacyPolicy from './privacyPolicy'
 import TermsConditionsAdvertisers from './termsConditionsAdvertisers'
 import TermsConditionsOfUse from './termsConditionofUse'
@@ -28,8 +27,10 @@ const TermOfUseIndex = () => {
 
     return (
         <LayoutV2>
-            <div className="section background-white padding-x-lg">
-                <Tabs activeKey={index} onChange={callback}>
+            <React.Fragment>
+            <div className="section-version3">
+                <div className="section padding-sm margin-top-xl">
+                    <Tabs activeKey={index} onChange={callback}>  
                     <TabPane tab="Privacy Policy (EN)" key="1">
                         <PrivacyPolicy setIndexProps={setIndexProps}/>
                     </TabPane>
@@ -49,7 +50,9 @@ const TermOfUseIndex = () => {
                         <TermsConditionsAdvertisers setIndexProps={setIndexProps}/>
                     </TabPane> */}
                 </Tabs>
+                </div>
             </div>
+            </React.Fragment>
          </LayoutV2>
       );
 }

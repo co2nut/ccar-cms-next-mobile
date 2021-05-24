@@ -603,6 +603,11 @@
     border: solid #dedede 2px;
 }
 
+.thickBorderTop {
+    border-radius: 50px 50px 0px 0px;
+    border-width: thick;
+}
+
 .thin-border {
     border-width: thin;
     border: solid #dedede 1px;

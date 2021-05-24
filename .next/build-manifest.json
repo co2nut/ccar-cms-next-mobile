@@ -20,11 +20,11 @@
     "/_polyfills": [
       "static/runtime/polyfills.js"
     ],
-    "/history-price": [
+    "/kpp": [
       "static/runtime/webpack.js",
       "static/runtime/main.js"
     ],
-    "/kpp": [
+    "/kpp/sistem-kejara": [
       "static/runtime/webpack.js",
       "static/runtime/main.js"
     ]

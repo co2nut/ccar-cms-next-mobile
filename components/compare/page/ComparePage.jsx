@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import LayoutV2 from '../../general/LayoutV2';
+import GridProductListCompare from '../../product-list/grid-product-list-1';
 import GridProductList from '../../product-list/grid-product-list';
 import { loading } from '../../../redux/actions/app-actions';
 import { clearCompareProductIds, filteredCompareData, removeCompareProductId, updateActiveIdProductList } from '../../../redux/actions/productsList-actions';
@@ -255,6 +256,39 @@ const CompareIndex = (props) => {
                     </Row>
                 </div>
             </Tablet>
+
+            <Mobile>
+                <div className="section margin-top-xl padding-x-sm" style={{ touchAction: 'pan-y' }}> 
+                    <Card title="Summary" className="card-padding-0 ">
+                        <Row gutter={[10, 10]} style={{ margin: '0px 0px' }}>
+                            <GridProductListCompare data={notEmptyLength(productList) ? productList : []} xs={22} sm={22} md={8} lg={6} xl={6} style={{padding:'20px'}}
+                                topRight={(v) => {
+                                    return (
+                                        <span className='d-inline-block background-grey-opacity-60' >
+                                            <Icon type="close" style={{ cursor: 'pointer', fontSize: '20px' }} onClick={() => { props.removeCompareProductId(v._id) }} className='font-weight-bold' />
+                                        </span>
+                                        )
+                                    }}
+                                />
+                                {props.productsList.compareIds.length < props.productsList.compareLimit ?
+                                    <Col key="add new" className="gutter-row col-centered" xs={24} sm={24} md={5} lg={5} xl={5}>
+                                        <Link shallow={false} href={routePaths.carsOnSale.to || '/'} as={typeof (routePaths.carsOnSale.as) == 'function' ? routePaths.carsOnSale.as() : '/'} >
+                                            <a>
+                                                <Button className="w-100" style={{ height: '10em' }}>
+                                                    <CarOutlined style={{ fontSize: 40 }} />
+                                                        <br></br>
+                                                        +Add a car to compare
+                                                </Button>
+                                            </a>
+                                        </Link>
+                                    </Col>
+                                        : null
+                                }
+                        </Row>
+                        <CarspecsCompareTable data={notEmptyLength(carspecIds) ? carspecIds : []} limit={props.productsList.compareLimit} findById />
+                    </Card>
+                </div>
+                </Mobile>
         </LayoutV2>
     );
 }

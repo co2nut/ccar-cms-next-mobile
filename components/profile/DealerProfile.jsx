@@ -182,7 +182,7 @@ const DealerProfile = (props) => {
                             <ProfileDetailsBox data={profile} showProfileActions={props.isOwn} type="dealer"
                                 onChangeCoverPhoto={(res) => {
                                 if (props.onChangeCoverPhoto) {
-                                    props.onChangeCoverPhoto(res); 
+                                    props.onChangeCoverPhoto(res);  
                                 }
                                 }
                             }

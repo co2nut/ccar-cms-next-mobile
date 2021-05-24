@@ -476,7 +476,7 @@ const GridProductList = (props) => {
                                                             <Row type="flex" justify="start" align="middle" className='w-100' gutter={[2.5, 0]}>
                                                                 <Col xs={4} sm={4} md={4} lg={4} xl={4}><WhatsAppButton1 mobileNumber={v ? v : null} /></Col> 
                                                                 <Col xs={4} sm={4} md={4} lg={4} xl={4}><ContactList1 companys={v.companys ? v.companys : null} contactPerson={notEmptyLength(v.createdBy) ? v.createdBy : null} /></Col>
-                                                                <Col xs={4} sm={4} md={4} lg={4} xl={4}><AddCompareProductButton1 data={v} /></Col>
+                                                                <Col xs={4} sm={4} md={4} lg={4} xl={4}><AddCompareProductButton1 data={v} /></Col> 
                                                                 <Col xs={4} sm={4} md={4} lg={4} xl={4}>
                                                                     <Car360ViewButton id={v.xmlUrl ? v._id : null}>
                                                                         {/* <Tooltip title="360&deg; View"> */}
