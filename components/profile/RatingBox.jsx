@@ -35,9 +35,9 @@ const RatingBox = (props) => {
                             renderRating={(rating) => {
                                 return (
                                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                        <div className="h5 font-weight-bold text-align-center">
+                                        <div style={{fontSize:'18px'}} className="font-weight-bold text-align-center">
                                             {rating}
-                                            <div className="headline   font-weight-normal">Rating</div>
+                                            <div className="headline font-weight-normal">Rating</div>
                                         </div>
                                     </Col>
                                 )
@@ -47,9 +47,9 @@ const RatingBox = (props) => {
                                     return (
                                         _.get(profile, ['totalRecommended']) > 0 ?
                                             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                                <div className="h5 font-weight-bold text-align-center">
+                                                <div style={{fontSize:'18px'}} className="font-weight-bold text-align-center">
                                                     {(parseFloat(recommended) || 0) * 100}%
-                                                    <div className="headline   font-weight-normal">Recommended</div>
+                                                    <div className="headline font-weight-normal">Recommended</div>
                                                 </div>
                                             </Col>
                                             :
@@ -77,9 +77,9 @@ const RatingBox = (props) => {
                             startFrom={1}
                             data={sortByDesc(_.get(profile, ['ratingCategory']), 'label') || []}
                             total={_.get(profile, ['totalRating']) || 0}
-                            className="fill-parent" />
+                            className="fill-parent" /> 
                     </Col>
-                    <Col xs={0} sm={0} md={24} lg={24} xl={24}>
+                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                         <div className="headline   text-align-center text-overflow-break">
                             Based on {_.get(profile, ['totalRating']) || 0} customer reviews
                             </div>
@@ -94,12 +94,12 @@ const RatingBox = (props) => {
 
     return (
         <div>
-            <div style={{ height: '30px' }} className="background-ccar-yellow round-border-top flex-items-align-center padding-lg">
-                <div className="headline   white font-weight-bold text-overflow-break">
+            <div style={{ height: '30px', backgroundColor:'#D3D1D1' }} className="flex-items-align-center padding-lg round-border-top">
+                <div className="headline black font-weight-bold text-overflow-break">
                     Seller Rating
                 </div>
             </div>
-            <div style={{ backgroundColor: '#FFFFFF' }} className="round-border-bottom flex-items-align-center padding-md">
+            <div className="flex-items-align-center padding-md thickBorder round-border-bottom">
                 {_renderRatingDetails()}
             </div>
         </div>

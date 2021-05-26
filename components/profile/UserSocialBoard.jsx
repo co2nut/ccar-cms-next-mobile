@@ -1,4 +1,4 @@
-import { Button, Col, Empty, Form, Icon, message, Row } from 'antd';
+import { Button, Col, Empty, Form, Icon, message, Row, Affix } from 'antd';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
@@ -23,11 +23,10 @@ const UserSocialBoard = (props) => {
     const [postTotal, setPostTotal] = useState(0);
     const [postPage, setPostPage] = useState(1);
     const [postLoading, setPostLoading] = useState(false);
-
-
     const [editMode, setEditMode] = useState()
     const [writeModalVisible, setWriteModalVisible] = useState(false)
     const [selectedPost, setSelectedPost] = useState({})
+    const [top, setTop] = useState(650)
 
     useEffect(() => {
         if (_.isPlainObject(props.data) && !_.isEmpty(props.data)) {
@@ -140,17 +139,28 @@ const UserSocialBoard = (props) => {
         <Row className={`${props.className || ''}`}>
             {
                 _.get(props.user, ['info', 'user', '_id']) && _.get(props.user, ['info', 'user', '_id']) == _.get(profile, ['_id']) ?
-                    <Col xs={24} sm={24} md={24} lg={24} xl={24} className="margin-bottom-md">
-                        <div className="flex-justify-end flex-items-align-center">
-                            <span className='d-inline-block margin-right-md' >
-                                <Button size="medium" className="border-ccar-yellow" onClick={(e) => {
-                                    setEditMode(null);
-                                    setWriteModalVisible(true);
-                                    setSelectedPost(null);
-                                }}  ><Icon type="edit" /> Write a Post</Button>
-                            </span>
+                    <Affix offsetTop={top}>
+                        <div className="flex-justify-end flex-items-align-center margin-right-sm">
+                            <div className="border-ccar-yellow" onClick={(e) => {
+                                setEditMode(null);
+                                setWriteModalVisible(true);
+                                setSelectedPost(null);
+                            }}  >
+                                <img src="https://img.icons8.com/ios-filled/60/FFCC32/plus.png" />
+                            </div>
                         </div>
-                    </Col>
+                    </Affix>
+                    // <Col xs={24} sm={24} md={24} lg={24} xl={24} className="margin-bottom-md">
+                    //     <div className="flex-justify-end flex-items-align-center">
+                    //         <span className='d-inline-block margin-right-md' >
+                    //             <Button size="medium" className="border-ccar-yellow" onClick={(e) => {
+                    //                 setEditMode(null);
+                    //                 setWriteModalVisible(true);
+                    //                 setSelectedPost(null);
+                    //             }}  ><Icon type="edit" /> Write a Post</Button>
+                    //         </span>
+                    //     </div>
+                    // </Col>
                     :
                     null
             }
@@ -179,7 +189,7 @@ const UserSocialBoard = (props) => {
 
                                                 onRemoveClick={(post) => {
                                                     confirmDelete(post)
-                                                }}
+                                                }} 
                                             />
                                         </Col>
 

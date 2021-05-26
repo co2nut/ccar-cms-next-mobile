@@ -13,26 +13,31 @@ export const faqTopics = [
         text : 'Our Features',
         value : 'features',
         icon : faqOurFeaturesIcon,
+        path : '/faq/our-features'
     },
     {
         text : 'Buy A Car',
         value : 'buyCar',
         icon : faqBuyCarIcon,
+        path : '/faq/buy-a-car'
     },
     {
         text : 'Sell A Car',
         value : 'sellCar',
         icon : faqSellCarIcon,
+        path : '/faq/sell-a-car'
     },
     {
         text : 'CarFreaks',
         value : 'carFreaks',
         icon : faqCarFreakIcon,
+        path : '/faq/car-freaks'
     },
     {
         text : 'CSTAR',
         value : 'cstar',
         icon : faqCstarIcon,
+        path : '/faq/cstar'
     },
 ]
 

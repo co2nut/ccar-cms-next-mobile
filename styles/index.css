@@ -1981,3 +1981,39 @@ code {
   z-index: 1000;
   cursor: pointer;
 }
+
+th {
+  padding: 8px;
+  text-align: left;
+  background-color: #E6F3F5;
+  color: black;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  font-weight:500;
+}
+
+td{
+  padding: 8px;
+  text-align: left;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  font-weight:500;
+}
+
+.date {
+  background-color: #ffcc32;
+  width: 100px;
+  height: 30px;
+  display: inline-block;
+  position: relative;
+}
+
+.history-fuel {
+      width: 0;
+      height: 0;
+      border-top: 15px solid transparent;
+      border-left: 25px solid #ffcc32;
+      border-bottom: 15px solid transparent;
+      position: absolute;
+}

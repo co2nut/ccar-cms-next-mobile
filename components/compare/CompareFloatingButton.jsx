@@ -108,23 +108,26 @@ const CompareFloatingButton = (props) => {
 
   return (
     <div>
-      {visible === false ?
-        productList.length > 0 ? (
-          <div className="wrap-compare-btn">
-            <Button onClick={() => toggle()} id="compare">
-              <img src="/assets/CarListingIconMobile/car-compare.png" className="w-100" />
-            </Button>
+      {visible === false ? 
+        <div ref={refCompare} className="wrap-compare-btn">
+            <Link shallow={false}  href={routePaths.compare.to || '/'} as={typeof (routePaths.compare.as) == 'function' ? routePaths.compare.as() : '/'} >
+              <a>
+                <Button onClick={() => toggle()} id="compare">
+                  <img src="/assets/CarListingIconMobile/car-compare.png" className="w-100"/>
+                </Button>
+              </a>
+            </Link>
           </div>
-        ) : null
-        :
-        <div className="wrap-compare-btn-circle">
-          <Button onClick={() => toggle()} className="w-100" id="compare">
-            <CloseOutlined />
-          </Button>
-        </div>
+          :
+          null
+        // <div className="wrap-compare-btn-circle">
+        //   <Button onClick={() => toggle()} className="w-100" id="compare">
+        //     <CloseOutlined />
+        //   </Button>
+        // </div>
       }
 
-      {visible === true ? (
+      {/* {visible === true ? (
         <div ref={refCompare}>
           <Card
             title="Compare Car"
@@ -177,7 +180,7 @@ const CompareFloatingButton = (props) => {
           </Card>
         </div>
       ) : null
-      }
+      } */}
     </div >
   );
 }

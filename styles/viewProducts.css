@@ -194,8 +194,9 @@
 }
 
 .wrap-dot-img-mobile {
-    height: 100%;
-    width: 1000px;
+    height: 50px;
+    overflow-y:hidden;
+    overflow-x: scroll;
 }
 
 .wrap-dot-mobile {

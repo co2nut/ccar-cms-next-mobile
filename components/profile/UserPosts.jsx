@@ -1,4 +1,4 @@
-import { Col, Empty, Form, Row } from 'antd';
+import { Col, Empty, Form, Row, Affix, Button } from 'antd';
 import _ from 'lodash';
 import { withRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -25,6 +25,7 @@ const UserPosts = (props) => {
     const [writePostVisible, setWritePostVisible] = useState(false);
     const [postVisible, setPostVisible] = useState(false);
     const [selectedPost, setSelectedPost] = useState({});
+    const [top, setTop] = useState(650);
 
     useEffect(() => {
 
@@ -47,8 +48,20 @@ const UserPosts = (props) => {
 
     return (
         <React.Fragment>
+            {
+                props.showAddPostCard ?
+                    <Affix offsetTop={top}>
+                        <div className="flex-justify-end flex-items-align-center margin-right-sm">
+                            <div onClick={(e) => { setWritePostVisible(true) }}>
+                                <img src="https://img.icons8.com/ios-filled/64/FFCC32/plus.png" />
+                            </div>
+                        </div>
+                    </Affix>
+                        :
+                        null
+            }
             <Row type='flex' gutter={props.gutter ? props.gutter : [10, 10]}>
-                {
+                {/* {
                     props.showAddPostCard ?
                         <Col xs={props.xs ? props.xs : 24} sm={props.sm ? props.sm : 24} md={props.md ? props.md : 12} lg={props.lg ? props.lg : 6} xl={props.xl ? props.xl : 6}>
                             <div className="width-100 background-white relative-wrapper cursor-pointer" style={{ height: defaultHeight, position: 'relative' }} onClick={(e) => { setWritePostVisible(true) }}>
@@ -60,7 +73,7 @@ const UserPosts = (props) => {
                         </Col>
                         :
                         null
-                }
+                } */}
                 {
                     posts.map(function (post, i) {
                         return (

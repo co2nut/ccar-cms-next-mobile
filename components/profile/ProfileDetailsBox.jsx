@@ -474,7 +474,7 @@ const ProfileDetailsBox = (props) => {
                         >
                         {
                             props.type == 'dealer' ?
-                            <div style={{backgroundColor:'#ffffff'}} className="padding-md">
+                            <div style={{backgroundColor:'rgb(14,48,71)'}} className="padding-md">
                                 <div className="relative-wrapper background-black-opacity-40" style={{ height: 150, width: 400, maxWidth: '100%', maxHeight: '20%' }}>
                                     <img src={
                                         _.isArray(_.get(profile, ['companyId', 'bannerUrl'])) && notEmptyLength(_.get(profile, ['companyId', 'bannerUrl'])) ?
@@ -485,38 +485,38 @@ const ProfileDetailsBox = (props) => {
                                 </div>
 
                                 <div>
-                                    <p style={{marginBottom:'0px'}}>Address</p>
-                                    <div className="thickBorder round-border padding-sm">
+                                    <p style={{marginBottom:'0px', color:'#ffffff'}}>Address</p>
+                                    <div className="thickBorder white round-border padding-sm">
                                         {`${_.get(profile, ['companyId', 'address']) || ''}, ${_.get(profile, ['companyId', 'area']) || ''}, ${_.get(profile, ['companyId', 'postCode']) || ''}, ${_.get(profile, ['companyId', 'state']) || ''}`}
                                     </div>
 
-                                    <p style={{marginBottom:'0px', marginTop:'5px'}}>Location</p>
-                                    <div className="thickBorder round-border padding-sm">
+                                    <p style={{marginBottom:'0px', marginTop:'5px', color:'#ffffff'}}>Location</p>
+                                    <div className="thickBorder round-border padding-sm white">
                                         {`${_.get(profile, ['companyId', 'area']) || ''}`}
                                     </div>
 
-                                    <p style={{marginBottom:'0px', marginTop:'5px'}}>Working Hours</p>
-                                    <div className="thickBorder round-border padding-sm">
+                                    <p style={{marginBottom:'0px', marginTop:'5px', color:'#ffffff'}}>Working Hours</p>
+                                    <div className="thickBorder round-border padding-sm white">
                                         {_renderBusinessHour(_.get(profile, ['companyId', 'businessHour']) || [])}
                                     </div>
 
-                                    <p style={{marginBottom:'0px', marginTop:'5px'}}>Mobile No.</p>
-                                    <div className="thickBorder round-border padding-sm">
+                                    <p style={{marginBottom:'0px', marginTop:'5px', color:'#ffffff'}}>Mobile No.</p>
+                                    <div className="thickBorder round-border padding-sm white">
                                         {`${_.get(profile, ['contactNoPrimary']) || ''}`}
                                     </div>
 
-                                    <p style={{marginBottom:'0px', marginTop:'5px'}}>Office No.</p>
-                                    <div className="thickBorder round-border padding-sm">
+                                    <p style={{marginBottom:'0px', marginTop:'5px', color:'#ffffff'}}>Office No.</p>
+                                    <div className="thickBorder round-border padding-sm white">
                                         company no 
                                     </div>
 
-                                    <p style={{marginBottom:'0px', marginTop:'5px'}}>Email</p>
-                                    <div className="thickBorder round-border padding-sm">
+                                    <p style={{marginBottom:'0px', marginTop:'5px', color:'#ffffff'}}>Email</p>
+                                    <div className="thickBorder round-border padding-sm white">
                                         {`${_.get(profile, ['email']) || ''}`}
                                     </div>
 
-                                    <p style={{marginBottom:'0px', marginTop:'5px'}}>Website</p>
-                                    <div className="thickBorder round-border padding-sm">
+                                    <p style={{marginBottom:'0px', marginTop:'5px', color:'#ffffff'}}>Website</p>
+                                    <div className="thickBorder round-border padding-sm white">
                                         {`${_.get(profile, ['companyId', 'website']) || ''}`}
                                     </div>
 

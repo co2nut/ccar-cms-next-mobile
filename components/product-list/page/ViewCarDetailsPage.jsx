@@ -476,7 +476,7 @@ _renderLayout = (v) => {
       <LayoutV2 hideOpenApp>
         
         <div className="section">
-          <div style={{marginTop:'30px', touchAction:'pan-y'}}>
+          <div style={{marginTop:'30px', touchAction:'pan-y', minHeight:'550px'}}>
 
           <Tabs size="small" defaultActiveKey="1" onChange={callback}>
             <TabPane tab="INFO" key="1">
@@ -629,7 +629,7 @@ _renderLayout = (v) => {
                 null}
 
                 <div className="padding-lg relative-wrapper"> 
-                    <SellerBusinessCard data={this.state.productDetails.companys} data1={this.state.productDetails.createdBy} /> 
+                    <SellerBusinessCard data={this.state.productDetails.companys} data1={this.state.productDetails.createdBy} />  
                 </div>
               </div>
               </div>

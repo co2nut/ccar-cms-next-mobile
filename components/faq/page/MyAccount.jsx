@@ -3,24 +3,28 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Link from 'next/link';
 import { withRouter } from 'next/router';
+import LayoutV2 from '../../general/LayoutV2';
 
 const MyAccount = (props) => {
     return (
         <React.Fragment>
-        <div className="section-version3" style={{marginTop:'55px'}}> 
-       <div style={{marginTop:'10px'}}> 
-       <Link>
-            <a className="margin-top-md" href="/faq"><Icon type="left" />Back to FAQ</a>
-       </Link>
-       </div>
-        <h3 style={{textAlign:'center'}} className="font-weight-bold"> My Acccount </h3>
-   <div className="padding-md" id="account-topic-1">
-       <h1 className="font-weight-bold ccar-yellow-1">We welcome you to be part of our big family!</h1>
-       <div className="subtitle1 font-weight-bold">
-           How To Create My CCAR Account?
-       </div>
-       <Divider style={{ margin: '5px 0' }} />
-       <div className="text-overflow-break " style={{ lineHeight: 1.75 }}>
+            <LayoutV2>
+                <div className="section-version3" style={{marginTop:'55px'}}> 
+                <div style={{marginTop:'10px'}}> 
+                    <Link href="/faq">
+                        <a className="margin-top-md" ><Icon type="left" />Back to FAQ</a>
+                    </Link>
+                </div>
+
+                <div style={{textAlign:'center'}} className="font-weight-bold headline"> My Acccount </div>
+                <div className="padding-md" id="account-topic-1">
+                    <div className="ccar-yellow-1 h5 text-align-center padding-x-md" style={{color:'#ffcc32', lineHeight:1.0}}>We welcome you to be part of our big family!</div>
+                    
+                    <div className="subtitle1 font-weight-bold margin-top-md">
+                        How To Create My CCAR Account?
+                    </div>
+                    <Divider style={{ margin: '5px 0' }} />
+                <div className="text-overflow-break " style={{ lineHeight: 1.75 }}>
            <span className="font-weight-bold"> If you are an user, here are the steps to create your own CCAR account:</span>
            <br></br>
            1. Click the “Login” tab at the top right corner of our menu bar in the home page.
@@ -60,6 +64,7 @@ const MyAccount = (props) => {
        </div>
    </div>
    </div>
+   </LayoutV2>
 </React.Fragment>
     );
 }

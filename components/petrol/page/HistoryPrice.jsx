@@ -336,10 +336,45 @@ const HistoryPrice = (props) => {
                             <a><Icon type="left" />Back to Petrol Price</a>
                         </Link>
 
-                        <Card title="Petrol" className="card-padding-0 price " style={{marginTop:'10px'}} >
-                            <Table className={body} scroll={{ y: 300 }} dataSource={tableData} columns={petrol} pagination={false} rowKey="_id" />
+                        <div style={{fontSize:'18px', fontWeight:'500', color:'#ffcc32', textDecoration:'underline'}}>Petrol</div>
+
+                        <div style={{background:'#DBDBDB', height:'30px'}}>
+                            <span className="date width-40">
+                                <div style={{margin:'auto', color:'#ffffff', textAlign:'center'}}>Date</div>
+                            </span>
+                            <span className="history-fuel width-20" style={{display:'inline-block'}}></span>
+
+                            <span style={{display:'inline-block', width:'15%'}}></span>
+
+                            <span className="width-20" style={{display:'inline-block'}}>
+                                <div>RON 95 <img src="https://img.icons8.com/ios-glyphs/20/ffcc32/gas-station.png"/></div>
+                            </span>
+                            <span className="width-20" style={{display:'inline-block'}}>
+                                <div style={{textAlign:'end'}}>RON 97 <img src="https://img.icons8.com/ios-glyphs/20/34B532/gas-station.png"/></div>
+                            </span>
+                        </div>
+
+                        <Card className="card-padding-0 price" style={{marginTop:'10px'}} >
+                            <Table className={body} scroll={{ y: 300 }} dataSource={tableData} columns={petrol} pagination={false} rowKey="_id" header={false} />
                         </Card>
-                        <Card title="Diesel" className="margin-top-md card-padding-0 price">
+
+                        <div className="margin-top-md" style={{fontSize:'18px', fontWeight:'500', color:'#ffcc32', textDecoration:'underline'}}>Diesel</div>
+                        <div style={{background:'#DBDBDB', height:'30px'}}>
+                            <span className="date width-40">
+                                <div style={{margin:'auto', color:'#ffffff', textAlign:'center'}}>Date</div>
+                            </span>
+                            <span className="history-fuel width-20" style={{display:'inline-block'}}></span>
+
+                            <span style={{display:'inline-block', width:'15%'}}></span>
+
+                            <span className="width-20" style={{display:'inline-block'}}>
+                                <div>EURO 2 <img src="https://img.icons8.com/ios-glyphs/20/000000/gas-station.png"/></div>
+                            </span>
+                            <span className="width-20" style={{display:'inline-block'}}>
+                                <div style={{textAlign:'end'}}>EURO 5 <img src="https://img.icons8.com/ios-glyphs/20/2550E4/gas-station.png"/></div>
+                            </span>
+                        </div>
+                        <Card className="margin-top-md card-padding-0 price">
                             <Table className={body} scroll={{ y: 300 }} dataSource={tableData} columns={diesel} pagination={false} rowKey="_id" />
                         </Card>
                     </div>

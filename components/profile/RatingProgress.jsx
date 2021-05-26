@@ -108,7 +108,7 @@ const RatingProgress = (props) => {
                         <div>
                             <span className="headline   font-weight-bold margin-right-md">{item.label != null ? item.label : index + startFrom}</span>
                             <span>
-                                <Progress percent={parseFloat(num / total) * 100} type="line" showInfo={false} strokeColor="#F9A825" style={{ display: 'inline-block', width: '80%' }} />
+                                <Progress percent={parseFloat(num / total) * 100} type="line" showInfo={false} strokeColor="#F9A825" style={{ display: 'inline-block', width: '90%' }} />
                             </span>
                         </div>
                     </Col>)

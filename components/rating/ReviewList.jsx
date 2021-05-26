@@ -219,7 +219,9 @@ const ReviewList = (props) => {
                                             <Avatar src={!item.reviewerId || !item.reviewerId.avatar ? null : item.reviewerId.avatar} icon={!item.reviewerId || !item.reviewerId.avatar ? 'user' : null}></Avatar>
                                             <span className="headline   margin-x-md text-overflow-break">
                                                 {!item.reviewerId ? null : item.reviewerId.firstName + ' ' + item.reviewerId.lastName}
+                                                <p style={{fontSize:'12px', marginBottom:'0px'}} >{moment(item.createdAt).format('D MMMM Y')}</p>
                                             </span>
+                                            {/* <span style={{fontSize:'12px'}} className="margin-x-sm d-inline-block">{moment(item.createdAt).format('D MMMM Y')}</span> */}
                                             {
                                                 item.state ?
                                                     <span className="headline blue">
@@ -257,10 +259,9 @@ const ReviewList = (props) => {
                             </Col>
                             <Col span={6}>
                                 <div className="review2">
-                                    <span style={{fontSize:'12px'}} className="margin-x-sm d-inline-block">{moment(item.createdAt).format('D MMMM Y')}</span>
                                     <Dropdown overlay={menu(item)} placement="bottomRight">
                                         <a className="ant-dropdown-link " onClick={e => e.preventDefault()}>
-                                            <img src="https://img.icons8.com/material-rounded/24/000000/menu-2.png" />
+                                            <img src="https://img.icons8.com/material-rounded/20/000000/menu-2.png" />
                                         </a>
                                     </Dropdown>
                                 </div>
@@ -301,7 +302,7 @@ const ReviewList = (props) => {
                             {
                                 notEmptyLength(item.images) || notEmptyLength(item.videos) ?
                                     <Col span={24}>
-                                        <div key='imageDiv' className="padding-x-sm margin-top-md">
+                                        <div key='imageDiv' className="padding-x-sm">
                                             <ScrollContainer className="d-flex" vertical={false}>
                                                 {
                                                     notEmptyLength(item.videos) ?

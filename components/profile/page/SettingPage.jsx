@@ -19,7 +19,7 @@ const ProfileSettingsPage = (props) => {
                 setProfile({});
             }
         }}>
-            <Setting data={profile} onSuccess={(data) =>{
+            <Setting data={profile} onSuccess={(data) =>{  
                 setProfile({...profile, pushNotificationSettings : _.get(data, ['pushNotificationSettings']) || {}})
             }} />
         </ProfileLayout>

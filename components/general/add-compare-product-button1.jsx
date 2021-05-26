@@ -97,7 +97,7 @@ const AddCompareProductButton1 = (props) => {
       >
         <div> Do you want to remove this product from your comparison list? </div>
       </Modal>
-      <Tooltip placement="top" title="Add me into the comparison list">
+      {/* <Tooltip placement="top" title="Add me into the comparison list"> */}
         {
           isSavedCompare(props.data._id) ?
             <a onClick={() => props.readOnly ? null : setConfirmModalState(true)}>
@@ -110,7 +110,7 @@ const AddCompareProductButton1 = (props) => {
               {props.saveButton ? props.saveButton() : <div style={{textAlign:'center', padding: 5, borderRadius:'4px'}} className="w-100 ads-purchase-compare-btn"><img src="/assets/profile/icon-list/carmarket-bar-icon/compare.png" alt="compare" style={{width:'100%'}} /></div>}
             </a>
         }
-      </Tooltip>
+      {/* </Tooltip> */}
     </span>
   );
 }

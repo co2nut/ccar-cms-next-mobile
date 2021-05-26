@@ -20,15 +20,11 @@
     "/_polyfills": [
       "static/runtime/polyfills.js"
     ],
-    "/newcar": [
+    "/kpp": [
       "static/runtime/webpack.js",
       "static/runtime/main.js"
     ],
-    "/social-board": [
-      "static/runtime/webpack.js",
-      "static/runtime/main.js"
-    ],
-    "/social-board/[id]": [
+    "/kpp/sistem-kejara": [
       "static/runtime/webpack.js",
       "static/runtime/main.js"
     ]

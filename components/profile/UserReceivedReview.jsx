@@ -192,7 +192,7 @@ const UserReceivedReview = (props) => {
         if (_.isPlainObject(data) && !_.isEmpty(profile)) {
             return (
                 <Row type="flex" justify="center" align="middle" gutter={[10, 10]}>
-                    <Col span={12}>
+                    {/* <Col span={12}>
                         <div>
                             <span className="padding-left-xs flex-items-align-center h6 font-weight-bold">
                                 USER REVIEWS
@@ -212,7 +212,7 @@ const UserReceivedReview = (props) => {
                                         handleError={(e) => { message.error(e.message) }} />
                             }
                         </div>
-                    </Col>
+                    </Col> */}
                     <Col span={24}>
                         {
                             notEmptyLength(ratings) || notEmptyLength(ownRating) ?
@@ -232,7 +232,7 @@ const UserReceivedReview = (props) => {
                                                 <div>
                                                     <ReviewList data={ratings} handleChange={(v) => { init() }} />
                                                 </div>
-                                            </InfiniteScrollWrapper>
+                                            </InfiniteScrollWrapper> 
                                             :
                                             null
                                     }

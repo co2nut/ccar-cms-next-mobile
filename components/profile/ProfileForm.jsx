@@ -525,7 +525,7 @@ const ProfileForm = (props) => {
 
                         <div className="headline   margin-y-md" style={{ color: "#000000" }}>
                             Date Of Birthday
-            </div>
+                        </div>
                         <Row>
 
                             <Col xs={8} sm={8} md={5} lg={5} xl={5} className="margin-right-sm">
