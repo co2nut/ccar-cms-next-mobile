@@ -9,7 +9,7 @@ import client from '../../../feathers';
 import LikePostButton from './like-post-button';
 import SocialInput from './social-input';
 import UserAvatar from '../../general/UserAvatar';
-import { formatNumber, getObjectId, getPlural, getUserName, notEmptyLength, objectRemoveEmptyValue  } from '../../../common-function';
+import { formatNumber, getObjectId, getPlural, getUserName, notEmptyLength, objectRemoveEmptyValue } from '../../../common-function';
 import { loading, loginMode } from '../../../redux/actions/app-actions';
 import ParseTag from '../../general/ParseTag';
 
@@ -22,6 +22,7 @@ const ReplyBox1 = (props) => {
     const [comment, setComment] = useState({});
     const [totalLike, setTotalLike] = useState(0);
     const [editMode, setEditMode] = useState(false)
+    const [typeMessage, setTypeMessage] = useState('')
 
 
 
@@ -115,19 +116,33 @@ const ReplyBox1 = (props) => {
                         </span>
                         {
                             editMode ?
-                                <SocialInput
-                                    placeholder="Write your comment..."
-                                    editMode
-                                    clickOutsideSubmit
-                                    text={`${_.get(comment, ['message']) || ''}`}
-                                    emojiPosition={{ bottom: -20, right: 33 }}
-                                    clubId={props.clubId}
-                                    onSubmit={(text) => {
-                                        handleSubmit(text);
-                                        setEditMode(false);
-                                    }}
-                                    excludeEnter
-                                />
+
+                                <div className="flex-justify-space-around flex-items-align-center">
+                                    <span className='d-inline-block width-80' >
+                                        <SocialInput
+                                            placeholder="What's on your mind?"
+                                            text={`${_.get(comment, ['message']) || ''}`}
+                                            editMode
+                                            clickOutsideSubmit
+                                            maxLength={1000}
+                                            size="small"
+                                            onChange={(v, finalText) => {
+                                                setTypeMessage(finalText)
+                                            }}
+                                            clubId={props.clubId}
+                                            hideEmojiPicker
+                                            autoFocus={true}
+                                            excludeEnter
+                                            onSubmit={(text) => {
+                                                handleSubmit(text);
+                                                setEditMode(false);
+                                            }}
+                                        />
+                                    </span>
+                                    <span className='d-inline-block cursor-pointer blue caption font-weight-bold' onClick={(e) => { handleSubmit(typeMessage) }} >
+                                        Save
+                            </span>
+                                </div>
                                 :
                                 <ParseTag data={_.get(comment, ['message']) || ''} className="width-100" />
                         }

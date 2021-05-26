@@ -184,14 +184,14 @@ const SocialInput = (props) => {
                 params: {
                     match: {
                         userId: _.get(props.user, ['info', 'user', '_id']),
-                        clubId : props.clubId || '',
+                        clubId: props.clubId || '',
                         keyword: keyword || '',
                     },
                     limit: PAGE_SIZE,
                     skip: skip || 0,
                 }
             }).then(res => {
-       
+
                 setIsLoading(false);
                 let temp = _.cloneDeep(suggestList);
                 temp[prefix] = suggestListPage > 1 ?
@@ -357,7 +357,7 @@ const SocialInput = (props) => {
             let newAliasCode = _.unionBy(_.sortBy(_.reverse(_.sortBy(_.cloneDeep(aliasCode) || [], ['createdAt'])), ['position']), [], 'position');
             //need update back position after delete things
 
-     
+
             let quill = props.inputRef || ref[uid];
             if (quill.current) {
                 let editor = quill.current.getEditor();
@@ -515,14 +515,20 @@ const SocialInput = (props) => {
                         }}
                     >
                     </ReactQuill>
-                    <EmojiPickerButton
-                        onSelect={(emoji) => {
-                            handleAddText(emoji.native)
-                        }}
-                        position={props.emojiPosition}
-                    >
-                        <Icon type="smile" className='cursor-pointer grey margin-right-sm margin-top-xs flex-items-no-shrink' style={{ fontSize: '17px' }} />
-                    </EmojiPickerButton>
+                    {
+                        props.hideEmojiPicker == true ?
+                            null
+                            :
+                            null
+                            // <EmojiPickerButton
+                            //     onSelect={(emoji) => {
+                            //         handleAddText(emoji.native)
+                            //     }}
+                            //     position={props.emojiPosition}
+                            // >
+                            //     <Icon type="smile" className='cursor-pointer grey margin-right-sm margin-top-xs flex-items-no-shrink' style={{ fontSize: '17px' }} />
+                            // </EmojiPickerButton>
+                    }
                     {
                         // searchMode && _.isArray(_.get(suggestList, [prefix])) && !_.isEmpty(_.get(suggestList, [prefix])) ?
                         searchMode ?

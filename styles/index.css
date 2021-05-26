@@ -1328,7 +1328,7 @@ code {
 }
 
 .containerCarAdsImg .containerCarAdsImgBackGround:before {
-  padding-top: 75%;
+  padding-top: 15%;
 }
 
 .containerCarAdsImg .containerCarAdsImgBackGround:after {
@@ -1353,15 +1353,14 @@ code {
 
 .containerCarAdsImg .removeImage {
   position: absolute;
-  top: 8px;
-  right: -4px;
-  width: 50%;
+  top: -10px;
+  right: -15px;
   cursor: pointer;
   border: none;
   /* opacity: 0.4; */
   transition: 0.3s;
-  width: 10%;
-  font-size: 16px;
+  font-size: 20px;
+  z-index: 2;
   color: rgba(0, 0, 0, 0.5);
 }
 
@@ -1373,13 +1372,6 @@ code {
   font-size: 12px;
 }
 
-.containerCarAdsImg .removeImage:hover {
-  opacity: 1;
-  width: 15%;
-  font-size: 24px;
-  font-weight: bolder;
-  color: #e3c57d;
-}
 
 .chatImageCarousel {
   vertical-align: middle;
@@ -1688,29 +1680,6 @@ code {
   background-image: linear-gradient(180deg, rgba(6, 8, 10, .5), rgba(6, 8, 10, 0))
 }
 
-.containerCarAdsImg img {
-  height: 150px;
-  /* max-width: 250px; */
-  display: block;
-  /* width: 50%; */
-  width: -webkit-fill-available;
-  padding: 6px;
-  object-fit: contain;
-}
-
-.containerCarAdsImg .removeImage {
-  position: absolute;
-  top: 8px;
-  right: -4px;
-  width: 50%;
-  cursor: pointer;
-  border: none;
-  /* opacity: 0.4; */
-  transition: 0.3s;
-  width: 10%;
-  font-size: 16px;
-  color: rgba(0, 0, 0, 0.5);
-}
 
 .containerCarAdsImg .seqCount {
   position: absolute;
@@ -1718,14 +1687,6 @@ code {
   left: 8px;
   color: #fff;
   font-size: 12px;
-}
-
-.containerCarAdsImg .removeImage:hover {
-  opacity: 1;
-  width: 15%;
-  font-size: 24px;
-  font-weight: bolder;
-  color: #e3c57d;
 }
 
 .bookmarkRight {

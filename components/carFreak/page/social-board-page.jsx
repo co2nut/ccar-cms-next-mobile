@@ -9,11 +9,14 @@ import { loginMode } from '../../../redux/actions/app-actions';
 import { fetchCarFreakPosts, fetchEditedPost } from '../../../redux/actions/carfreak.action';
 import client from '../../../feathers';
 import LayoutV2 from '../../general/LayoutV2';
-import { arrayLengthCount, notEmptyLength } from '../../../common-function';
+import { arrayLengthCount, getObjectId, notEmptyLength } from '../../../common-function';
 import CarFreakLayout from '../components/car-freak-layout';
 import SocialBoardCard from '../components/social-board-card';
 import WritePostModal from '../components/write-post-modal';
 import { withRouter } from 'next/router';
+import { routePaths } from '../../../route';
+import WritePostDrawer from '../components/WritePostDrawer';
+import PostDrawer from '../components/PostDrawer';
 
 
 const Desktop = ({ children }) => {
@@ -26,7 +29,8 @@ const Tablet = ({ children }) => {
 }
 const Mobile = ({ children }) => {
     const isMobile = useMediaQuery({ maxWidth: 767 })
-    return isMobile ? children : null
+    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
+    return isMobile || isTablet ? children : null
 }
 const Default = ({ children }) => {
     const isNotMobile = useMediaQuery({ minWidth: 768 })
@@ -53,11 +57,19 @@ const SocialBoardPage = (props) => {
     const [socialBoards, setSocialBoards] = useState([]);
     const [socialBoardPage, setSocialBoardPage] = useState(1);
     const [totalSocialBoard, setTotalSocialBoard] = useState(0);
+    const [userChatLikes, setUserChatLikes] = useState([]);
 
+
+    const [chatInfo, setChatInfo] = useState({});
+    const [visible, setVisible] = useState(false);
 
     useEffect(() => {
         getSocialBoardData((socialBoardPage - 1) * PAGE_SIZE)
     }, [socialBoardPage])
+
+    useEffect(() => {
+        getUserChatLikes(_.map(socialBoards, '_id'))
+    }, [props.user.authenticated])
 
     function getSocialBoardData(skip, type) {
 
@@ -86,11 +98,29 @@ const SocialBoardPage = (props) => {
                 setIsLoading(false);
                 setSocialBoards(socialBoards.concat(res.data));
                 setTotalSocialBoard(res.total)
+                getUserChatLikes(_.map(_.get(res, ['data']), '_id'), true)
 
             })
     }
 
 
+    function getUserChatLikes(ids, concat) {
+
+        if (_.isArray(ids) && !_.isEmpty(ids) && _.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', '_id'])) {
+            client.service('chatlikes')
+                .find({
+                    query: {
+                        chatId: {
+                            $in: ids || [],
+                        },
+                        userId: _.get(props.user, ['info', 'user', '_id'])
+                    }
+                })
+                .then((res) => {
+                    setUserChatLikes(concat ? _.concat(userChatLikes, res.data) : res.data)
+                })
+        }
+    }
 
     function confirmDelete(v) {
         if (v._id) {
@@ -134,33 +164,34 @@ const SocialBoardPage = (props) => {
                 setSocialBoardPage(socialBoardPage + 1);
             }
         }} hideOpenApp>
-            <Desktop>
-                <CarFreakLayout>
-
+            <Mobile>
+                <CarFreakLayout hideScope
+                    onWritePostClick={(type) => {
+                        if (type == 'socialBoard') {
+                            setEditMode(null);
+                            setWriteModalVisible(true);
+                            setSelectedPost(null);
+                        }
+                    }}>
                     <Row gutter={[10, 10]}>
                         <Col xs={24} sm={24} md={18} lg={18} xl={18}>
-                            <div className="flex-justify-end flex-items-align-center margin-bottom-lg">
-                                <span className='d-inline-block margin-right-md' >
-                                    <Button size="large" className="border-ccar-yellow" onClick={(e) => {
-                                        setEditMode(null);
-                                        setWriteModalVisible(true);
-                                        setSelectedPost(null);
-                                    }}  ><Icon type="edit" /> Write a Post</Button>
-                                </span>
-                            </div>
                             {
                                 _.isArray(socialBoards) && notEmptyLength(socialBoards) ?
                                     <Row gutter={[10, 10]} justify="center">
                                         {
                                             socialBoards.map(function (post, i) {
                                                 return (
-                                                    <Col key={'chats' + i} className="gutter-row"
+                                                    <Col key={'chats' + getObjectId(post)} className="gutter-row"
                                                         xs={24} sm={24} md={12} lg={12} xl={12}
                                                     >
                                                         <SocialBoardCard data={post}
+                                                            postLike={_.find(userChatLikes, { chatId: getObjectId(post) })}
                                                             onRedirectToPost={(data) => {
                                                                 if (_.isPlainObject(data) && !_.isEmpty(data) && _.get(data, ['_id'])) {
-                                                                    props.router.push(`/social-board/${data._id}`, undefined, { shallow : false })
+                                                                    console.log('redirect');
+                                                                    setChatInfo(data);
+                                                                    setVisible(true);
+                                                                    setEditMode('');
                                                                 }
                                                             }}
                                                             onEditClick={(post) => {
@@ -172,151 +203,6 @@ const SocialBoardPage = (props) => {
                                                             onRemoveClick={(post) => {
                                                                 confirmDelete(post)
                                                             }}
-
-                                                        />
-                                                    </Col>
-                                                )
-                                            })
-
-                                        }
-                                    </Row>
-                                    :
-
-                                    !isLoading ?
-                                        <div className="width-100 flex-items-align-center flex-justify-center background-white" style={{ height: 400 }}><Empty /></div>
-                                        :
-                                        <div></div>
-                            }
-                        </Col>
-                        <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                            <TrendingSocialBoardBox redirectToSocialBoard={(data) => {
-                                if (_.isPlainObject(data) && !_.isEmpty(data) && data._id) {
-                                    props.router.push(`/social-board/${data._id}`, undefined, { shallow : false })
-                                }
-                            }} />
-                        </Col>
-                    </Row>
-                    <div className="width-100 flex-justify-center" style={{ height: 50 }}>
-                        {
-                            isLoading ?
-                                <Icon type="loading" style={{ fontSize: 50 }} />
-                                :
-                                null
-                        }
-                    </div>
-                </CarFreakLayout>
-            </Desktop >
-
-            <Tablet>
-                <CarFreakLayout>
-                    <Row gutter={[10, 10]}> 
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <div className="flex-justify-end flex-items-align-center margin-bottom-lg">
-                                <span className='d-inline-block margin-right-md' >
-                                    <Button size="large" className="border-ccar-yellow" onClick={(e) => {
-                                        setEditMode(null);
-                                        setWriteModalVisible(true);
-                                        setSelectedPost(null);
-                                    }}  ><Icon type="edit" /> Write a Post</Button>
-                                </span>
-                            </div>
-                            {
-                                _.isArray(socialBoards) && notEmptyLength(socialBoards) ?
-                                    <Row gutter={[10, 10]} justify="center">
-                                        {
-                                            socialBoards.map(function (post, i) {
-                                                return (
-                                                    <Col key={'chats' + i} className="gutter-row"
-                                                        xs={12} sm={12} md={12} lg={12} xl={12}
-                                                    >
-                                                        <SocialBoardCard data={post} 
-                                                            onRedirectToPost={(data) => {
-                                                                if (_.isPlainObject(data) && !_.isEmpty(data) && _.get(data, ['_id'])) {
-                                                                    props.router.push(`/social-board/${data._id}`, undefined, { shallow : false })
-                                                                }
-                                                            }}
-                                                            onEditClick={(post) => {
-                                                                setWriteModalVisible(true);
-                                                                setSelectedPost(post);
-                                                                setEditMode('edit');
-                                                            }}
-
-                                                            onRemoveClick={(post) => {
-                                                                confirmDelete(post)
-                                                            }}
-
-                                                        />
-                                                    </Col>
-                                                )
-                                            })
-
-                                        }
-                                    </Row>
-                                    :
-
-                                    !isLoading ?
-                                        <div className="width-100 flex-items-align-center flex-justify-center background-white" style={{ height: 400 }}><Empty /></div>
-                                        :
-                                        <div></div>
-                            }
-                        </Col>
-                        {/* <Col xs={24} sm={24} md={9} lg={9} xl={9}>
-                            <TrendingSocialBoardBox redirectToSocialBoard={(data) => {
-                                if (_.isPlainObject(data) && !_.isEmpty(data) && data._id) {
-                                    props.router.push(`/social-board/${data._id}`, undefined, { shallow : false })
-                                }
-                            }} />
-                        </Col> */}
-                    </Row>
-                    <div className="width-100 flex-justify-center" style={{ height: 50 }}>
-                        {
-                            isLoading ?
-                                <Icon type="loading" style={{ fontSize: 50 }} />
-                                :
-                                null
-                        }
-                    </div>
-                </CarFreakLayout>
-            </Tablet>
-
-            <Mobile>
-                <CarFreakLayout>
-                    <Row gutter={[10, 10]}>
-                        <Col xs={24} sm={24} md={18} lg={18} xl={18}>
-                            <div className="flex-justify-end flex-items-align-center margin-bottom-lg">
-                                <span className='d-inline-block margin-right-md' >
-                                    <Button size="medium" className="border-ccar-yellow" onClick={(e) => {
-                                        setEditMode(null);
-                                        setWriteModalVisible(true);
-                                        setSelectedPost(null);
-                                    }}  ><Icon type="edit" /> Write a Post</Button>
-                                </span>
-                            </div>
-                            {
-                                _.isArray(socialBoards) && notEmptyLength(socialBoards) ?
-                                    <Row gutter={[10, 10]} justify="center">
-                                        {
-                                            socialBoards.map(function (post, i) {
-                                                return (
-                                                    <Col key={'chats' + i} className="gutter-row"
-                                                        xs={24} sm={24} md={12} lg={12} xl={12}
-                                                    >
-                                                        <SocialBoardCard data={post} 
-                                                            onRedirectToPost={(data) => {
-                                                                if (_.isPlainObject(data) && !_.isEmpty(data) && _.get(data, ['_id'])) {
-                                                                    props.router.push(`/social-board/${data._id}`, undefined, { shallow : false })
-                                                                }
-                                                            }}
-                                                            onEditClick={(post) => {
-                                                                setWriteModalVisible(true);
-                                                                setSelectedPost(post);
-                                                                setEditMode('edit');
-                                                            }}
-
-                                                            onRemoveClick={(post) => {
-                                                                confirmDelete(post)
-                                                            }}
-
                                                         />
                                                     </Col>
                                                 )
@@ -351,24 +237,61 @@ const SocialBoardPage = (props) => {
                 </CarFreakLayout>
             </Mobile>
 
-
-            <WritePostModal
-                currentRecord={selectedPost}
+            <PostDrawer
+                data={chatInfo}
+                visible={visible}
                 editMode={editMode}
-                hideImage
-                chatType={'socialboard'}
-                visibleMode={writeModalVisible}
+                postLike={_.find(userChatLikes, { chatId: _.get(chatInfo, ['_id']) })}
+                onCancel={() => {
+                    setVisible(false);
+                    setChatInfo({});
+                }
+                }
+                onPostLikeChange={(liked, data) => {
+                    if (liked) {
+                        setUserChatLikes(_.concat(userChatLikes, [data]));
+                    } else {
+                        setUserChatLikes(_.filter(userChatLikes, function (like) {
+                            return _.get(like, ['chatId']) != _.get(data, ['chatId']);
+                        }))
+                    }
+                }}
+                onEditClick={(post) => {
+                    setEditMode('edit');
+                    setWriteModalVisible(true);
+                    setSelectedPost(post);
+                }}
+
+                onRemoveClick={(post) => {
+                    confirmDelete(post)
+                    setVisible(false);
+                }}
+
                 onUpdatePost={(data) => {
-                    handleSocialBoardPostChange(data)
+                    handleSocialBoardPostChange(data);
+                }}
+            />
+
+            <WritePostDrawer
+                data={selectedPost}
+                editMode={editMode}
+                chatType={'socialboard'}
+                visible={writeModalVisible}
+                notify
+                onUpdatePost={(data) => {
+                    handleSocialBoardPostChange(data);
                 }}
                 onCreatePost={(data) => {
-                    handleSocialBoardAddPost(data)
-                }}
-                changeVisibleMode={(v) => {
-                    setWriteModalVisible(v);
-                    if (!v) {
-                        setSelectedPost({});
+                    if (_.get(data, `chatType`) == 'socialboard') {
+                        handleSocialBoardAddPost(data)
                     }
+                    if (_.get(data, `chatType`) == 'carfreaks') {
+                        props.router.push(routePaths.carFreaks.as().pathname)
+                    }
+                }}
+                onClose={(v) => {
+                    setWriteModalVisible(false);
+                    setSelectedPost({});
                 }} />
 
         </LayoutV2 >

@@ -24,6 +24,7 @@ const ScrollLoadWrapper = (props) => {
 
     function checkScrolledToBottom(ref) {
         try {
+            console.log(ref);
             if (!!ref) {
 
                 let scrollHeight = ref.current.getScrollHeight();
@@ -38,6 +39,8 @@ const ScrollLoadWrapper = (props) => {
                         scrollRange = parseFloat(props.scrollRange);
                     }
                 }
+                console.log(scrollRange);
+                console.log(currentPosition);
                 if (scrollHeight - currentPosition <= scrollRange) {
                     if (props.onScrolledBottom) {
                         props.onScrolledBottom();

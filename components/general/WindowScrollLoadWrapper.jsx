@@ -29,6 +29,7 @@ const WindowScrollLoadWrapper = (props) => {
     })
 
     function handleScroll(e) {
+        console.log(e);
         clearTimeout(triggerFunction)
         let scrollBarHeight = window.innerHeight * (window.innerHeight / document.body.offsetHeight);
         if (window.scrollY + scrollBarHeight + scrollRange >= document.body.scrollHeight) {

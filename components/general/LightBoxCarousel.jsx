@@ -36,7 +36,7 @@ const LightBoxCarousel = (props) => {
     return (
 
         <React.Fragment>
-            <div className={`width-100 ${props.className || ''}`} style={{  ...props.style, height : height}}>
+            <div className={`width-100 ${props.className || ''}`} style={{ ...props.style, height: height }}>
                 {
                     _.isArray(images) && !_.isEmpty(images) ?
                         <LightBoxGallery
@@ -49,7 +49,7 @@ const LightBoxCarousel = (props) => {
                                 (data, setCurrentIndex, setVisible) => {
                                     return (
                                         arrayLengthCount(images) > 1 ?
-                                            <div className="width-100 carousel-background-black show-carousel-dots-inside carousel-custom-arrows" style={{ height : height }}>
+                                            <div className="width-100 carousel-background-black show-carousel-dots-inside carousel-custom-arrows" style={{ height: height }}>
                                                 <Carousel
                                                     infinite
                                                     arrowLeft={<Icon type="left" className="grey-lighten-2 cursor-pointer" style={{ fontSize: 30 }} />}
@@ -57,13 +57,14 @@ const LightBoxCarousel = (props) => {
                                                     addArrowClickHandler
                                                     dots
                                                     dotPosition="bottom"
+                                                    keepDirectionWhenDragging
                                                     value={imageIndex}
                                                     slides={
                                                         _.isArray(_.get(data, ['images'])) && !_.isEmpty(_.get(data, ['images'])) ?
                                                             _.map(_.get(data, ['images']), function (image, index) {
                                                                 return (
-                                                                    <div className="relative-wrapper width-100" style={{ height : height }}>
-                                                                        <img src={image} className="absolute-center-img-no-stretch cursor-pointer"
+                                                                    <div className="relative-wrapper width-100" style={{ height: height }}>
+                                                                        <img src={image} className="img-cover-center cursor-pointer"
                                                                             onClick={(e) => {
                                                                                 setVisible(true);
                                                                                 setCurrentIndex(index);
@@ -79,18 +80,18 @@ const LightBoxCarousel = (props) => {
                                                 />
                                             </div>
                                             :
-                                            <div className="relative-wrapper background-black width-100"  style={{ height : height }}>
+                                            <div className="relative-wrapper background-black width-100" style={{ height: height }}>
                                                 <img src={images[0] || imageNotFound} onClick={(e) => {
                                                     setVisible(true);
                                                     setCurrentIndex(0);
-                                                }} className=" absolute-center-img-no-stretch" />
+                                                }} className=" img-cover-center" />
                                             </div>
                                     );
                                 }
                             }
                         </LightBoxGallery>
                         :
-                        <div className="relative-wrapper background-black width-100"  style={{ height : height }}>
+                        <div className="relative-wrapper background-black width-100" style={{ height: height }}>
                             <img src={imageNotFound} className=" absolute-center-img-no-stretch" />
                         </div>
                 }

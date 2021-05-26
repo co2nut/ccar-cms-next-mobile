@@ -8,6 +8,7 @@ import SavePostButton from './save-post-button';
 import FollowButton from '../../profile/FollowButton';
 import ShareButtonDialog from '../../general/ShareButtonDialog';
 import ReportButton from '../../general/ReportButton';
+import client from '../../../feathers';
 
 
 
@@ -17,7 +18,6 @@ const postCommentRef = React.createRef();
 const PostMenu = (props) => {
 
     const [post, setPost] = useState({});
-
 
 
     useEffect(() => {

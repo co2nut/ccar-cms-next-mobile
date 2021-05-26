@@ -21,19 +21,24 @@ import InfiniteScrollWrapper from '../../general/InfiniteScrollWrapper';
 import {
     updateActiveMenu
 } from '../../../redux/actions/app-actions';
+import WritePostDrawer from '../components/WritePostDrawer';
+import PostMobileView from '../components/PostMobileView';
+import { routePaths } from '../../../route';
+import PostDrawer from '../components/PostDrawer';
 
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 992 })
     return isDesktop ? children : null
 }
-const Tablet = ({ children }) => {
-    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
-    return isTablet ? children : null
-}
+// const Tablet = ({ children }) => {
+//     const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
+//     return isTablet ? children : null
+// }
 const Mobile = ({ children }) => {
     const isMobile = useMediaQuery({ maxWidth: 767 })
-    return isMobile ? children : null
+    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
+    return isMobile || isTablet ? children : null
 }
 const Default = ({ children }) => {
     const isNotMobile = useMediaQuery({ minWidth: 768 })
@@ -255,245 +260,21 @@ const CarFreakPage = (props) => {
     return (
         <React.Fragment>
             <LayoutV2 searchTypes={carFreakGlobalSearch} enterSearchCarFreaks hideOpenApp >
-                <Desktop>
-                    <CarFreakLayout>
-                        <Row gutter={[15, 15]}>
-                            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                <div className="width-100 flex-justify-end flex-items-align-center">
-                                    <span className='d-inline-block margin-right-md' >
-                                        <Button size="large" className="border-ccar-yellow" onClick={(e) => {
-                                            setEditMode(null);
-                                            setWriteModalVisible(true);
-                                            setSelectedPost(null);
-                                        }}  ><Icon type="edit" /> Write a Post</Button>
-                                    </span>
-                                    <span className='d-inline-block' >
-                                        <RadioGroup className=" round-border-radio-button" value={scope} buttonStyle="solid">
-                                            <Radio.Button className="round-border-right" value="public" onClick={(e) => {
-                                                setScope('public')
-                                            }}>
-                                                <Tooltip title="Public" placement="top">
-                                                    <img src={earthGreyIcon} style={{ height: 20, width: 20 }}></img>
-                                                </Tooltip>
-                                            </Radio.Button>
-                                            <Radio.Button className="round-border-left" value="following" onClick={(e) => {
-                                                setScope('following')
-                                            }}>
-                                                <Tooltip title="Following" placement="top">
-                                                    <img src={followingGreyIcon} style={{ height: 20, width: 20 }}></img>
-                                                </Tooltip>
-                                            </Radio.Button>
-                                        </RadioGroup>
-                                    </span>
-                                </div>
-                            </Col>
-                            <InfiniteScrollWrapper onScrolledBottom={() => {
-                                if (arrayLengthCount(chats) < totalChat) {
-                                    setChatPage(chatPage + 1)
-                                }
-                            }}
-                                hasMore={!isLoading && arrayLengthCount(chats) < totalChat}
-                            >
-                                {
-                                    _.isArray(chats) && notEmptyLength(chats) ?
-                                        _.map(chats, function (v, i) {
-                                            return (
-                                                <Col xs={24} sm={12} md={8} lg={6} xl={6} key={`post-${v4()}`}>
-                                                    <Post data={v}
-                                                        className="background-white thin-border round-border box-shadow-strong"
-                                                        postLike={_.find(userChatLikes, { chatId: v._id })}
-                                                        onRedirectToPost={(post) => {
-                                                            if (htmlWindow) {
-                                                                if (_.get(post, ['chatType']) == 'event') {
-
-                                                                    const win = htmlWindow.open(`/event-post/${_.get(post, ['_id'])}`, '_blank');
-                                                                    if (win != null) {
-                                                                        win.focus();
-                                                                    }
-                                                                } else {
-                                                                    setChatInfo(post);
-                                                                    setVisible(true);
-                                                                    setEditMode('');
-                                                                }
-                                                            }
-                                                        }}
-                                                        onEditClick={(post) => {
-                                                            setEditMode('edit');
-                                                            setWriteModalVisible(true);
-                                                            setSelectedPost(post);
-                                                        }}
-
-                                                        onUpdatePost={(data) => {
-                                                            handlePostChange(data);
-                                                        }}
-                                                        onRemoveClick={(post) => {
-                                                            confirmDelete(post)
-                                                        }}
-                                                        onPostLikeChange={(liked, data) => {
-                                                            if (liked) {
-                                                                setUserChatLikes(_.concat(userChatLikes, [data]));
-                                                            } else {
-                                                                setUserChatLikes(_.filter(userChatLikes, function (like) {
-                                                                    return _.get(like, ['chatId']) != _.get(data, ['chatId']);
-                                                                }))
-                                                            }
-                                                        }}
-                                                    />
-                                                </Col>
-                                            )
-                                        })
-                                        :
-                                        <div className="width-100 flex-items-align-center flex-justify-center background-white" style={{ height: 400 }}><Empty /></div>
-                                }
-                            </InfiniteScrollWrapper>
-                        </Row>
-                    </CarFreakLayout>
-                </Desktop>
-
-                <Tablet>
-                <CarFreakLayout>
-                        <Row gutter={[15, 15]}>
-                            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                <div className="width-100 flex-justify-end flex-items-align-center">
-                                    <span className='d-inline-block margin-right-md' >
-                                        <Button size="large" className="border-ccar-yellow" onClick={(e) => {
-                                            setEditMode(null);
-                                            setWriteModalVisible(true);
-                                            setSelectedPost(null);
-                                        }}  ><Icon type="edit" /> Write a Post</Button>
-                                    </span>
-                                    <span className='d-inline-block' >
-                                        <RadioGroup className=" round-border-radio-button" value={scope} buttonStyle="solid">
-                                            <Radio.Button className="round-border-right" value="public" onClick={(e) => {
-                                                setScope('public')
-                                            }}>
-                                                <Tooltip title="Public" placement="top">
-                                                    <img src={earthGreyIcon} style={{ height: 20, width: 20 }}></img>
-                                                </Tooltip>
-                                            </Radio.Button>
-                                            <Radio.Button className="round-border-left" value="following" onClick={(e) => {
-                                                setScope('following')
-                                            }}>
-                                                <Tooltip title="Following" placement="top">
-                                                    <img src={followingGreyIcon} style={{ height: 20, width: 20 }}></img>
-                                                </Tooltip>
-                                            </Radio.Button>
-                                        </RadioGroup>
-                                    </span>
-                                </div>
-                            </Col>
-                            <WindowScrollLoadWrapper scrollRange={document.body.scrollHeight * 0.5} onScrolledBottom={() => {
-                                if (chatPage * PAGE_SIZE < totalChat) {
-                                    setChatPage(chatPage + 1);
-                                }
-                            }}>
-                                {
-                                    _.isArray(chats) && notEmptyLength(chats) ?
-                                        <React.Fragment>
-                                            {
-                                                _.map(chats, function (v, i) {
-                                                    return (
-                                                        <Col xs={24} sm={12} md={8} lg={6} xl={6} key={`post-${v4()}`}>
-                                                            <Post data={v}
-                                                        className="background-white thin-border round-border box-shadow-strong"
-                                                        postLike={_.find(userChatLikes, { chatId: v._id })}
-                                                        onRedirectToPost={(post) => {
-                                                            if (htmlWindow) {
-                                                                if (_.get(post, ['chatType']) == 'event') {
-
-                                                                    const win = htmlWindow.open(`/event-post/${_.get(post, ['_id'])}`, '_blank');
-                                                                    if (win != null) {
-                                                                        win.focus();
-                                                                    }
-                                                                } else {
-                                                                    setChatInfo(post);
-                                                                    setVisible(true);
-                                                                    setEditMode('');
-                                                                }
-                                                            }
-                                                        }}
-                                                        onEditClick={(post) => {
-                                                            setEditMode('edit');
-                                                            setWriteModalVisible(true);
-                                                            setSelectedPost(post);
-                                                        }}
-
-                                                        onUpdatePost={(data) => {
-                                                            handlePostChange(data);
-                                                        }}
-                                                        onRemoveClick={(post) => {
-                                                            confirmDelete(post)
-                                                        }}
-                                                        onPostLikeChange={(liked, data) => {
-                                                            if (liked) {
-                                                                setUserChatLikes(_.concat(userChatLikes, [data]));
-                                                            } else {
-                                                                setUserChatLikes(_.filter(userChatLikes, function (like) {
-                                                                    return _.get(like, ['chatId']) != _.get(data, ['chatId']);
-                                                                }))
-                                                            }
-                                                        }}
-                                                    />
-                                                        </Col>
-                                                    )
-                                                })
-                                            }
-
-                                        </React.Fragment>
-                                        :
-                                        !isLoading ?
-                                            <div className="width-100 flex-items-align-center flex-justify-center background-white" style={{ height: 400 }}><Empty /></div>
-                                            : <div></div>
-                                }
-                            </WindowScrollLoadWrapper>
-
-                            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-
-                                <div className="width-100 flex-justify-center" style={{ height: 50 }}>
-                                    {
-                                        isLoading ?
-                                            <Icon type="loading" style={{ fontSize: 50 }} />
-                                            :
-                                            null
-                                    }
-                                </div>
-                            </Col>
-                        </Row>
-                    </CarFreakLayout>
-                </Tablet>
 
                 <Mobile>
-                    <CarFreakLayout> 
-                        <Row gutter={[15, 15]}>
-                            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                <div className="width-100 flex-justify-end flex-items-align-center">
-                                    <span className='d-inline-block margin-right-md' >
-                                        <Button size="medium" className="border-ccar-yellow" onClick={(e) => {
-                                            setEditMode(null);
-                                            setWriteModalVisible(true);
-                                            setSelectedPost(null);
-                                        }}  ><Icon type="edit" /> Write a Post</Button>
-                                    </span>
-                                    <span className='d-inline-block' >
-                                        <RadioGroup className=" round-border-radio-button" value={scope} buttonStyle="solid">
-                                            <Radio.Button className="round-border-right" value="public" onClick={(e) => {
-                                                setScope('public')
-                                            }}>
-                                                <Tooltip title="Public" placement="top">
-                                                    <img src={earthGreyIcon} style={{ height: 20, width: 20 }}></img>
-                                                </Tooltip>
-                                            </Radio.Button>
-                                            <Radio.Button className="round-border-left" value="following" onClick={(e) => {
-                                                setScope('following')
-                                            }}>
-                                                <Tooltip title="Following" placement="top">
-                                                    <img src={followingGreyIcon} style={{ height: 20, width: 20 }}></img>
-                                                </Tooltip>
-                                            </Radio.Button>
-                                        </RadioGroup>
-                                    </span>
-                                </div>
-                            </Col>
+                    <CarFreakLayout
+                        scope={scope}
+                        onScopeChange={(scope) => {
+                            setScope(scope || 'public');
+                        }}
+                        onWritePostClick={(type) => {
+                            if (type == 'carFreaks') {
+                                setEditMode(null);
+                                setWriteModalVisible(true);
+                                setSelectedPost(null);
+                            }
+                        }}>
+                        <Row>
                             <InfiniteScrollWrapper onScrolledBottom={() => {
                                 if (arrayLengthCount(chats) < totalChat) {
                                     setChatPage(chatPage + 1)
@@ -505,23 +286,22 @@ const CarFreakPage = (props) => {
                                     _.isArray(chats) && notEmptyLength(chats) ?
                                         _.map(chats, function (v, i) {
                                             return (
-                                                <Col xs={24} sm={12} md={8} lg={6} xl={6} key={`post-${v4()}`}>
-                                                    <Post data={v}
+                                                <Col xs={24} sm={12} md={8} lg={6} xl={6} key={`post-${_.get(v, `_id`)}`}>
+                                                    <PostMobileView data={v}
                                                         className="background-white thin-border round-border box-shadow-strong"
                                                         postLike={_.find(userChatLikes, { chatId: v._id })}
                                                         onRedirectToPost={(post) => {
-                                                            if (htmlWindow) {
-                                                                if (_.get(post, ['chatType']) == 'event') {
+                                                            if (_.get(post, ['chatType']) == 'event') {
 
-                                                                    const win = htmlWindow.open(`/event-post/${_.get(post, ['_id'])}`, '_blank');
-                                                                    if (win != null) {
-                                                                        win.focus();
-                                                                    }
-                                                                } else {
-                                                                    setChatInfo(post);
-                                                                    setVisible(true);
-                                                                    setEditMode('');
-                                                                }
+                                                                // const win = htmlWindow.open(`/event-post/${_.get(post, ['_id'])}`, '_blank');
+                                                                // if (win != null) {
+                                                                //     win.focus();
+                                                                // }
+                                                            } else {
+                                                                console.log('redirect');
+                                                                setChatInfo(post);
+                                                                setVisible(true);
+                                                                setEditMode('');
                                                             }
                                                         }}
                                                         onEditClick={(post) => {
@@ -558,13 +338,15 @@ const CarFreakPage = (props) => {
                 </Mobile>
 
             </LayoutV2>
-            <PostModal
-                chatInfo={chatInfo}
-                visibleMode={visible}
+
+            <PostDrawer
+                data={chatInfo}
+                visible={visible}
                 editMode={editMode}
                 postLike={_.find(userChatLikes, { chatId: _.get(chatInfo, ['_id']) })}
-                changeVisibleMode={(v) => {
-                    setVisible(v);
+                onCancel={() => {
+                    setVisible(false);
+                    setChatInfo({});
                 }
                 }
                 onPostLikeChange={(liked, data) => {
@@ -576,29 +358,45 @@ const CarFreakPage = (props) => {
                         }))
                     }
                 }}
+                onEditClick={(post) => {
+                    setEditMode('edit');
+                    setWriteModalVisible(true);
+                    setSelectedPost(post);
+                }}
+
+                onRemoveClick={(post) => {
+                    confirmDelete(post)
+                    setVisible(false);
+                }}
 
                 onUpdatePost={(data) => {
                     handlePostChange(data);
                 }}
             />
 
-            <WritePostModal
-                currentRecord={selectedPost}
+            <WritePostDrawer
+                data={selectedPost}
                 editMode={editMode}
                 chatType={'carfreaks'}
-                visibleMode={writeModalVisible}
+                visible={writeModalVisible}
+                notify
                 onUpdatePost={(data) => {
                     handlePostChange(data);
                 }}
                 onCreatePost={(data) => {
-                    handleOnAddPost(data)
-                }}
-                changeVisibleMode={(v) => {
-                    setWriteModalVisible(v);
-                    if (!v) {
-                        setSelectedPost({});
+
+                    if (_.get(data, `chatType`) == 'carfreaks') {
+                        handleOnAddPost(data)
                     }
+                    if (_.get(data, `chatType`) == 'socialboard') {
+                        props.router.push(routePaths.socialBoard.as().pathname)
+                    }
+                }}
+                onClose={(v) => {
+                    setWriteModalVisible(false);
+                    setSelectedPost({});
                 }} />
+
         </React.Fragment>
     )
 
