@@ -31,10 +31,6 @@
     "/social-board/[id]": [
       "static/runtime/webpack.js",
       "static/runtime/main.js"
-    ],
-    "/social-club": [
-      "static/runtime/webpack.js",
-      "static/runtime/main.js"
     ]
   }
 }
