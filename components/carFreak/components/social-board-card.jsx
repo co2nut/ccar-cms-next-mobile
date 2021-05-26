@@ -71,7 +71,6 @@ const SocialBoardCard = (props) => {
     return (
         notEmptyLength(objectRemoveEmptyValue(post)) ?
             <React.Fragment>
-<<<<<<< HEAD
                 <div className={` thin-border box-shadow-heavy round-border background-white padding-md ${props.className ? props.className : ''}`} style={{ ...props.style, height: height }} onClick={(e) => {
                     if(!document.getElementById(`like-${getObjectId(post)}`).contains(e.target)){
                         redirectToPost(post)
@@ -91,27 +90,6 @@ const SocialBoardCard = (props) => {
                                         <React.Fragment>
                                             <span className="grey">
                                                 in
-=======
-                <div className={`background-white flex-items-align-start flex-justify-start cursor-pointer ${props.className ? props.className : ''}`} style={{ ...props.style, height: height }} onClick={(e) => {
-                    redirectToPost(post)
-                }}>
-                    <span className='d-inline-block margin-right-md' >
-                        <UserAvatar redirectProfile size={50} data={_.get(post, ['userId'])} />
-                    </span>
-                    <span className='d-inline-block width-70' >
-                        <div className="width-100">
-                            <ParseTag data={_.get(post, ['title']) || ''} className="font-weight-bold text-truncate" />
-                        </div>
-                        <div className="flex-justify-start flex-items-align-center text-truncate">
-                            <span className="black" >
-                                {getUserName(_.get(post, ['userId']), 'freakId')}
-                            </span>
-                            {
-                                _.get(post, ['location']) ?
-                                    <React.Fragment>
-                                        <span className="grey">
-                                            in
->>>>>>> 25c9a218cc83d010d36383c46e3070cd056b8477
                                         </span>
                                             <span className="black">
                                                 {`${_.get(post, ['location']) || ''}`}
@@ -167,13 +145,8 @@ const SocialBoardCard = (props) => {
                         </span>
                     </div>
                 </div>
-<<<<<<< HEAD
                 <span className='d-inline-block' style={{ position: 'absolute', top: 30, right: 20 }} >
                     <PostMenuModal post={post}
-=======
-                {/* <span className='d-inline-block' style={{ position: 'absolute', top: 30, right: 20 }} >
-                    <PostMenu post={post}
->>>>>>> 25c9a218cc83d010d36383c46e3070cd056b8477
                         onEditPostClick={() => {
                             if (props.onEditClick) {
                                 props.onEditClick(post)
@@ -184,15 +157,10 @@ const SocialBoardCard = (props) => {
                                 props.onRemoveClick(post);
                             }
                         }}
-<<<<<<< HEAD
                     >
                         <Icon type="more" className="black" style={{ fontSize: 20 }} />
                     </PostMenuModal>
                 </span>
-=======
-                    />
-                </span> */}
->>>>>>> 25c9a218cc83d010d36383c46e3070cd056b8477
             </React.Fragment>
             :
             null
