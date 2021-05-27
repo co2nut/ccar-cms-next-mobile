@@ -483,7 +483,7 @@ class LayoutV2 extends React.Component {
         if (_.get(this.props, ['user', 'authenticated'])) {
             return (
                 <span className='margin-bottom-xs flex-items-align-center' >
-                    <Dropdown placement="bottomRight" overlayClassName="padding-top-lg" overlayStyle={{ width: '250px' }} overlay={() => {
+                    {/* <Dropdown placement="bottomRight" overlayClassName="padding-top-lg" overlayStyle={{ width: '250px' }} overlay={() => {
                         return (
                             <Menu>
                                 {
@@ -522,18 +522,34 @@ class LayoutV2 extends React.Component {
                         )
                     }}>
                         <div>
-                            <div className=' cursor-pointer' >
+                            <span className=' cursor-pointer' style={{display:'inline-block'}} >
                                 <Badge >
-                                    <Avatar
+                                    <Avatar 
+                                        size={70}
                                         icon={!this.props.user.info || !this.props.user.info.user || !this.props.user.info.user.avatar ? 'user' : null}
                                         src={!this.props.user.info || !this.props.user.info.user || !this.props.user.info.user.avatar ? null : this.props.user.info.user.avatar} />
                                 </Badge>
-                            </div>
-                            <div style={{ color: "#1890ff" }} className=' subtitle1 cursor-pointer'>
-                                My Profile
-                            </div>
+                            </span>
+                            <span style={{ color: "#1890ff", display:'inline-block' }} className=' subtitle1 cursor-pointer margin-left-md'>
+                                {this.props.user.info.user.fullName}
+                                <div onClick={() => {this.props.router.push(routePaths.profile.as(_.get(this.props, ['user', 'info', 'user'])).pathname)}}> See your profile</div>
+                            </span>
                         </div>
-                    </Dropdown>
+                    </Dropdown> */}
+                    <div>
+                        <span className=' cursor-pointer' style={{display:'inline-block'}} >
+                                <Badge >
+                                    <Avatar 
+                                        size={70}
+                                        icon={!this.props.user.info || !this.props.user.info.user || !this.props.user.info.user.avatar ? 'user' : null}
+                                        src={!this.props.user.info || !this.props.user.info.user || !this.props.user.info.user.avatar ? null : this.props.user.info.user.avatar} />
+                                </Badge>
+                            </span>
+                            <span style={{display:'inline-block'}} className=' subtitle1 cursor-pointer margin-left-md'>
+                                {this.props.user.info.user.fullName}
+                                <div onClick={() => {this.props.router.push(routePaths.profile.as(_.get(this.props, ['user', 'info', 'user'])).pathname)}}> See your profile</div>
+                            </span>
+                        </div>
                 </span>
             );
         } else {
@@ -904,10 +920,10 @@ class LayoutV2 extends React.Component {
                         <Col xs={24} sm={24} md={24} lg={24} xl={24} >
                         <Mobile>
                             <div id="menu-bar" className="topnav" style={{ position: 'sticky', top: 0, zIndex: '99', minHeight: '100px', backgroundColor: '#000000' }}>
-                                <Row type="flex" align="middle" className='padding-x-md' >
+                                <Row type="flex" align="middle" className='padding-x-sm' >
                                     <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                                         <div className='flex-justify-start flex-items-align-center topnav-child'  >
-                                            <span className='d-inline-block relative-wrapper margin-right-md cursor-pointer' style={{ height: '62px', width: '214px' }} onClick={(e) => { this.props.history.push('/') }}>
+                                            <span className='d-inline-block relative-wrapper margin-right-md cursor-pointer' style={{ height: '62px', width: '214px' }} onClick={(e) => { this.props.router.push('/') }}>
                                                 <img alt="ccar" className="fill-parent absolute-center" src="/assets/ccar-header-logo.svg" />
                                             </span>
                                         </div>
@@ -1030,11 +1046,11 @@ class LayoutV2 extends React.Component {
                                                     </Col>
                                                 </Row>
 
-                                                <div style={{fontSize:'16px', margin:'10px 10px 10px 0px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '10' ? 'yellow' : ''}`} onClick={() => {this.props.router.push(routePaths.profileWishLists.as(profile).pathname)}}> 
+                                                <div style={{fontSize:'16px', margin:'10px 10px 10px 0px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '16' ? 'yellow' : ''}`} onClick={() => {this.props.router.push(routePaths.profileWishLists.as(_.get(this.props, ['user', 'info', 'user'])).pathname)}}> 
                                                     <img src="/assets/Archive/wishlist.png" style={{width:'10%', marginRight:'10px'}}></img>My Wishlist</div>
-                                                <div style={{fontSize:'16px', margin:'10px 10px 10px 0px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '10' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/setting')}}> 
+                                                <div style={{fontSize:'16px', margin:'10px 10px 10px 0px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '20' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/setting')}}> 
                                                     <img src="/assets/Archive/setting.png" style={{width:'10%', marginRight:'10px'}}></img>Setting </div>
-                                                <div style={{fontSize:'16px', margin:'10px 10px 10px 0px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '10' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/faq')}}> 
+                                                <div style={{fontSize:'16px', margin:'10px 10px 10px 0px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '15' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/faq')}}> 
                                                     <img src="/assets/Archive/faq.png" style={{width:'10%', marginRight:'10px'}}></img>FAQ</div>
 
                                                 <div style={{fontSize:'16px', margin:'10px 10px 10px 0px'}} onClick={() => { this.props.router.push(routePaths.logout.as().pathname)}}>
@@ -1049,7 +1065,7 @@ class LayoutV2 extends React.Component {
                                             : 
             
                                             <div>
-                                                <div className="margin-bottom-xs padding-sm" style={{backgroundImage: `url("${menuLogin}")`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', height: '15vh', backgroundPosition:'center'}}>
+                                                <div className="margin-bottom-xs padding-sm" style={{backgroundImage: `url("${menuLogin}")`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', height: '20vh', backgroundPosition:'center', position:'relative'}}>
                                                     <div>
                                                         <span style={{marginRight:'10px'}}>
                                                             <img src="https://img.icons8.com/windows/32/ffffff/user-male-circle.png"/>
@@ -1059,11 +1075,13 @@ class LayoutV2 extends React.Component {
                                                     {/* <div className="flex-justify-center">
                                                         {this._renderUserRes(profileMenu)}
                                                     </div> */}
-                                                    <div>
-                                                    <Button className=" background-ccar-button-yellow black border-ccar-button-yellow text-align-center cursor-pointer round-border" onClick={() => { this.props.loginMode(true) }}>
-                                                        Login
-                                                    </Button>
-                                                </div>
+                                                    
+                                                    <div className="login-center">
+                                                        <Button style={{borderRadius:'20px'}} className="background-ccar-button-yellow black border-ccar-button-yellow cursor-pointer padding-x-xl" onClick={() => { this.props.loginMode(true) }}>
+                                                            Login
+                                                        </Button>
+                                                    </div>
+                                                    
                                                 </div>
 
                                                 {/* <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '1' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/')}}> Home</div> */}
@@ -1159,6 +1177,11 @@ class LayoutV2 extends React.Component {
                                             <span className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '9' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/socialVideos') }} > Social Videos</span>
                                             <span className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '7' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/petrolprice') }} > Petrol Price</span>
                                             <span className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '8' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/kpp') }} > Driving School</span>
+                                            { _.get(this.props.user, ['authenticated']) ?
+                                                <span className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '10' ? 'yellow' : ''}`} onClick={() => {this.props.router.push(routePaths.profile.as(_.get(this.props, ['user', 'info', 'user'])).pathname)}}> Profile</span>
+                                                :
+                                                null 
+                                            }
                                         </div>
                                     </Col>
                                 </Row>

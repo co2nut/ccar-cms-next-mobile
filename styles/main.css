@@ -189,6 +189,13 @@
     cursor: pointer;
 }
 
+.wrap-product-ads-img-compare {
+    height: 10em;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+}
+
 .wrap-carplate-ads-img {
     overflow: hidden;
     position: relative;
@@ -284,6 +291,20 @@
     object-fit: cover;
     height: 100%;
     padding: 5px;
+}
+
+.head-product-ads-img-grid-compare {
+    display: block;
+    max-width: -webkit-fill-available;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    object-fit: cover;
+    height: 100%;
+    padding: 0px;
 }
 
 .compare-head-product-ads-img {
@@ -1117,4 +1138,13 @@ f
     top: 4px !important;
     width: 22px !important;
     height: 22px !important;
+}
+
+.login-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }

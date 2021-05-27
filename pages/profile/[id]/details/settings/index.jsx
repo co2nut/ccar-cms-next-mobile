@@ -13,7 +13,7 @@ const Index = (props) => {
         <ReduxPersistWrapper cookie={props.cookie}>
             {
                 props.app.initedRedux ?
-                <SettingPage />
+                <SettingPage /> 
                     :
                     null
             }

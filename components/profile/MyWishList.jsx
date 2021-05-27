@@ -8,10 +8,10 @@ import { arrayLengthCount, convertParameterToProductListUrl, notEmptyLength, rem
 import { setUser } from '../../redux/actions/user-actions';
 import Wishlist from '../general/Wishlist';
 import ProductList from '../product-list/ProductList';
-import { loading } from '../../redux/actions/app-actions';
+import { loading, updateActiveMenu } from '../../redux/actions/app-actions';
 import client from '../../feathers';
 import { routePaths } from '../../route';
-
+import LayoutV2 from '../general/LayoutV2';
 
 const addVehiclesIcon = "/assets/profile/add-vehicles.png";
 
@@ -26,6 +26,10 @@ const WishListPage = (props) => {
     const [id, setId] = useState(0)
     const [page, setPage] = useState(1)
     const [profile, setProfile] = useState({});
+
+    useEffect(() => { 
+        props.updateActiveMenu('10')
+    } , [])
 
     useEffect(() => {
         if (_.isPlainObject(props.data) && !_.isEmpty(props.data)) {
@@ -121,17 +125,6 @@ const WishListPage = (props) => {
                             My Wishlist
                         </div>
                     </Col>
-
-                    {
-                        arrayLengthCount(wishList) > 0 ?
-                            <Col xs={{ span: 12 }} sm={{ span: 12 }} md={{ span: 12 }} lg={{ span: 6 }} xl={{ span: 6 }} >
-                                <div className="fill-parent flex-items-align-center flex-justify-end">
-                                    <Pagination simple current={page} total={total} pageSize={PAGESIZE} onChange={(page) => { setPage(page) }} />
-                                </div>
-                            </Col>
-                            :
-                            null
-                    }
                 </Row >
             </div>
         );
@@ -170,14 +163,27 @@ const WishListPage = (props) => {
 
 
     return (
-        <Row>
-            <Col span={24} >
-                {_wishlistTitle()}
-            </Col>
-            <Col span={24} className="margin-top-sm">
-                {_renderGridView(wishList ? wishList : [])}
-            </Col>
-        </Row>
+        <LayoutV2>
+            <Row>
+                <Col span={24} >
+                    {_wishlistTitle()}
+                </Col>
+                <Col span={24} className="margin-top-sm">
+                    {_renderGridView(wishList ? wishList : [])}
+                </Col>
+                {
+                    arrayLengthCount(wishList) > 0 ?
+                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 6 }} xl={{ span: 6 }} >
+                            <div className="text-align-center">
+                                <Pagination simple current={page} total={total} pageSize={PAGESIZE} onChange={(page) => { setPage(page) }} />
+                            </div>
+                        </Col>
+                        :
+                        null
+                    }
+            </Row>
+        </LayoutV2>
+        
     );
 }
 
@@ -190,7 +196,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-
+    updateActiveMenu: updateActiveMenu,
     loading: loading,
     setUser: setUser,
 };

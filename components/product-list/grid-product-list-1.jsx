@@ -1,4 +1,4 @@
-import { Button, Col, Empty, Row } from 'antd';
+import { Button, Col, Empty, Row, Icon } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -189,7 +189,7 @@ const GridProductListCompare = (props) => {
         let normalPrice =
             (<div className="wrap-product-ads-price">
                 <h4>RM {formatMoney((v.price).toString())}</h4>
-                <Row><Col xs={14} sm={14} md={16} lg={16} xl={16}><span className='installmentPrice'>RM {formatMoney((calMonth(v.price)).toString())}/month</span></Col></Row>
+                <Row><Col xs={24} sm={24} md={16} lg={16} xl={16}><span className='installmentPrice'>RM {formatMoney((calMonth(v.price)).toString())}/month</span></Col></Row>
             </div>)
 
         function renderShowPrice(price, discountedPrice) {
@@ -197,14 +197,15 @@ const GridProductListCompare = (props) => {
             const pattern = /\.(\d*?)0+(\D*)$/gm;
             return (
                 <div className="wrap-product-ads-price" >
-                    <div style={{display:'inline-block', width:'49%'}}>
+                    <div style={{display:'inline-block', width:'100%'}}>
                         <p style={{fontWeight:'700'}} className='gridMoneyText'> RM {formatMoney((price).toString())}</p> 
-                        <p style={{fontWeight:'700'}} className='gridMoneyText' style={{ color: '#395589' }}>RM {formatMoney((calMonth(v.price)).toString())}/month</p>
+                        <p style={{ color: '#000000', fontWeight:'700'}}>RM {formatMoney((discountedPrice).toString())}</p>
+                        {/* <p style={{fontWeight:'700'}} className='gridMoneyText' style={{ color: '#395589' }}>RM {formatMoney((calMonth(v.price)).toString())}/month</p> */}
                     </div>
-                    <div style={{display:'inline-block', width:'49%', marginLeft:'5px'}}>
+                    {/* <div style={{display:'inline-block', width:'100%'}}>
                         <p style={{ color: '#000000', fontWeight:'700'}}>RM {formatMoney((discountedPrice).toString())}</p>
                         <p style={{ color: '#395589', fontWeight:'700'}}> RM {formatMoney((calMonth(discountedPrice)).toString())}/month </p>
-                    </div>
+                    </div> */}
                     {/* <span className='gridMoneyText'>RM {formatMoney((price).toString())}</span>
                     <span className="wrap-condition wrap-product-ads-discount-spicydeal" >{(((100 * (price - discountedPrice) / price) * -1).toFixed(1).toString()).replace(pattern, '') + '%'}</span>
                     <h4 style={{color: '#FBB040' }}>RM {formatMoney((discountedPrice).toString())}</h4>
@@ -330,7 +331,7 @@ const GridProductListCompare = (props) => {
 
                             return (
                                 <Col key={'product' + i}
-                                    style={{ padding:'5px' }}
+                                    style={{ paddingLeft:'5px', paddingRight:0, paddingTop:0, paddingBottom:0 }}
                                     className='gridDataList'
                                     xs={props.xs ? props.xs : 24}
                                     sm={props.sm ? props.sm : 24}
@@ -338,179 +339,42 @@ const GridProductListCompare = (props) => {
                                     lg={props.lg ? props.lg : 8}
                                     xl={props.xl ? props.xl : 8} >
                                     <div className="box-shadow-thin" key={'listDiv' + i} >
-                                        <div className={_renderLayout(v)} style={{height:'400px'}}>
-                                            <div className="wrap-product-ads-img">
-                                                <Link shallow={false} href={routePaths.viewCarDetails.to || '/'} as={typeof (routePaths.viewCarDetails.as) == 'function' ? routePaths.viewCarDetails.as(v) : '/'}>
-                                                    <a>
-                                                        <React.Fragment>
-                                                            <div className="overlay-condition">
-                                                                {_renderCondition(v)}
-                                                            </div>
-                                                            <div className="overlay-state">
-                                                                {_renderState(v)}
-                                                            </div>
-                                                            {
-                                                                v.priority === 'addonKingadType' || v.priority === 'addonKingadType2' || v.priority === 'addonKingadType3' ?
-                                                                    <div className="flex-justify-center flex-items-align-start width-100" style={{ position: 'absolute', top: 0, zIndex: 2 }}>
-                                                                        <img src={rayaLamp} style={{ width: 200, height: 200 }} />
-                                                                    </div>
-                                                                    :
-                                                                    null
-                                                            }
-                                                            <div className="width-100 cursor-pointer flex-justify-end flex-items-align-center" style={{ position: 'absolute', bottom: 0, zIndex: 2 }}>
-                                                                {/* <span className='d-inline-block ' >
-                                                                    {_renderPrice(v)}
-                                                                </span> */}
-                                                                <span className='d-inline-block margin-x-sm ' >
-                                                                    {
-                                                                        v.priority === 'addonSpicydeal' || v.priority === 'addonKingadType' || v.priority === 'addonKingadType2' ?
-                                                                            <img src={rayaFlame} style={{ width: 50, height: 50 }} />
-                                                                            :
-                                                                            v.priority === 'addonSpotlight' || v.priority === 'addonKingadType3' ?
-                                                                                <img src={rayaFood} style={{ width: 50, height: 50 }} />
-                                                                                :
-                                                                                <img src="/assets/Ccar-Spotlight.gif" style={{ width: 30, height: 30, marginBottom:'10px', marginRight:'5px' }}/>
-                                                                    }
-                                                                </span>
-                                                            </div>
-                                                            <div>
-                                                                {
-                                                                    notEmptyLength(v.carUrl)
-                                                                        ? <img src={v.carUrl[0].url} style={{ maxInlineSize: '-webkit-fill-available' }} className="head-product-ads-img-grid" key={0} />
-                                                                        : <img src={'/image-not-found.png'} className="head-product-ads-img-grid" key={-1} />
-                                                                }
-
-                                                            </div>
-                                                        </React.Fragment>
-                                                    </a>
-                                                </Link>
+                                        <div style={{height:'280px'}}>
+                                            <div className="wrap-product-ads-img-compare">
+                                                <React.Fragment>
+                                                    <div>
+                                                        {
+                                                            notEmptyLength(v.carUrl)
+                                                            ? <img src={v.carUrl[0].url} style={{ maxInlineSize: '-webkit-fill-available' }} className="head-product-ads-img-grid-compare" key={0} />
+                                                            : <img src={'/image-not-found.png'} className="head-product-ads-img-grid" key={-1} />
+                                                        }
+                                                    </div>
+                                                </React.Fragment>
                                                 <span className="text-align-right gridTopRight">
-                                                    {props.topRight ? props.topRight(v) : null}</span>
-                                                {
-                                                    _.get(v, ['readyStock']) == 'Yes'
-                                                        ? <span className="text-align-right avatar background-green readyStockDot"></span>
-                                                        : null
-                                                }
+                                                    {props.topRight ? props.topRight(v) : null}
+                                                </span>
                                             </div>
                                             <div className="wrap-product-ads-text relative-wrapper">
+                                                <div className="wrap-product-ads-title">
+                                                    <div className='text-truncate-twoline text-align-center'><label style={{ fontSize: 12 }}>{v.title}</label></div>
+                                                </div>
+                                                <Row style={{height:'42px'}}>
+                                                    <Col span={24} style={{textAlign:'center'}}>
+                                                        {_renderPrice(v)}
+                                                    </Col>
+                                                </Row>
+                                            </div>
 
-                                                {
-
-                                                    props.body ?
-                                                        props.body(v)
-                                                        :
-                                                        props.body === null ?
-                                                            null
-                                                            :
-                                                            <React.Fragment>
-
-                                                                {
-                                                                    v.priority === 'addonSpicydeal' || v.priority === 'addonKingadType' || v.priority === 'addonKingadType2' ?
-                                                                        <img src={rayaMosque} style={{ width: 100, height: 100, position: 'absolute', bottom: 50, right: 10 }} />
-                                                                        :
-                                                                        v.priority === 'addonSpotlight' || v.priority === 'addonKingadType3' ?
-                                                                            <img src={rayaPeople} style={{ width: 100, height: 100, position: 'absolute', bottom: 50, right: 10 }} />
-                                                                            :
-                                                                            null
-                                                                }
-                                                                <div className="wrap-product-ads-title">
-                                                                    <Link shallow={false} passHref href={routePaths.viewCarDetails.to || '/'} as={typeof (routePaths.viewCarDetails.as) == 'function' ? routePaths.viewCarDetails.as(v) : '/'} >
-                                                                        <a>
-                                                                            <div className='text-truncate-twoline'><label style={{ fontSize: 16 }}>{v.title}</label></div>
-                                                                        </a>
-                                                                    </Link>
-                                                                </div>
-
-                                                                <div className="wrap-product-ads-title-p text-overflow-break">
-                                                                    <Row>
-                                                                        <Col span={20}>
-                                                                            <p>
-                                                                                {v.carspecsAll ?
-                                                                                    v.carspecsAll.transmission + ' | ' +
-                                                                                    renderMileageRange(v.mileage, v.mileage2) + ' | ' +
-                                                                                    (v.color ? v.color.toUpperCase() : '')
-                                                                                    : ''}
-                                                                            </p>
-                                                                        </Col>
-                                                                    </Row>
-                                                                </div>
-
-                                                                <Row className="margin-bottom-xs">
-                                                                    <Col xs={24} sm={24} md={18} lg={18} xl={18} >
-                                                                        <Row >
-                                                                            <Col span={20}>
-                                                                                <p className='gridDealerName'>{v.createdBy ? v.createdBy.namePrefix : null}
-                                                                                    {v.createdBy ? v.createdBy.firstName : null}
-                                                                                    {v.createdBy ? v.createdBy.lastName : null} </p>
-                                                                            </Col>
-                                                                        </Row>
-                                                                        <Row>
-                                                                            <Col span={20}>
-                                                                                <p style={{ fontSize: '14px' }} className="product-ads-company">{companyName} </p>
-                                                                            </Col>
-                                                                        </Row>
-                                                                        {/* <Row>
-                                                                            <Col span={20}>
-                                                                                <p style={{ fontSize: '14px', textTransform: 'uppercase' }} className="product-ads-company">{areaName} </p>
-                                                                            </Col>
-                                                                        </Row> */}
-                                                                        <Row style={{height:'42px'}}>
-                                                                            <Col span={24}>
-                                                                                {_renderPrice(v)}
-                                                                            </Col>
-                                                                        </Row>
-                                                                    </Col>
-                                                                </Row>
-
-                                                            </React.Fragment>
-
-                                                }
-
-                                                {
-                                                    props.footer ?
-                                                        props.footer(v)
-                                                        :
-                                                        props.footer === null ?
-                                                            null
-                                                            :
-                                                            <Row type="flex" justify="start" align="middle" className='w-100' gutter={[2.5, 0]}>
-                                                                <Col xs={4} sm={4} md={4} lg={4} xl={4}><WhatsAppButton1 mobileNumber={v ? v : null} /></Col> 
-                                                                <Col xs={4} sm={4} md={4} lg={4} xl={4}><ContactList1 companys={v.companys ? v.companys : null} contactPerson={notEmptyLength(v.createdBy) ? v.createdBy : null} /></Col>
-                                                                <Col xs={4} sm={4} md={4} lg={4} xl={4}><AddCompareProductButton1 data={v} /></Col>
-                                                                <Col xs={4} sm={4} md={4} lg={4} xl={4}>
-                                                                    <Car360ViewButton id={v.xmlUrl ? v._id : null}>
-                                                                        {/* <Tooltip title="360&deg; View"> */}
-                                                                        <Button type="normal" className={`w-100 ads-purchase-button ${v.xmlUrl ? 'cursor-pointer' : 'cursor-not-allowed '}`} style={{ padding: 0, background: v.xmlUrl ? 'rgb(85,204,212)' : 'rgb(237, 236, 234)', borderColor: v.xmlUrl ? 'rgb(85,204,212)' : 'rgb(237, 236, 234)' }}><img src="/assets/profile/icon-list/Ccar-360_1.gif" /></Button>
-                                                                        {/* </Tooltip> */}
-                                                                    </Car360ViewButton>
-                                                                </Col>
-                                                                <Col xs={4} sm={4} md={4} lg={4} xl={4}>
-                                                                    {
-                                                                        _.isArray(v.registrationUrl) && notEmptyLength(v.registrationUrl) ?
-                                                                            <RegisterCard key='register' button={
-                                                                                // [<Tooltip key='tooltipsregister' title="Registration Card">
-                                                                                //   <Button type="normal" className="w-100 ads-purchase-button" style={{ padding: 0, background: 'rgb(209 ,110, 132)', borderColor: 'rgb(209 ,110, 132)' }}><img src="/assets/CarListingIconMobile/registration-card.png" /></Button>
-                                                                                // </Tooltip>]
-                                                                                [
-                                                                                    <Button key='btnRegister' type="normal" className="w-100 ads-purchase-button" style={{ padding: 0, background: 'rgb(209 ,110, 132)', borderColor: 'rgb(209 ,110, 132)' }}><img src="/assets/profile/icon-list/carmarket-bar-icon/reg-card.png" /></Button>
-                                                                                ]
-                                                                            } registrationUrl={v.registrationUrl} />
-                                                                            :
-                                                                            <div className="width-100">
-                                                                                {/* <Tooltip key='tooltipsregister' title="Registration Card"> */}
-                                                                                <Button type="normal" className="width-100 ads-purchase-button cursor-not-allowed" style={{ padding: 0, background: 'rgb(237, 236, 234)', borderColor: 'rgb(237, 236, 234)' }}><img src="/assets/profile/icon-list/carmarket-bar-icon/reg-card.png" /></Button>
-                                                                                {/* </Tooltip> */}
-                                                                            </div>
-                                                                    }
-                                                                </Col>
-                                                                <Col xs={4} sm={4} md={4} lg={4} xl={4}>
-                                                                    <CalculatorModal key='calculator' data={{ price: v.searchPrice, downpayment: v.searchPrice * 0.1, loanPeriod: 9, interestRate: 3 }} />
-                                                                </Col>
-                                                            </Row>
-                                                }
+                                            <div className="text-align-center">
+                                            <Button style={{backgroundColor:'#ffcc32'}}>
+                                                <Link shallow={false} passHref href={routePaths.viewCarDetails.to || '/'} as={typeof (routePaths.viewCarDetails.as) == 'function' ? routePaths.viewCarDetails.as(v) : '/'} >
+                                                    <a>
+                                                        <Icon type="search" />
+                                                    </a>
+                                                </Link>
+                                            </Button>
                                             </div>
                                         </div>
-
                                     </div>
                                 </Col>
                             )
