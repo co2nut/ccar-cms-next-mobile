@@ -139,6 +139,10 @@
 .xl-padding-modal-body .ant-modal-body {
     padding: 3em !important;
 }
+.no-shadow-modal-body .ant-modal-content {
+    box-shadow: none !important;
+}
+
 
 .affix-element-show-on-modal .ant-affix {
     z-index: 1001 !important;
@@ -438,6 +442,12 @@ video {
     color: #ffffff;
 }
 
+.header-no-padding .ant-drawer-header{
+    padding : 0px;
+}
+.body-no-padding .ant-drawer-body{
+    padding : 0px;
+}
 .kpp .ant-drawer-body{
     padding: 0px;
 }

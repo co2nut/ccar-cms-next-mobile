@@ -18,6 +18,9 @@ export const clubNonMember = '/assets/car-freak/non-member.png'
 export const uploadPhoto = '/assets/upload_photo.png';
 export const calendarIcon = '/assets/car-freak/calendar.png';
 export const pinIcon = '/assets/car-freak/pin.png';
+export const createCarFreakIcon = '/assets/car-freak/CarFreaks.png';
+export const createSocialBoardIcon = '/assets/car-freak/social-board.png';
+export const carFreakReplyIcon = '/assets/car-freak/reply.png';
 
 //Car Market
 export const carspecNotFoundImage = '/coming-soon.png'
@@ -90,6 +93,7 @@ export const bellInactive = '/assets/notification/bell.png';
 
 //Review
 export const ratingBanner = '/assets/car-review/rating.png';
+export const threedots = '/3-dots.png'
 
 //Menu
 export const menuLogin = '/assets/menu-icon/Nologin.png';

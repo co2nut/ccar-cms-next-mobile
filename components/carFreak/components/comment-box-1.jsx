@@ -14,6 +14,8 @@ import { loading, loginMode } from '../../../redux/actions/app-actions';
 import { getObjectId, getPlural, getUserName, notEmptyLength, objectRemoveEmptyValue } from '../../../common-function';
 import UserAvatar from '../../general/UserAvatar';
 import ParseTag from '../../general/ParseTag';
+import { carFreakLikeGreyIcon, carFreakLikeIcon, carFreakReplyIcon } from '../../../icon';
+import ScrollLoadWrapper from '../../general/ScrollLoadWrapper';
 
 
 
@@ -43,6 +45,10 @@ const CommentBox1 = (props) => {
     const [messageTotal, setMessageTotal] = useState(0);
     const [loading, setIsLoading] = useState(false);
     const [focusIndicator, setFocusIndicator] = useState(null);
+    const [resetIndicator, setResetIndicator] = useState(null);
+
+    const [typeMessage, setTypeMessage] = useState('')
+    const [replyTypeMessage, setReplyTypeMessage] = useState('')
 
 
 
@@ -179,6 +185,7 @@ const CommentBox1 = (props) => {
                 }).then(res1 => {
                     setText('');
                     setCanSendMessage(false);
+                    setResetIndicator(v4())
                     res1.userId = res.user;
                     setMessages(messages.concat([res1]));
                     setMessageTotal(messageTotal + 1);
@@ -246,51 +253,73 @@ const CommentBox1 = (props) => {
                         </span>
                         {
                             editMode ?
-                                <SocialInput
-                                    placeholder="What's on your mind?"
-                                    editMode
-                                    clickOutsideSubmit
-                                    excludeEnter
-                                    clubId={props.clubId}
-                                    text={`${_.get(comment, ['message']) || ''}`}
-                                    emojiPosition={{ right: 33, bottom: 0 }}
-                                    onSubmit={(text) => {
-                                        handleSubmit(text);
-                                        setEditMode(false);
-                                    }}
-                                />
+                                <div className="width-100 background-white">
+                                    <div className="flex-justify-space-around flex-items-align-center">
+                                        <span className='d-inline-block width-80' >
+                                            <SocialInput
+                                                placeholder="What's on your mind?"
+                                                text={`${_.get(comment, ['message']) || ''}`}
+                                                editMode
+                                                clickOutsideSubmit
+                                                maxLength={1000}
+                                                size="small"
+                                                onChange={(v, finalText) => {
+                                                    setTypeMessage(finalText)
+                                                }}
+                                                clubId={props.clubId}
+                                                hideEmojiPicker
+                                                autoFocus={true}
+                                                excludeEnter
+                                                onSubmit={(text) => {
+                                                    handleSubmit(text);
+                                                    setEditMode(false);
+                                                }}
+                                            />
+                                        </span>
+                                        <span className='d-inline-block cursor-pointer blue caption font-weight-bold' onClick={(e) => { handleSubmit(typeMessage) }} >
+                                            Save
+                                        </span>
+                                    </div>
+                                </div>
                                 :
                                 <ParseTag data={_.get(comment, ['message']) || ''} className="width-100 text-overflow-break" />
                         }
-                        <div className="width-100 flex-justify-start flex-items-align-center" style={{ padding: 0 }}>
-                            <span className="small-text margin-right-md grey font-weight-light" >{getPlural('Like', 'Likes', totalLike, true)}</span>
-                            <span className="small-text margin-right-md grey font-weight-light  cursor-pointer" onClick={() => { setExpandReplyKey(expandReplyKey ? null : '1'); setFocusIndicator(v4()) }} >{getPlural('Reply', 'Replies', messageTotal, true)}</span>
-                        </div>
 
-                        <div className="width-100" style={{ padding: 0 }}>
-                            <span className="margin-right-sm small-text">{moment(comment.createdAt).fromNow()}</span>
-                            <LikePostButton className="margin-right-sm" likeOn="message"
+                        <div className="width-100 flex-items-align-center padding-y-xs">
+                            <span className="margin-right-md small-text font-weight-thin">{moment(comment.createdAt).fromNow()}</span>
+                            <LikePostButton className="margin-right-xs" likeOn="message"
                                 autoHandle
                                 messageId={_.get(comment, ['_id'])} onClick={(actived) => {
                                     setTotalLike(actived ? totalLike + 1 : totalLike - 1)
                                 }}
-
                                 activeButton={
-                                    <span className="small-text blue font-weight-light cursor-pointer">Liked</span>
+                                    <div className="flex-items-align-center small-text font-weight-thin grey">
+                                        <img src={carFreakLikeIcon} style={{ width: 20, height: 15 }} className="margin-right-sm cursor-pointer" />
+                                        {getPlural('Like', 'Likes', totalLike || 0, true)}
+                                    </div>
                                 }
-                            >
-                                <span className="small-text grey font-weight-light cursor-pointer">Like</span>
+                                className='d-inline-block margin-right-md'>
+                                <div className="flex-items-align-center small-text font-weight-thin grey">
+                                    <img src={carFreakLikeGreyIcon} style={{ width: 20, height: 15 }} className="margin-right-sm cursor-pointer" />
+                                    {getPlural('Like', 'Likes', totalLike || 0, true)}
+                                </div>
                             </LikePostButton>
-                            <span className="small-text margin-right-sm grey font-weight-light cursor-pointer" onClick={() => {
+                            <span className="small-text margin-right-xs grey font-weight-light cursor-pointer" onClick={() => {
                                 setExpandReplyKey('1');
                                 addAlias(getUserName(_.get(comment, ['userId']), 'freakId') || '', getObjectId(_.get(comment, ['userId'])) || '')
-                            }}>Reply</span>
+                            }}>
+                                <div className="flex-items-align-center small-text font-weight-thin grey">
+                                    <img src={carFreakReplyIcon} style={{ width: 15, height: 15 }} className="margin-right-sm cursor-pointer" />
+                                    {getPlural('Reply', 'Replies', messageTotal || 0, true)}
+                                </div>
+                            </span>
                         </div>
                         <div className="width-100">
                             <Collapse className="collapse-no-header border-none collapse-body-no-padding collapse-body-overflow-visible" activeKey={expandReplyKey} >
                                 <Collapse.Panel key="1" showArrow={false}>
                                     <div className="width-100">
                                         <div className="padding-left-xl margin-y-sm">
+                                            <ScrollLoadWrapper autoHeight autoHeightMax={200}>
                                             {
                                                 _.map(messages, function (v) {
                                                     return (
@@ -314,54 +343,36 @@ const CommentBox1 = (props) => {
                                                     )
                                                 })
                                             }
+                                            </ScrollLoadWrapper>
                                         </div>
                                     </div>
                                     <div>
 
-                                        <SocialInput
-                                            placeholder="What's on your mind?"
-                                            editMode={textEditMode}
-                                            text={text || ''}
-                                            inputRef={commentInputRef}
-                                            excludeEnter
-                                            clubId={props.clubId}
-                                            emojiPosition={{ bottom: 0, right: 33 }}
-                                            onChange={(text, finalText) => {
-                                                if (!text) {
-                                                    setText('');
-                                                }
-                                            }}
-                                            focusIndicator={focusIndicator}
-                                            onSubmit={(text) => {
-                                                handleReplySubmit(text);
-                                            }}
-                                        />
-                                        {/* <Input
-                                            placeholder="What's on your mind?"
-                                            maxLength={1000}
-                                            ref={commentInputRef}
-                                            size="small"
-                                            onPressEnter={(e) => {
-                                                handleReplySubmit();
-                                            }}
-                                            autoFocus={true}
-                                            value={text}
-                                            onChange={(e) => {
-                                                setText(e.target.value)
-                                            }}
-                                            suffix={
-                                                <EmojiPickerButton
-                                                    className="emoji-mart-small"
-                                                    onSelect={(emoji) => {
-                                                        let originalMsg = message || ''
-                                                        originalMsg = message + emoji.native
-                                                        setText(originalMsg)
+                                        <div className="flex-justify-space-around flex-items-align-center">
+                                            <span className='d-inline-block width-80' >
+                                                <SocialInput
+                                                    placeholder="What's on your mind?"
+                                                    editMode={textEditMode}
+                                                    text={text || ''}
+                                                    inputRef={commentInputRef}
+                                                    excludeEnter
+                                                    maxLength={1000}
+                                                    size="small"
+                                                    onChange={(text, finalText) => {
+                                                        setReplyTypeMessage(finalText)
                                                     }}
-                                                    position={{ bottom: 0, right: 33 }}
-                                                >
-                                                    <Icon type="smile" className='cursor-pointer grey margin-right-sm margin-top-xs' style={{ fontSize: '17px' }} />
-                                                </EmojiPickerButton>
-                                            } /> */}
+                                                    clubId={props.clubId}
+                                                    hideEmojiPicker
+                                                    autoFocus={true}
+                                                    excludeEnter
+                                                    focusIndicator={focusIndicator}
+                                                    resetIndicator={resetIndicator}
+                                                />
+                                            </span>
+                                            <span className='d-inline-block cursor-pointer ccar-button-yellow caption font-weight-bold' onClick={(e) => { handleReplySubmit(replyTypeMessage) }} >
+                                                Send
+                                        </span>
+                                        </div>
                                     </div>
                                 </Collapse.Panel>
                             </Collapse>

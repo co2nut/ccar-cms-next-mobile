@@ -1270,7 +1270,7 @@ class LayoutV2 extends React.Component {
             buttonText="Got it !"
             cookieName="consent"
             cookieValue={true}
-            style={{ background: "#2B373B" }}
+            style={{ background: "#2B373B", zIndex: 1003 }}
             buttonStyle={{ color: "#4e503b", fontSize: "13px" }}
             expires={365}
             onAccept={() => {
