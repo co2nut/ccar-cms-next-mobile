@@ -945,6 +945,7 @@ class LayoutV2 extends React.Component {
                                                 onClose={this.onClose}
                                                 visible={this.state.visible}
                                                 width = {'100%'}
+                                                zIndex = {2000}
                                             >
                                                 { _.get(this.props.user, ['authenticated']) ?
                                                 <div>

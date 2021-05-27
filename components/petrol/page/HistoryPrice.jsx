@@ -355,7 +355,7 @@ const HistoryPrice = (props) => {
                         </div>
 
                         <Card className="card-padding-0 price" style={{marginTop:'10px'}} >
-                            <Table className={body} scroll={{ y: 300 }} dataSource={tableData} columns={petrol} pagination={false} rowKey="_id" header={false} />
+                            <Table className={body} scroll={{ y: 300 }} dataSource={tableData} columns={petrol} pagination={false} rowKey="_id" title={false} />
                         </Card>
 
                         <div className="margin-top-md" style={{fontSize:'18px', fontWeight:'500', color:'#ffcc32', textDecoration:'underline'}}>Diesel</div>

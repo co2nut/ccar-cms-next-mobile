@@ -422,7 +422,7 @@ const fuelpriceindex = (props) => {
 
                         <Row className="margin-top-lg">
                             <Col span={24}>
-                                <div style={{height:'120px', overflow: 'scroll', lineHeight: '1.6', textAlign:'justify' }}>
+                                {/* <div style={{height:'120px', overflow: 'scroll', lineHeight: '1.6', textAlign:'justify' }}> */}
                                 <p>
                                     The table above shows the latest retail price for Petrol RON95, RON97 and Diesel set by Ministry of Domestic Trade and Consumer Affairs (KPDNHEP). 
                                     The official Petrol Price in Malaysia will be announced on every Friday or as announched by KPDNHEP.  
@@ -432,7 +432,7 @@ const fuelpriceindex = (props) => {
                                     invovled in implementation of the petrol price adjustments. Ccar.my will not be responsible nor liable for any losses or damages that caused to you by any
                                     circumstances and inaccurancy of the information.
                                 </p>
-                                </div>
+                                {/* </div> */}
                             </Col>
                         </Row>
 

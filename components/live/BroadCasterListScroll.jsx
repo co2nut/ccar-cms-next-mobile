@@ -13,7 +13,6 @@ import { withRouter } from 'next/router';
 import { loading } from '../../redux/actions/app-actions';
 import { setUser } from '../../redux/actions/user-actions';
 
-
 const itemCol = {
     xs: 6,
     sm: 6,
