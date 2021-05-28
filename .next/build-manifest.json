@@ -20,11 +20,11 @@
     "/_polyfills": [
       "static/runtime/polyfills.js"
     ],
-    "/car-freaks": [
+    "/profile/[id]": [
       "static/runtime/webpack.js",
       "static/runtime/main.js"
     ],
-    "/history-price": [
+    "/social-board": [
       "static/runtime/webpack.js",
       "static/runtime/main.js"
     ]

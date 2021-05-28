@@ -135,23 +135,6 @@ const UserSocialBoard = (props) => {
 
     return (
         <div>
-            {/* {
-                _.get(props.user, ['info', 'user', '_id']) && _.get(props.user, ['info', 'user', '_id']) == _.get(profile, ['_id']) ?
-            <Affix offsetBottom={50} style={{ right: 15 }}>
-                <div className="flex-justify-end flex-items-align-center margin-right-sm">
-                            <div className="border-ccar-yellow" onClick={(e) => {
-                                setEditMode(null);
-                                setWriteModalVisible(true);
-                                setSelectedPost(null);
-                            }}  >
-                                <img src="https://img.icons8.com/ios-filled/60/FFCC32/plus.png" />
-                            </div>
-                        </div>
-                        </Affix>
-                    :
-                    null
-            } */}
-            
             <Row className={`${props.className || ''}`}>
             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                 <InfiniteScrollWrapper
@@ -188,6 +171,22 @@ const UserSocialBoard = (props) => {
                             <Empty></Empty>
                     }
                 </InfiniteScrollWrapper>
+                {
+                _.get(props.user, ['info', 'user', '_id']) && _.get(props.user, ['info', 'user', '_id']) == _.get(profile, ['_id']) ?
+            <Affix offsetBottom={50} style={{ right: 15 }}>
+                <div className="flex-justify-end flex-items-align-center margin-right-sm">
+                            <div className="border-ccar-yellow" onClick={(e) => {
+                                setEditMode(null);
+                                setWriteModalVisible(true);
+                                setSelectedPost(null);
+                            }}  >
+                                <img src="https://img.icons8.com/ios-filled/60/FFCC32/plus.png" />
+                            </div>
+                        </div>
+                        </Affix>
+                    :
+                    null
+            }
             </Col>
 
             <WritePostModal
