@@ -1,4 +1,4 @@
-import { Col, Form, Icon, message, Row } from 'antd';
+import { Col, Form, Icon, message, Row, Affix, Dropdown, Menu, Avatar } from 'antd';
 import _ from 'lodash';
 import { withRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -10,7 +10,9 @@ import { updateSellerProfile } from '../../redux/actions/sellerProfile-actions';
 import WindowScrollLoadWrapper from '../general/WindowScrollLoadWrapper';
 import UserPosts from './UserPosts';
 import InfiniteScrollWrapper from '../general/InfiniteScrollWrapper';
-
+import PostDrawer from '../carFreak/components/PostDrawer';
+import WritePostDrawer from '../carFreak/components/WritePostDrawer';
+import {createCarFreakIcon, createSocialBoardIcon} from '../../icon';
 
 var moment = require('moment');
 
@@ -23,6 +25,15 @@ const UserCarFreakPosts = (props) => {
     const [postTotal, setPostTotal] = useState(0);
     const [postPage, setPostPage] = useState(1);
     const [postLoading, setPostLoading] = useState(false);
+    const [menuOpened, setMenuOpened] = useState(false)
+    const [chatInfo, setChatInfo] = useState({});
+    const [chats, setChats] = useState([])
+    const [visible, setVisible] = useState(false);
+    const [editMode, setEditMode] = useState()
+    const [userChatLikes, setUserChatLikes] = useState([]);
+    const [selectedPost, setSelectedPost] = useState({});
+    const [writePostChatType, setWritePostChatType] = useState('carfreaks');
+    const [writeModalVisible, setWriteModalVisible] = useState(false)
 
     useEffect(() => {
         getUserChatLikes(_.map(posts, '_id'))
@@ -99,6 +110,17 @@ const UserCarFreakPosts = (props) => {
         }
     }
 
+    useEffect(() => {
+
+        if (_.isPlainObject(chatInfo) && !_.isEmpty(chatInfo)) {
+            let newChatInfo = _.find(chats, function (chat) {
+                return chat._id == chatInfo._id;
+            })
+            setChatInfo(newChatInfo || {})
+        }
+
+    }, [chats])
+
     function getUserChatLikes(ids, concat) {
 
         if (_.isArray(ids) && !_.isEmpty(ids) && _.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', '_id'])) {
@@ -117,6 +139,7 @@ const UserCarFreakPosts = (props) => {
         }
     }
     return (
+        <div>
         <Row className='margin-top-md'>
             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
 
@@ -132,30 +155,140 @@ const UserCarFreakPosts = (props) => {
                     <UserPosts 
                         posts={posts}
                         postLikes={postLikes}
-                        showAddPostCard={_.get(props.user, ['authenticated']) ? _.get(profile, ['_id']) == _.get(props.user, ['info', 'user', '_id']) : false}
-                        onUpdatePost={(data) => {
-                            if (_.isPlainObject(data) && !_.isEmpty(data)) {
-                                let newPosts = _.map(posts, function (post) {
-                                    return post._id == data._id ? data : post;
-                                })
-                                setPosts(newPosts); 
+                        redirectPost
+                        onRedirectToPost={(posts) => {
+                            if (_.get(posts, ['chatType']) == 'event') {
+
+                                // const win = htmlWindow.open(`/event-post/${_.get(post, ['_id'])}`, '_blank');
+                                // if (win != null) {
+                                //     win.focus();
+                                // }
+                            } else {
+                                console.log('redirect');
+                                setChatInfo(post);
+                                setVisible(true);
+                                setEditMode('');
                             }
                         }}
-                        onCreatePost={(data) => {
-                            if (_.isPlainObject(data) && !_.isEmpty(data)) {
-                                let newPosts = _.concat([data], posts)
-                                setPosts(newPosts);
-                            }
+                        onEditClick={(post) => {
+                            setWriteModalVisible(true); 
+                            setSelectedPost(post);
+                            setEditMode('edit');
                         }}
-                        onUpdatePostLikes={(data) => {
-                            if (_.isArray(data) && !_.isEmpty(data)) {
-                                setPostLikes(data);
-                            }
-                        }}
+
+                        onRemoveClick={(post) => {
+                            confirmDelete(post) 
+                        }} 
                     />
                 </InfiniteScrollWrapper>
+                {
+                    menuOpened ?
+                        <div className="background-black-opacity-50 absolute-center" style={{ zIndex: 2 }} >
+                        </div>
+                        :
+                        null
+                }
+            
+                <Affix offsetBottom={70} style={{ position: 'absolute', right: 15 }} >
+                <Dropdown trigger="click" placement="topLeft"
+                    getPopupContainer={() => typeof (document) != undefined ? document.getElementById('writePostAffix') : null}
+                    overlay={
+                        <Menu className="background-transparent box-shadow-none " onClick={(e) => {
+                            setMenuOpened(false)
+                            setWriteModalVisible(true)
+                        }}
+                        >
+                            <Menu.Item key="carfreaks" style={{ padding: '10px 0px' }} >
+                                <div className=" flex-justify-space-between flex-items-align-center" style={{ width: 200 }} >
+                                    <span className='d-inline-block subtitle1 ccar-button-yellow' >
+                                        CarFreaks
+                            </span>
+                                    <span className='d-inline-block avatar padding-sm background-white' >
+                                        <img src={createCarFreakIcon} style={{ height: 30, width: 30 }} />
+                                    </span>
+                                </div>
+                            </Menu.Item>
+                            <Menu.Item key="socialboard" className="white" style={{ padding: '10px 0px' }}>
+                                <div className="flex-justify-space-between flex-items-align-center" style={{ width: 200 }} >
+                                    <span className='d-inline-block subtitle1 ccar-button-yellow' >
+                                        Social Board
+                                    </span>
+                                    <span className='d-inline-block avatar padding-sm background-white' >
+                                        <img src={createSocialBoardIcon} style={{ height: 30, width: 30 }} />
+                                    </span>
+                                </div>
+                            </Menu.Item>
+                        </Menu>}
+                    onVisibleChange={(v) => { setMenuOpened(v) }}>
+
+                    <span className='d-inline-block width-100' id="writePostAffix" >
+                        <Avatar size={50} className="background-ccar-button-yellow" icon={menuOpened ? <Icon type="close" className="white" /> : <Icon type="plus" className="white" />}
+                        />
+                    </span>
+                </Dropdown>
+             </Affix>
             </Col>
         </Row>
+
+        <PostDrawer 
+            data={chatInfo}
+            visible={visible}
+            editMode={editMode}
+            postLike={_.find(userChatLikes, { chatId: _.get(chatInfo, ['_id']) })}
+            onCancel={() => {
+                    setVisible(false);
+                    setChatInfo({});
+                }
+                }
+                onPostLikeChange={(liked, data) => {
+                    if (liked) {
+                        setUserChatLikes(_.concat(userChatLikes, [data]));
+                    } else {
+                        setUserChatLikes(_.filter(userChatLikes, function (like) {
+                            return _.get(like, ['chatId']) != _.get(data, ['chatId']);
+                        }))
+                    }
+                }}
+                onEditClick={(post) => {
+                    setEditMode('edit');
+                    setWriteModalVisible(true);
+                    setSelectedPost(post);
+                }}
+
+                onRemoveClick={(post) => {
+                    confirmDelete(post)
+                    setVisible(false);
+                }}
+
+                onUpdatePost={(data) => {
+                    handlePostChange(data);
+                }}
+            />
+
+                <WritePostDrawer
+                data={selectedPost}
+                editMode={editMode}
+                chatType={writePostChatType || 'socialboard'}
+                visible={writeModalVisible}
+                notify
+                onUpdatePost={(data) => {
+                    handlePostChange(data);
+                }}
+                onCreatePost={(data) => {
+
+                    if (_.get(data, `chatType`) == 'carfreaks') {
+                        handleOnAddPost(data)
+                    }
+                    if (_.get(data, `chatType`) == 'socialboard') {
+                        props.router.push(routePaths.socialBoard.as().pathname)
+                    }
+                }}
+                onClose={(v) => {
+                    setWriteModalVisible(false);
+                    setSelectedPost({});
+                }} />
+
+        </div> 
     );
 }
 

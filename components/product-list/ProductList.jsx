@@ -620,7 +620,7 @@ const ProductList = (props) => {
                             :
                             null
                       }
-                      <div className="wrap-product-ads-title-horizontal relative-wrapper">
+                      <div className="wrap-product-ads-title-horizontal relative-wrapper" style={{marginTop:'6px'}}>
                         <Link href={routePaths.viewCarDetails.to || '/'} as={typeof (routePaths.viewCarDetails.as) == 'function' ? routePaths.viewCarDetails.as(v) : '/'} >
                           <a target="_blank">
                             <div className="text-truncate-twoline small-text" style={{ lineHeight: 1.2 }}>
@@ -663,25 +663,27 @@ const ProductList = (props) => {
                     </Col>
                   </Row>
 
-                  <Row gutter={[5, 0]} type="flex" justify="end" align="middle" className="padding-x-sm padding-y-xs">
+                  <Row gutter={[5, 0]} className="padding-x-sm padding-y-xs flex-items-align-end flex-justify-end">
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
                       {
                         _.isArray(v.registrationUrl) && notEmptyLength(v.registrationUrl) ?
                           <RegisterCard key='register' button={
-                            <Button type="normal" size="small" className="w-100" style={{ padding: 0, background: 'rgb(209 ,110, 132)', borderColor: 'rgb(209 ,110, 132)' }}><img src="/assets/CarListingIconMobile/registration-card.png" style={{ width: '65%', height: '100%' }} /></Button>
+                            <Button type="normal" className="w-100 ads-purchase-button" style={{ padding: 0, background: 'rgb(209 ,110, 132)', borderColor: 'rgb(209 ,110, 132)' }}><img src="/assets/CarListingIconMobile/registration-card.png" /></Button>
                           } registrationUrl={v.registrationUrl} />
                           :
                           <div className="width-100">
-                            <Button type="normal" size="small" className="width-100 cursor-not-allowed" style={{ padding: 0, background: 'rgb(237, 236, 234)', borderColor: 'rgb(237, 236, 234)' }}><img src="/assets/CarListingIconMobile/registration-card.png" style={{ width: '65%', height: '100%' }} /></Button>
+                            <Button type="normal" className="width-100 ads-purchase-button cursor-not-allowed" style={{ padding: 0, background: 'rgb(237, 236, 234)', borderColor: 'rgb(237, 236, 234)' }}><img src="/assets/CarListingIconMobile/registration-card.png"/></Button>
                           </div>
                       }
                     </Col>
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
                       <CalculatorModal key='calculator' button={() => {
                         return <Tooltip placement="top" title={`Calculate This Car Monthly Pay`}>
-                          <div className="padding-x-xs cursor-pointer background-white thin-border flex-justify-center flex-items-align-center" style={{ borderRadius: '2px' }}>
-                            <Icon type="calculator" className='ccar-yellow cursor-pointer' style={{ fontSize: '20px' }} />
-                          </div>
+                          <Button style={{ paddingLeft: '9px', paddingRight: '9px' }} className='width-100' >
+                            <div className='fill-parent flex-items-align-center width-100 flex-justify-center' >
+                              <Icon type="calculator" className='ccar-yellow cursor-pointer' style={{ fontSize: '20px' }} />
+                            </div>
+                          </Button>
                         </Tooltip>
                       }} data={{ price: v.price, downpayment: v.price * 0.1, loanPeriod: 9, interestRate: 3 }} />
                     </Col>
@@ -689,66 +691,68 @@ const ProductList = (props) => {
 
                   <Row gutter={[5, 0]} className="padding-sm">
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
-                      <WhatsAppButton mobileNumber={v ? v : null} button={() => {
-                        return (<div
-                          className="w-100 ccar-product-btn-car padding-xs cursor-pointer flex-items-align-center flex-justify-center"
-                          style={{ borderRadius: '5px' }}
-                        >
-                          <img src="/assets/profile/icon-list/carmarket-bar-icon/whatsapp.png" style={{ width: '16px', height : '16px' }} />
-                        </div>)
-                      }
-                      } >
+                      <WhatsAppButton mobileNumber={v ? v : null} 
+                      // button={() => {
+                      //   return (<div
+                      //     className="w-100 ccar-product-btn-car padding-xs cursor-pointer flex-items-align-center flex-justify-center"
+                      //     style={{ borderRadius: '5px' }}
+                      //   >
+                      //     <img src="/assets/profile/icon-list/carmarket-bar-icon/whatsapp.png" style={{ width: '16px', height : '16px' }} />
+                      //   </div>)
+                      // }} 
+                      >
                       </WhatsAppButton>
                     </Col>
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
                       <ContactList companys={v.companys ? v.companys : null} contactPerson={notEmptyLength(v.createdBy) ? v.createdBy : null} 
-                      button={() => {
-                        return (
-                          <div
-                            className="w-100 ccar-product-btn-car padding-xs cursor-pointer flex-items-align-center flex-justify-center"
-                            style={{ borderRadius: '5px' }}
-                          >
-                            <img src="/assets/profile/icon-list/carmarket-bar-icon/call.png" style={{ width: '16px', height : '16px' }} />
-                          </div>
-                        )
-                      }
-                      } />
+                      // button={() => {
+                      //   return (
+                      //     <div
+                      //       className="w-100 ccar-product-btn-car padding-xs cursor-pointer flex-items-align-center flex-justify-center"
+                      //       style={{ borderRadius: '5px' }}
+                      //     >
+                      //       <img src="/assets/profile/icon-list/carmarket-bar-icon/call.png" style={{ width: '16px', height : '16px' }} />
+                      //     </div>
+                      //   )
+                      // }} 
+                      />
                     </Col>
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
                       <AddCompareProductButton data={v} 
-                      savedButton={() => {
-                        return (
-                          <div
-                            className="padding-xs cursor-pointer flex-items-align-center flex-justify-center"
-                            style={{ background: 'rgb(89, 54, 26)',borderRadius: '5px' }}
-                          >
-                            <img  src="/assets/profile/icon-list/carmarket-bar-icon/compare.png" alt="compare"  style={{ width: '16px', height : '16px' }} />
-                          </div>
-                        )
-                      }
-                      }
-                      saveButton={() => {
-                        return (
-                          <div
-                            className="padding-xs cursor-pointer flex-items-align-center flex-justify-center ads-purchase-compare-btn"
-                            style={{ borderRadius: '5px' }}
-                          >
-                            <img  src="/assets/profile/icon-list/carmarket-bar-icon/compare.png" alt="compare" style={{ width: '16px', height : '16px' }} />
-                          </div>
-                        )
-                      }
-                      }
+                      // savedButton={() => {
+                      //   return (
+                      //     <div
+                      //       className="padding-xs cursor-pointer flex-items-align-center flex-justify-center"
+                      //       style={{ background: 'rgb(89, 54, 26)',borderRadius: '5px' }}
+                      //     >
+                      //       <img  src="/assets/profile/icon-list/carmarket-bar-icon/compare.png" alt="compare"  style={{ width: '16px', height : '16px' }} />
+                      //     </div>
+                      //   )
+                      // }
+                      // }
+                      // saveButton={() => {
+                      //   return (
+                      //     <div
+                      //       className="padding-xs cursor-pointer flex-items-align-center flex-justify-center ads-purchase-compare-btn"
+                      //       style={{ borderRadius: '5px' }}
+                      //     >
+                      //       <img  src="/assets/profile/icon-list/carmarket-bar-icon/compare.png" alt="compare" style={{ width: '16px', height : '16px' }} />
+                      //     </div>
+                      //   )
+                      // }
+                      // }
                       
                       />
                     </Col>
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
                       <Car360ViewButton id={v.xmlUrl ? v._id : null}>
-                          <div
+                        <Button type="normal" className={`w-100 ads-purchase-button ${v.xmlUrl ? 'cursor-pointer' : 'cursor-not-allowed '}`} style={{ padding: 0, background: v.xmlUrl ? 'rgb(85,204,212)' : 'rgb(237, 236, 234)', borderColor: v.xmlUrl ? 'rgb(85,204,212)' : 'rgb(237, 236, 234)' }}><img src="/assets/profile/icon-list/Ccar-360_1.gif" /></Button>
+                          {/* <div
                             className={`padding-xs flex-items-align-center flex-justify-center ${v.xmlUrl ? 'cursor-pointer' : 'cursor-not-allowed '}`}
                             style={{  background: v.xmlUrl ? 'rgb(85,204,212)' : 'rgb(237, 236, 234)', borderColor: v.xmlUrl ? 'rgb(85,204,212)' : 'rgb(237, 236, 234)', borderRadius: '5px' }}
                           >
                             <img  src="/assets/profile/icon-list/Ccar-360_1.gif" alt="car360View" style={{ width: '16px', height : '16px' }} />
-                          </div>
+                          </div> */}
                       </Car360ViewButton>
                     </Col>
                   </Row>
