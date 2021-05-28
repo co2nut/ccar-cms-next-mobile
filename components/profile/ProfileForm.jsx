@@ -10,7 +10,7 @@ import { isNumberAndSpace } from '../../common-function';
 import client from '../../feathers';
 import { loading } from '../../redux/actions/app-actions';
 import { setUser } from '../../redux/actions/user-actions';
-
+import LayoutV2 from '../general/LayoutV2';
 
 
 const { Option } = Select;
@@ -372,17 +372,32 @@ const ProfileForm = (props) => {
     }
 
     return (
+        <LayoutV2>
+            <div>
 
+            {/* <div className="text-align-center" style={{height:'200px', backgroundColor:'#E39E14'}}>
+                <Avatar size={80} style={{marginTop:'60px'}}
+                    src={_.get(profile, ['avatar']) || ''}></Avatar> 
+            </div> */}
 
-        <Card className="card-padding-0" style={{padding:'0px'}} title="Edit Profile"> 
-            <Form className="margin-top-xs padding-sm" layout="vertical" >
-                <Row type="flex" >
-                    <Col xs={{ span: 24, order: 2 }} sm={{ span: 24, order: 2 }} md={{ span: 16, order: 1 }} lg={{ span: 16, order: 1 }} xl={{ span: 16, order: 1 }}>
+            <Form layout="vertical" >
+                <div className="text-align-center" style={{height:'200px', backgroundColor:'#E39E14'}}>
+                    <Upload {...props} showUploadList={false} accept="image/*" onChange={(v) => { handlePreview(v.file); setUserForm({ ...userForm, imageList: v.fileList }) }} multiple={false}>
+                        <Avatar size={80} src={userForm.avatar ? userForm.avatar : null} className='cursor-pointer' style={{marginTop:'60px'}}></Avatar>
+                        <Avatar size={50} src={profileImage} style={{ 'position': 'absolute', top: 0, bottom: 0, right: 0, left: 0, margin: 'auto' }} className="padding-xs cursor-pointer" />
+                    </Upload>
+                </div>
 
-                        <Form.Item required={false} label="FreakId" validateStatus={freakIdError ? 'error' : ''} help={freakIdError || ''}>
-                            {getFieldDecorator('freakId', {
-                                rules: [{ required: false }, {
-                                    validator: (rule, value, callback) => {
+                <div className="thickBorderTop padding-lg background-white" style={{borderRadius:'50px 50px 0px 0px', marginTop:'-50px'}}>
+
+                <div className="margin-top-lg text-align-center margin-bottom-md">
+                    {userForm.username} 
+                </div>
+
+                <Form.Item required={false} label="FreakId" validateStatus={freakIdError ? 'error' : ''} help={freakIdError || ''}>
+                    {getFieldDecorator('freakId', {
+                        rules: [{ required: false }, {
+                            validator: (rule, value, callback) => {
 
                                         if (!value) {
                                             callback('Please input your FreakId.');
@@ -510,65 +525,6 @@ const ProfileForm = (props) => {
                             )}
                         </Form.Item>
 
-                        <Form.Item required={false} label="Gender" validateStatus={isFemaleError ? 'error' : ''} help={isFemaleError || ''}>
-                            {getFieldDecorator('isFemale', {
-                                // rules: [{ required: true, message: 'Please select your gender!' }],
-                            })(
-                                <Radio.Group
-                                    onChange={(e) => { setUserForm({ ...userForm, isFemale: e.target.value }) }}
-                                >
-                                    <Radio value={false} className="margin-right-xl">Male</Radio>
-                                    <Radio value={true} className="margin-right-xl">Female</Radio>
-                                </Radio.Group>
-                            )}
-                        </Form.Item>
-
-                        <div className="headline   margin-y-md" style={{ color: "#000000" }}>
-                            Date Of Birthday
-                        </div>
-                        <Row>
-
-                            <Col xs={8} sm={8} md={5} lg={5} xl={5} className="margin-right-sm">
-
-                                <Form.Item required={false} validateStatus={birthdayDayError ? 'error' : ''} help={birthdayDayError || ''}>
-                                    {getFieldDecorator('birthdayDay', {
-                                        // rules: [{ required: true, message: 'Please input your day of birthday!' }],
-                                    })(
-                                        <Select placeholder="Day" style={{ width: '100%' }} onChange={(value) => { setUserForm({ ...userForm, birthdayDay: value }) }} >
-                                            {dayOption()}
-                                        </Select>
-                                    )}
-                                </Form.Item>
-                            </Col>
-                            <Col xs={8} sm={8} md={5} lg={5} xl={5} className="margin-right-sm">
-
-                                <Form.Item required={false} validateStatus={birthdayMonthError ? 'error' : ''} help={birthdayMonthError || ''}>
-                                    {getFieldDecorator('birthdayMonth', {
-                                        // rules: [{ required: true, message: 'Please input your month of birthday!' }],
-                                    })(
-                                        <Select placeholder="Month" style={{ width: '100%' }} onChange={(value) => { setUserForm({ ...userForm, birthdayMonth: value }) }} >
-                                            {monthOption()}
-                                        </Select>
-                                    )}
-                                </Form.Item>
-                            </Col>
-                            <Col xs={8} sm={8} md={5} lg={5} xl={5} className="margin-right-sm">
-
-                                <Form.Item required={false} validateStatus={birthdayYearError ? 'error' : ''} help={birthdayYearError || ''}>
-                                    {getFieldDecorator('birthdayYear', {
-                                        // rules: [{ required: true, message: 'Please input your year of birthday!' }],
-                                    })(
-                                        <Select placeholder="Year" style={{ width: '100%' }} onChange={(value) => { setUserForm({ ...userForm, birthdayYear: value }) }} >
-                                            {yearOption()}
-                                        </Select>
-                                    )}
-                                </Form.Item>
-                            </Col>
-
-                        </Row>
-                        {/* <h4 className="font-weight-normal margin-y-lg"><a style={{ color: '#039BE5' }}>Unsubscribe from our Newsletter</a></h4> */}
-
-
                         <Button style={{ borderColor: '#F9A825' }} className="margin-right-lg" onClick={(e) => {
                             if (props.onProfileCancel) {
 
@@ -576,32 +532,12 @@ const ProfileForm = (props) => {
                             }
                         }}>Cancel</Button>
                         <Button style={{ backgroundColor: '#F9A825', borderColor: '#F9A825' }} className="margin-right-lg" onClick={(e) => { checkIsValid() }} disabled={buttonDisabled}>Save Changes</Button>
-
-                    </Col>
-
-                    <Col xs={{ span: 24, order: 1 }} sm={{ span: 24, order: 1 }} md={{ span: 8, order: 2 }} lg={{ span: 8, order: 2 }} xl={{ span: 8, order: 2 }}>
-
-                        <div style={{ 'position': 'relative', textAlign: 'center' }} className="margin-md">
-
-                            <Upload {...props} showUploadList={false} accept="image/*" onChange={(v) => { handlePreview(v.file); setUserForm({ ...userForm, imageList: v.fileList }) }} multiple={false}>
-                                <Avatar size={100} src={userForm.avatar ? userForm.avatar : null} className='cursor-pointer'></Avatar>
-
-                                <Avatar size={50} src={profileImage} style={{ 'position': 'absolute', top: 0, bottom: 0, right: 0, left: 0, margin: 'auto' }} className="padding-xs cursor-pointer" />
-
-                            </Upload>
-                        </div>
-
-                        <div style={{ textAlign: 'center' }}>
-
-                            <h5 className="font-weight-thin">File size: Max 1MB</h5>
-                            <h5 className="font-weight-thin">File Extension: JPEG, PNG</h5>
-                        </div>
-                    </Col>
-
-                </Row>
+                </div>
 
             </Form>
-        </Card >
+            </div>
+            
+        </LayoutV2>
     );
 }
 

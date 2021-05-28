@@ -28,7 +28,7 @@ const Desktop = ({ children }) => {
 class ContactUsIndex extends React.Component {
 
     componentDidMount = () => {
-        this.props.updateActiveMenu('10');
+        this.props.updateActiveMenu('17');
     }
 
     handleSubmit = e => {

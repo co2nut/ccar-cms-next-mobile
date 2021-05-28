@@ -1,4 +1,4 @@
-import { Button, Col, Divider, Form, message, Row, Tabs } from 'antd';
+import { Button, Col, Divider, Form, message, Row, Tabs, Affix } from 'antd';
 import _ from 'lodash';
 import { withRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
@@ -95,7 +95,7 @@ const DealerProfile = (props) => {
                         <TabPane tab="Social Board" key="3">
                             <Row gutter={[20, 10]} className='margin-top-md'>
                                 <Col xs={24} sm={24} md={24} lg={18} xl={18}>
-                                    <UserSocialBoard data={profile} />  
+                                    <UserSocialBoard data={profile} />   
                                 </Col>
                             </Row>
                         </TabPane>
@@ -132,40 +132,6 @@ const DealerProfile = (props) => {
                                 :
                                 null
                         }
-                        {/* <TabPane tab="Video" key="4">
-                            <Row gutter={[20, 10]} className='margin-top-md'>
-                                <Col xs={18} sm={18} md={18} lg={18} xl={18}>
-                                    <Row gutter={[0, 20]}>
-                                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                            <div className="flex-justify-start flex-items-align-center">
-                                                <span className={`d-inline-block cursor-pointer subtitle1 font-weight-bold black  ${videoTabKey == 'recordedLive' ? 'ccar-button-yellow' : 'black' }`} onClick={(e) => {setVideoTabKey('recordedLive')}} >
-                                                    Recorded Live
-                                              </span>
-                                                <span className={`d-inline-block subtitle1 font-weight-bold black margin-x-lg`} >
-                                                    |
-                                              </span>
-                                                <span className={`d-inline-block cursor-pointer subtitle1 font-weight-bold ${videoTabKey == 'corporate' ? 'ccar-button-yellow' : 'black' }`}  onClick={(e) => {setVideoTabKey('corporate')}}>
-                                                    Corporate
-                                              </span>
-                                            </div>
-                                        </Col>
-                                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                            {
-                                                videoTabKey == 'recordedLive' ?
-                                                    <UserLiveVideos data={profile} />
-                                                    :
-                                                    <UserCorporateVideos data={profile} />
-
-                                            }
-                                        </Col>
-
-                                    </Row>
-                                </Col>
-                                <Col xs={6} sm={6} md={6} lg={6} xl={6}>
-                                    {_renderDealerDetailsBox()}
-                                </Col>
-                            </Row>
-                        </TabPane> */}
                     </Tabs>
                 </Col>
             </Row>

@@ -9,9 +9,10 @@ import UserProfile from '../UserProfile';
 import LayoutV2 from '../../general/LayoutV2';
 import { notEmptyLength } from '../../../common-function';
 import { setUser } from '../../../redux/actions/user-actions';
-import { loading, loginMode } from '../../../redux/actions/app-actions';
+import { loading, loginMode, updateActiveMenu } from '../../../redux/actions/app-actions';
 import { withRouter } from 'next/router';
 import client from '../../../feathers';
+import { UploadOutlined } from '@ant-design/icons';
  
 
 const UserProfileIndex = (props) => {
@@ -23,6 +24,7 @@ const UserProfileIndex = (props) => {
 
 
     useEffect(() => {
+        props.updateActiveMenu('10');
         getProfile();
     }, [props.router.query])
 
@@ -96,7 +98,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     loginMode: loginMode,
-
+    updateActiveMenu: updateActiveMenu,
     loading: loading,
     setUser,
 };

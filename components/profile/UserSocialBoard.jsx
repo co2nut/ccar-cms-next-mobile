@@ -12,7 +12,6 @@ import { withRouter } from 'next/router';
 import InfiniteScrollWrapper from '../general/InfiniteScrollWrapper';
 
 
-
 var moment = require('moment');
 
 const POSTSIZE = 11;
@@ -26,7 +25,6 @@ const UserSocialBoard = (props) => {
     const [editMode, setEditMode] = useState()
     const [writeModalVisible, setWriteModalVisible] = useState(false)
     const [selectedPost, setSelectedPost] = useState({})
-    const [top, setTop] = useState(650)
 
     useEffect(() => {
         if (_.isPlainObject(props.data) && !_.isEmpty(props.data)) {
@@ -136,11 +134,11 @@ const UserSocialBoard = (props) => {
     }
 
     return (
-        <Row className={`${props.className || ''}`}>
-            {
+        <div>
+            {/* {
                 _.get(props.user, ['info', 'user', '_id']) && _.get(props.user, ['info', 'user', '_id']) == _.get(profile, ['_id']) ?
-                    <Affix offsetTop={top}>
-                        <div className="flex-justify-end flex-items-align-center margin-right-sm">
+            <Affix offsetBottom={50} style={{ right: 15 }}>
+                <div className="flex-justify-end flex-items-align-center margin-right-sm">
                             <div className="border-ccar-yellow" onClick={(e) => {
                                 setEditMode(null);
                                 setWriteModalVisible(true);
@@ -149,22 +147,12 @@ const UserSocialBoard = (props) => {
                                 <img src="https://img.icons8.com/ios-filled/60/FFCC32/plus.png" />
                             </div>
                         </div>
-                    </Affix>
-                    // <Col xs={24} sm={24} md={24} lg={24} xl={24} className="margin-bottom-md">
-                    //     <div className="flex-justify-end flex-items-align-center">
-                    //         <span className='d-inline-block margin-right-md' >
-                    //             <Button size="medium" className="border-ccar-yellow" onClick={(e) => {
-                    //                 setEditMode(null);
-                    //                 setWriteModalVisible(true);
-                    //                 setSelectedPost(null);
-                    //             }}  ><Icon type="edit" /> Write a Post</Button>
-                    //         </span>
-                    //     </div>
-                    // </Col>
+                        </Affix>
                     :
                     null
-            }
-
+            } */}
+            
+            <Row className={`${props.className || ''}`}>
             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                 <InfiniteScrollWrapper
                     onScrolledBottom={() => {
@@ -221,6 +209,8 @@ const UserSocialBoard = (props) => {
                     }
                 }} />
         </Row>
+        </div>
+        
     );
 }
 

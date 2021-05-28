@@ -36,45 +36,23 @@ const SettingPage = (props) => {
     const [profile, setProfile] = useState()
     const [navItems, setNavItems] = useState()
 
-    // useEffect(() => {
-    //     let path = props.router.asPath.split('/')[4];
-    //     setStep(path);
-    // }, [props.router.asPath])
+    useEffect(() => { 
 
-    // useEffect(() => {
-    //     getProfile();
-    // }, [props.router.query.id])
-
-    // function getProfile() {
-    //     props.loading(true);
-    //     console.log(_.get(props.user, ['info', 'user', 'userurlId']));
-    //     console.log(props.router.query.id);
-    //     if (_.get(props.user, ['info', 'user', 'userurlId']) == props.router.query.id) {
-    //         client.service('users').find({
-    //             query: {
-    //                 userurlId: props.router.query.id,
-    //                 $populate: [
-    //                     {
-    //                         path: 'companyId',
-    //                         ref: 'companys'
-    //                     }
-    //                 ],
-    //             }
-    //         }).then(res => {
-    //             props.loading(false);
-    //             setProfile(_.isArray(res.data) && notEmptyLength(res.data) ? res.data[0] : {})
-    //             if (props.onGetProfile) {
-    //                 props.onGetProfile(_.isArray(res.data) && notEmptyLength(res.data) ? res.data[0] : {})
-    //             }
-    //         }).catch(err => {
-    //             props.loading(false);
-    //             message.error(err.message)
-    //         });
-    //     } else {
-    //         message.error('Profile Not Found.');
-    //         // props.router.push('/');
-    //     }
-    // }
+        if(_.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', 'userurlId']) ){
+            client.service('users').find({
+            query: {
+                userurlId : _.get(props.user, ['info', 'user', 'userurlId'])
+            }
+            }).then(res => {
+                setProfile(_.get(res , `data[0]`))
+            }).catch(err => {
+            message.error(err.message)
+            });
+        }else{
+            setProfile({})
+        }
+    
+    } , [props.user.authenticated])
 
         return (
             <LayoutV2>
@@ -82,32 +60,28 @@ const SettingPage = (props) => {
                     <div style={{touchAction:'pan-y'}} className="container-version3 background-white">
 
                         <div className="text-align-center" style={{height:'200px', backgroundColor:'#E39E14'}}>
-                            <Avatar size={80} style={{marginTop:'60px'}}/>
+                            <Avatar size={80} style={{marginTop:'60px'}}
+                                src={_.get(profile, ['avatar']) || ''}></Avatar> 
                         </div>
 
                         <div className="thickBorderTop padding-lg background-white" style={{borderRadius:'50px 50px 0px 0px', marginTop:'-50px'}}>
 
                             <div className="margin-top-lg text-align-center">
-                                {_.get(profile, ['freakId']) || ''} 
+                                {_.get(profile, ['fullName']) || ''} 
                             </div>
 
                             <div className="margin-top-lg">
-                            {/* <Link href="/about-us">
-                                <a> */}
-                                    <div className="thickBorder round-border margin-y-md padding-sm" 
-                                    onClick={() => {
-                                        if (_.get(profile, ['userurlId'])) {
-                                        props.router.push(`/profile/${profile.userurlId}/details/settings`);
-                                    }}}
-                                    >
-                                        Notifications
-                                    </div>
-                                {/* </a>
-                            </Link> */}
+                                <div className="thickBorder round-border margin-y-md padding-sm" 
+                                    onClick={() => {props.router.push(routePaths.profileSettings.as(_.get(props, ['user', 'info', 'user'])).pathname)}}
+                                >
+                                    <img src="https://img.icons8.com/fluent-systems-regular/25/ffcc32/appointment-reminders--v1.png" style={{marginRight:'10px'}}/>
+                                    Notifications
+                                </div>
 
                             <Link href="/termOfUse">
                                 <a>
-                                    <div className="thickBorder round-border margin-y-md padding-sm">
+                                    <div className="thickBorder round-border margin-y-md padding-sm" style={{color:'#000000A6'}}>
+                                        <img src="https://img.icons8.com/windows/25/ffcc32/privacy-policy.png" style={{marginRight:'10px'}}/>
                                         Policies
                                     </div>
                                 </a>
@@ -115,7 +89,8 @@ const SettingPage = (props) => {
 
                             <Link href="/about-us">
                                 <a>
-                                    <div className="thickBorder round-border margin-y-md padding-sm">
+                                    <div className="thickBorder round-border margin-y-md padding-sm" style={{color:'#000000A6'}}>
+                                        <img src="https://img.icons8.com/material/24/ffcc32/info--v1.png" style={{marginRight:'10px'}}/>
                                         About
                                     </div>
                                 </a>
@@ -123,12 +98,18 @@ const SettingPage = (props) => {
 
                             <Link href="/contact-us">
                                 <a>
-                                    <div className="thickBorder round-border margin-y-md padding-sm">
+                                    <div className="thickBorder round-border margin-y-md padding-sm" style={{color:'#000000A6'}}>
+                                        <img src="https://img.icons8.com/fluent-systems-filled/25/ffcc32/phone.png" style={{marginRight:'10px'}}/>
                                         Support
                                     </div>
                                 </a>
                             </Link>
+
+                            <div style={{fontSize:'16px', margin:'10px 10px 10px 0px', textAlign:'center'}} onClick={() => {props.router.push(routePaths.logout.as().pathname)}}>
+                                {/* <img src='/logout icon.svg'style={{width:'10%', marginRight:'10px'}}></img> */}
+                                    Logout
                             </div>
+                        </div>
                        
                         </div>
                         

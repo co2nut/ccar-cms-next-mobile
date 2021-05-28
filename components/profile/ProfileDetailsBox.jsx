@@ -471,6 +471,7 @@ const ProfileDetailsBox = (props) => {
                             visible={visible}
                             width = {'100%'}
                             className="login-drawer"
+                            zIndex={2000}
                         >
                         {
                             props.type == 'dealer' ?
@@ -507,7 +508,7 @@ const ProfileDetailsBox = (props) => {
 
                                     <p style={{marginBottom:'0px', marginTop:'5px', color:'#ffffff'}}>Office No.</p>
                                     <div className="thickBorder round-border padding-sm white">
-                                        company no 
+                                        {`${_.get(profile, ['officeNo']) || ''}`}
                                     </div>
 
                                     <p style={{marginBottom:'0px', marginTop:'5px', color:'#ffffff'}}>Email</p>

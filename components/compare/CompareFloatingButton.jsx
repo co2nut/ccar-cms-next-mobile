@@ -19,6 +19,10 @@ const CompareFloatingButton = (props) => {
   const [visible, setVisible] = useState(false)
   const [productList, setProductList] = useState([])
 
+  function goBack() {
+    window.history.back();
+  }
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (event.target.id != 'compare') {
@@ -108,24 +112,26 @@ const CompareFloatingButton = (props) => {
 
   return (
     <div>
-      {visible === false ? 
-        <div ref={refCompare} className="wrap-compare-btn">
-            <Link shallow={false}  href={routePaths.compare.to || '/'} as={typeof (routePaths.compare.as) == 'function' ? routePaths.compare.as() : '/'} >
-              <a>
-                <Button onClick={() => toggle()} id="compare">
-                  <img src="/assets/CarListingIconMobile/car-compare.png" className="w-100"/>
-                </Button>
-              </a>
-            </Link>
-          </div>
-          :
-          null
-        // <div className="wrap-compare-btn-circle">
-        //   <Button onClick={() => toggle()} className="w-100" id="compare">
-        //     <CloseOutlined />
-        //   </Button>
-        // </div>
+      {visible == false ? 
+        productList.length > 0 ? (
+          <div ref={refCompare} className="wrap-compare-btn">
+          <Link shallow={false}  href={routePaths.compare.to || '/'} as={typeof (routePaths.compare.as) == 'function' ? routePaths.compare.as() : '/'} >
+            <a>
+              <Button onClick={() => toggle()} id="compare">
+                <img src="/assets/CarListingIconMobile/car-compare.png" className="w-100"/>
+              </Button>
+            </a>
+          </Link>
+        </div>)
+        : null
+        :
+        <div className="wrap-compare-btn-circle">
+        <Button onClick={() => goBack()} className="w-100" id="compare">
+          <CloseOutlined />
+        </Button>
+      </div>
       }
+    
 
       {/* {visible === true ? (
         <div ref={refCompare}>

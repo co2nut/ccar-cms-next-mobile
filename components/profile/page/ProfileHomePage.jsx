@@ -26,7 +26,7 @@ const ProfileHomePage = (props) => {
     const [isOwn, setIsOwn] = useState(false);
 
     useEffect(() => { 
- 
+        props.updateActiveMenu('10')
     } , [])
 
     useEffect(() => {

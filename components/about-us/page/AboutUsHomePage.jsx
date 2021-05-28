@@ -26,7 +26,7 @@ const Desktop = ({ children }) => {
 class AboutUsIndex extends React.Component{
 
     componentDidMount = () => {
-        this.props.updateActiveMenu('9');
+        this.props.updateActiveMenu('17');
     }
 
     render(){

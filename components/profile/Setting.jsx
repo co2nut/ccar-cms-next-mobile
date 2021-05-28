@@ -5,8 +5,9 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { deepEqual } from '../../common-function';
 import client from '../../feathers';
-import { loading } from '../../redux/actions/app-actions';
+import { loading, updateActiveMenu } from '../../redux/actions/app-actions';
 import { setUser } from '../../redux/actions/user-actions';
+import LayoutV2 from '../general/LayoutV2';
 
 
 const { Option } = Select;
@@ -115,6 +116,9 @@ const Setting = (props) => {
 
     const [selectedCountry, setSelectedCountry] = useState(countryOptions[0]);
 
+    useEffect(() => { 
+        props.updateActiveMenu('10')
+    } , [])
 
     useEffect(() => {
         if (_.isPlainObject(props.data) && !_.isEmpty(props.data)) {
@@ -239,6 +243,7 @@ const Setting = (props) => {
 
 
     return (
+        <LayoutV2>
         <div>
             <Row gutter={[0, 30]}>
                 <Col span={24}>
@@ -249,6 +254,7 @@ const Setting = (props) => {
                 </Col> */}
             </Row>
         </div>
+        </LayoutV2>
     );
 }
 
@@ -259,6 +265,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+    updateActiveMenu: updateActiveMenu,
     loading: loading,
     setUser: setUser,
 };

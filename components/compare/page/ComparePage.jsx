@@ -8,7 +8,7 @@ import { useMediaQuery } from 'react-responsive';
 import LayoutV2 from '../../general/LayoutV2';
 import GridProductListCompare from '../../product-list/grid-product-list-1';
 import GridProductList from '../../product-list/grid-product-list';
-import { loading } from '../../../redux/actions/app-actions';
+import { loading, updateActiveMenu } from '../../../redux/actions/app-actions';
 import { clearCompareProductIds, filteredCompareData, removeCompareProductId, updateActiveIdProductList } from '../../../redux/actions/productsList-actions';
 import client from '../../../feathers';
 import { convertParameterToProductListUrl, notEmptyLength } from '../../../common-function';
@@ -43,6 +43,10 @@ const CompareIndex = (props) => {
     const [filteredCompareData, setFilteredCompareData] = useState([])
     const [productList, setProductList] = useState([])
     const [carspecIds, setCarspecIds] = useState([])
+
+    useEffect(() => {
+        props.updateActiveMenu ('2')
+    })
 
 
     useEffect(() => {
@@ -259,9 +263,8 @@ const CompareIndex = (props) => {
 
             <Mobile>
                 <div className="section margin-top-xl padding-x-sm" style={{ touchAction: 'pan-y' }}> 
-                    <Card title="Summary" className="card-padding-0 ">
                         <Row gutter={[10, 10]} style={{ margin: '0px 0px' }}>
-                            <GridProductListCompare data={notEmptyLength(productList) ? productList : []} xs={22} sm={22} md={8} lg={6} xl={6} style={{padding:'20px'}}
+                            <GridProductListCompare data={notEmptyLength(productList) ? productList : []} xs={12} sm={12} md={8} lg={6} xl={6}
                                 topRight={(v) => {
                                     return (
                                         <span className='d-inline-block background-grey-opacity-60' >
@@ -269,8 +272,8 @@ const CompareIndex = (props) => {
                                         </span>
                                         )
                                     }}
-                                />
-                                {props.productsList.compareIds.length < props.productsList.compareLimit ?
+                                /> 
+                                {/* {props.productsList.compareIds.length < props.productsList.compareLimit ?
                                     <Col key="add new" className="gutter-row col-centered" xs={24} sm={24} md={5} lg={5} xl={5}>
                                         <Link shallow={false} href={routePaths.carsOnSale.to || '/'} as={typeof (routePaths.carsOnSale.as) == 'function' ? routePaths.carsOnSale.as() : '/'} >
                                             <a>
@@ -283,10 +286,9 @@ const CompareIndex = (props) => {
                                         </Link>
                                     </Col>
                                         : null
-                                }
+                                } */}
                         </Row>
-                        <CarspecsCompareTable data={notEmptyLength(carspecIds) ? carspecIds : []} limit={props.productsList.compareLimit} findById />
-                    </Card>
+                        <CarspecsCompareTable data={notEmptyLength(carspecIds) ? carspecIds : []} limit={props.productsList.compareLimit} findById /> 
                 </div>
                 </Mobile>
         </LayoutV2>
@@ -303,6 +305,7 @@ const mapDispatchToProps = {
     removeCompareProductId: removeCompareProductId,
     clearCompareProductIds: clearCompareProductIds,
     filteredCompareData: filteredCompareData,
+    updateActiveMenu: updateActiveMenu,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CompareIndex));

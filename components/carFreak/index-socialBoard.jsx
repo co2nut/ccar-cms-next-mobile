@@ -822,8 +822,6 @@ const SocialBoardIndex = (props) => {
                                                                                             </Col>
                                                                                             <Col style={{ textAlign: 'right' }} span={1}> <span className='showHoverMenu'>{renderEditMenuComment(v2, 'messagesReply' + i)}</span></Col>
                                                                                         </Row>
-
-
                                                                                     </Col>
                                                                                 </Row>
                                                                                 <Row>

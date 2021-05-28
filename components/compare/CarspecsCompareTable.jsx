@@ -406,7 +406,7 @@ const CarspecsCompareTable = (props) => {
     return (
 
         <React.Fragment>
-            <Card className="card-padding-0" >
+            <Card className="card-padding-0" style={{marginTop:'10px'}} >
                 <Table
                     bordered
                     row="key"
