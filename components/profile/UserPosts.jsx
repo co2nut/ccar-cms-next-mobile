@@ -1,4 +1,4 @@
-import { Col, Empty, Form, Row, Affix, Button } from 'antd';
+import { Col, Empty, Form, Row, Affix, Button, Dropdown, message, Menu, Avatar, Icon } from 'antd';
 import _ from 'lodash';
 import { withRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -9,9 +9,12 @@ import {
     loginMode, updateActiveMenu
 } from '../../redux/actions/app-actions';
 import PostModal from '../carFreak/components/post-modal';
+import PostDrawer from '../carFreak/components/PostDrawer';
 import WritePostModal from '../carFreak/components/write-post-modal';
+import WritePostDrawer from '../carFreak/components/WritePostDrawer';
 import UserPost from './UserPost';
-
+import client from '../../feathers';
+import {createCarFreakIcon, createSocialBoardIcon} from '../../icon';
 
 var moment = require('moment');
 
@@ -26,6 +29,15 @@ const UserPosts = (props) => {
     const [postVisible, setPostVisible] = useState(false);
     const [selectedPost, setSelectedPost] = useState({});
     const [top, setTop] = useState(650);
+    const [chatInfo, setChatInfo] = useState({});
+    const [chats, setChats] = useState([])
+    const [visible, setVisible] = useState(false);
+    const [editMode, setEditMode] = useState()
+    const [userChatLikes, setUserChatLikes] = useState([]);
+    const [writePostChatType, setWritePostChatType] = useState('carfreaks');
+    const [writeModalVisible, setWriteModalVisible] = useState(false)
+    const [followingList, setFollowingList] = useState([]);
+    const [menuOpened, setMenuOpened] = useState(false)
 
     useEffect(() => {
 
@@ -39,6 +51,22 @@ const UserPosts = (props) => {
 
     useEffect(() => {
 
+        if (_.isPlainObject(chatInfo) && !_.isEmpty(chatInfo)) {
+            let newChatInfo = _.find(chats, function (chat) {
+                return chat._id == chatInfo._id;
+            })
+            setChatInfo(newChatInfo || {})
+        }
+
+    }, [chats])
+
+    useEffect(() => {
+        getFollowingList();
+        getUserChatLikes(_.map(chats, '_id'))
+    }, [props.user.authenticated])
+
+    useEffect(() => {
+
         if (_.isArray(props.postLikes) && notEmptyLength(props.postLikes)) {
             setPostLikes(props.postLikes)
         } else {
@@ -46,20 +74,59 @@ const UserPosts = (props) => {
         }
     }, [props.postLikes])
 
+    function confirmDelete(v) {
+        if (v._id) {
+            client.service('chats')
+                .remove(v._id).then((res) => {
+                    message.success('Record Deleted')
+                    handleRemoveSocialBoardPost(v)
+                }).catch((err) => {
+                    console.log('Unable to delete Chat.');
+                })
+        }
+
+    }
+
+    function getFollowingList() {
+
+        if (_.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', '_id'])) {
+            client.service('follows').find({
+                query: {
+                    followerId: _.get(props.user, ['info', 'user', '_id']),
+                    $populate: 'userId',
+                    type: 'user',
+                }
+            }).then(res => {
+                setFollowingList(notEmptyLength(res.data) ? _.compact(_.map(res.data, function (v) {
+                    return _.get(v, ['userId']) || null;
+                })) : [])
+            }).catch(err => {
+                message.error(err.message)
+            });
+        }
+    }
+
+    function getUserChatLikes(ids, concat) {
+
+        if (_.isArray(ids) && !_.isEmpty(ids) && _.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', '_id'])) {
+            client.service('chatlikes')
+                .find({
+                    query: {
+                        chatId: {
+                            $in: ids || [],
+                        },
+                        userId: _.get(props.user, ['info', 'user', '_id'])
+                    }
+                })
+                .then((res) => {
+                    setUserChatLikes(concat ? _.concat(userChatLikes, res.data) : res.data)
+                })
+        }
+    }
+
     return (
         <React.Fragment>
-            {
-                props.showAddPostCard ?
-                    <Affix offsetTop={top}>
-                        <div className="flex-justify-end flex-items-align-center margin-right-sm">
-                            <div onClick={(e) => { setWritePostVisible(true) }}>
-                                <img src="https://img.icons8.com/ios-filled/64/FFCC32/plus.png" />
-                            </div>
-                        </div>
-                    </Affix>
-                        :
-                        null
-            }
+            
             <Row type='flex' gutter={props.gutter ? props.gutter : [10, 10]}>
                 {/* {
                     props.showAddPostCard ?
@@ -79,6 +146,15 @@ const UserPosts = (props) => {
                         return (
                             <Col key={'colPost' + i} xs={props.xs ? props.xs : 8} sm={props.sm ? props.sm : 8} md={props.md ? props.md : 12} lg={props.lg ? props.lg : 6} xl={props.xl ? props.xl : 6}>
                                 <UserPost height={defaultHeight} post={post} onClick={(post) => { setSelectedPost(post); setPostVisible(true); }} />
+                                {/* <UserPost height={defaultHeight} post={post} redirectPost
+                                    onEditClick={(post) => {
+                                    setWriteModalVisible(true);
+                                    setSelectedPost(post);
+                                    setEditMode('edit');
+                                }}
+                                    onRemoveClick={(post) => {
+                                        confirmDelete(post)
+                                    }}  /> */}
                             </Col>
                         )
                     })
@@ -94,7 +170,8 @@ const UserPosts = (props) => {
                         null
                 }
             </Row>
-            <WritePostModal
+
+            {/* <WritePostModal
                 visibleMode={writePostVisible}
                 changeVisibleMode={(e) => { setWritePostVisible(e) }}
                 chatType={'carfreaks'}
@@ -128,7 +205,7 @@ const UserPosts = (props) => {
                         props.onUpdatePost(data);
                     }
                 }}
-            />
+            /> */}
         </React.Fragment>
     );
 }

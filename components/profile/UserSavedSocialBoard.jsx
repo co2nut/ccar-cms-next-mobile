@@ -5,11 +5,11 @@ import { connect } from 'react-redux';
 import client from '../../feathers';
 import SocialBoardCard from '../carFreak/components/social-board-card';
 import WritePostModal from '../carFreak/components/write-post-modal';
-import { arrayLengthCount, notEmptyLength } from '../../common-function';
+import { arrayLengthCount, getObjectId, notEmptyLength } from '../../common-function';
 import { loading } from '../../redux/actions/app-actions';
 import { withRouter } from 'next/router';
 import InfiniteScrollWrapper from '../general/InfiniteScrollWrapper';
-
+import post from '../carFreak/components/post';
 
 
 var moment = require('moment');
@@ -22,11 +22,12 @@ const UserSocialBoard = (props) => {
     const [postTotal, setPostTotal] = useState(0);
     const [postPage, setPostPage] = useState(1);
     const [postLoading, setPostLoading] = useState(false);
-
-
+    const [userChatLikes, setUserChatLikes] = useState([]);
+    const [chatInfo, setChatInfo] = useState({});
     const [editMode, setEditMode] = useState()
     const [writeModalVisible, setWriteModalVisible] = useState(false)
     const [selectedPost, setSelectedPost] = useState({})
+    const [visible, setVisible] = useState(false);
 
     useEffect(() => {
         if (_.isPlainObject(props.data) && !_.isEmpty(props.data)) {
@@ -35,6 +36,10 @@ const UserSocialBoard = (props) => {
             setProfile({});
         }
     }, [props.data])
+
+    useEffect(() => {
+        getUserChatLikes(_.map(posts, '_id'))
+    }, [props.user.authenticated])
 
     useEffect(() => {
         if (_.get(profile, ['_id'])) {
@@ -115,6 +120,24 @@ const UserSocialBoard = (props) => {
 
     }
 
+    function getUserChatLikes(ids, concat) {
+
+        if (_.isArray(ids) && !_.isEmpty(ids) && _.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', '_id'])) {
+            client.service('chatlikes')
+                .find({
+                    query: {
+                        chatId: {
+                            $in: ids || [],
+                        },
+                        userId: _.get(props.user, ['info', 'user', '_id'])
+                    }
+                })
+                .then((res) => {
+                    setUserChatLikes(concat ? _.concat(userChatLikes, res.data) : res.data)
+                })
+        }
+    }
+
     function handleSocialBoardPostChange(post) {
         let newPosts = _.map(posts, function (chat) {
             return chat._id == _.get(post, ['_id']) ? post : chat;
@@ -139,6 +162,7 @@ const UserSocialBoard = (props) => {
     }
 
     return (
+        <div>
         <Row className={`${props.className || ''}`}>
             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                 <InfiniteScrollWrapper
@@ -156,14 +180,23 @@ const UserSocialBoard = (props) => {
                                     _.map(posts, function (post) {
                                         return <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                                             <SocialBoardCard data={post} redirectPost 
-                                                onEditClick={(post) => {
-                                                    setWriteModalVisible(true);
-                                                    setSelectedPost(post);
-                                                    setEditMode('edit');
-                                                }}
-                                                onRemoveClick={(post) => {
-                                                    confirmDelete(post)
-                                                }}
+                                            // postLike={_.find(userChatLikes, { chatId: getObjectId(post) })}
+                                            //     onRedirectToPost={(data) => {
+                                            //         if (_.isPlainObject(data) && !_.isEmpty(data) && _.get(data, ['_id'])) {
+                                            //             console.log('redirect');
+                                            //             setChatInfo(data);
+                                            //             setVisible(true);
+                                            //             setEditMode('');
+                                            //         }
+                                            //         }}
+                                                        onEditClick={(post) => {
+                                                        setWriteModalVisible(true);
+                                                        setSelectedPost(post);
+                                                        setEditMode('edit');
+                                                    }}
+                                                        onRemoveClick={(post) => {
+                                                        confirmDelete(post)
+                                                    }}
                                             />
                                         </Col>
                                     })
@@ -174,26 +207,27 @@ const UserSocialBoard = (props) => {
                     }
                 </InfiniteScrollWrapper>
             </Col>
-
-            <WritePostModal
-                currentRecord={selectedPost}
-                editMode={editMode}
-                hideImage
-                chatType={'socialboard'}
-                visibleMode={writeModalVisible}
-                onUpdatePost={(data) => {
-                    handleSocialBoardPostChange(data)
-                }}
-                onCreatePost={(data) => {
-                    handleSocialBoardAddPost(data)
-                }}
-                changeVisibleMode={(v) => {
-                    setWriteModalVisible(v);
-                    if (!v) {
-                        setSelectedPost({});
-                    }
-                }} />
         </Row>
+        <WritePostModal
+        currentRecord={selectedPost}
+        editMode={editMode}
+        hideImage
+        chatType={'socialboard'}
+        visibleMode={writeModalVisible}
+        onUpdatePost={(data) => {
+            handleSocialBoardPostChange(data)
+        }}
+        onCreatePost={(data) => {
+            handleSocialBoardAddPost(data)
+        }}
+        changeVisibleMode={(v) => {
+            setWriteModalVisible(v);
+            if (!v) {
+                setSelectedPost({});
+            }
+        }} />
+        </div>
+        
     );
 }
 

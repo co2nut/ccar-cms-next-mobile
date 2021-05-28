@@ -11,8 +11,8 @@ import { setUser } from '../../redux/actions/user-actions';
 import { updateSellerProfile } from '../../redux/actions/sellerProfile-actions';
 import { withRouter } from 'next/router';
 import InfiniteScrollWrapper from '../general/InfiniteScrollWrapper';
-
-
+import PostDrawer from '../carFreak/components/PostDrawer';
+import WritePostModal from '../carFreak/components/write-post-modal';
 
 var moment = require('moment');
 
@@ -25,12 +25,28 @@ const UserSavedCarFreakPosts = (props) => {
     const [postTotal, setPostTotal] = useState(0);
     const [postPage, setPostPage] = useState(1);
     const [postLoading, setPostLoading] = useState(false);
-
+    const [chatInfo, setChatInfo] = useState({});
+    const [chats, setChats] = useState([])
+    const [visible, setVisible] = useState(false);
+    const [editMode, setEditMode] = useState()
+    const [userChatLikes, setUserChatLikes] = useState([]);
+    const [followingList, setFollowingList] = useState([]);
+    const [selectedPost, setSelectedPost] = useState({})
+    const [writeModalVisible, setWriteModalVisible] = useState(false)
 
     useEffect(() => {
         getUserChatLikes(_.map(posts, '_id'))
     }, [props.user.authenticated])
 
+    useEffect(() => {
+
+        if (_.isPlainObject(chatInfo) && !_.isEmpty(chatInfo)) {
+            let newChatInfo = _.find(chats, function (chat) {
+                return chat._id == chatInfo._id;
+            })
+            setChatInfo(newChatInfo || {})
+        }
+    }, [chats])
 
     useEffect(() => {
         if (_.isPlainObject(props.data) && !_.isEmpty(props.data)) {
@@ -40,6 +56,23 @@ const UserSavedCarFreakPosts = (props) => {
         }
     }, [props.data])
 
+    function confirmDelete(v) {
+        if (v._id) {
+            client.service('chats')
+                .remove(v._id).then((res) => {
+                    message.success('Record Deleted')
+                    handleRemoveSocialBoardPost(v)
+                }).catch((err) => {
+                    console.log('Unable to delete Chat.');
+                })
+        }
+
+    }
+
+    useEffect(() => {
+        getFollowingList();
+        getUserChatLikes(_.map(chats, '_id'))
+    }, [props.user.authenticated])
 
     useEffect(() => {
         if (_.get(profile, ['_id'])) {
@@ -103,6 +136,25 @@ const UserSavedCarFreakPosts = (props) => {
         }
     }
 
+    function getFollowingList() {
+
+        if (_.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', '_id'])) {
+            client.service('follows').find({
+                query: {
+                    followerId: _.get(props.user, ['info', 'user', '_id']),
+                    $populate: 'userId',
+                    type: 'user',
+                }
+            }).then(res => {
+                setFollowingList(notEmptyLength(res.data) ? _.compact(_.map(res.data, function (v) {
+                    return _.get(v, ['userId']) || null;
+                })) : [])
+            }).catch(err => {
+                message.error(err.message)
+            });
+        }
+    }
+
     function getUserChatLikes(ids, concat) {
 
         if (_.isArray(ids) && !_.isEmpty(ids) && _.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', '_id'])) {
@@ -122,7 +174,8 @@ const UserSavedCarFreakPosts = (props) => {
     }
 
     return (
-        <Row className='margin-top-md'>
+        <div>
+<Row className='margin-top-md'>
             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                 <InfiniteScrollWrapper
                     onScrolledBottom={() => {
@@ -132,7 +185,7 @@ const UserSavedCarFreakPosts = (props) => {
                     }}
                     hasMore={!postLoading && arrayLengthCount(posts) < postTotal }
                 >
-                    <UserPosts
+                    <UserPosts 
                         posts={posts}
                         showAddPostCard={false}
                         postLikes={postLikes}
@@ -149,10 +202,88 @@ const UserSavedCarFreakPosts = (props) => {
                                 setPostLikes(data);
                             }
                         }}
+                        onEditClick={(post) => {
+                            setWriteModalVisible(true);
+                            setSelectedPost(post);
+                            setEditMode('edit');
+                        }}
+                            onRemoveClick={(post) => {
+                            confirmDelete(post)
+                        }}
+                        onRedirectToPost={(posts) => {
+                            if (_.get(posts, ['chatType']) == 'event') {
+
+                                // const win = htmlWindow.open(`/event-post/${_.get(post, ['_id'])}`, '_blank');
+                                // if (win != null) {
+                                //     win.focus();
+                                // }
+                            } else {
+                                console.log('redirect');
+                                setChatInfo(post);
+                                setVisible(true);
+                                setEditMode('');
+                            }
+                        }}
                     />
                 </InfiniteScrollWrapper>
             </Col>
+
+            <PostDrawer
+                data={chatInfo}
+                visible={visible}
+                editMode={editMode}
+                postLike={_.find(userChatLikes, { chatId: _.get(chatInfo, ['_id']) })}
+                onCancel={() => {
+                    setVisible(false);
+                    setChatInfo({});
+                }
+                }
+                onPostLikeChange={(liked, data) => {
+                    if (liked) {
+                        setUserChatLikes(_.concat(userChatLikes, [data]));
+                    } else {
+                        setUserChatLikes(_.filter(userChatLikes, function (like) {
+                            return _.get(like, ['chatId']) != _.get(data, ['chatId']);
+                        }))
+                    }
+                }}
+                onEditClick={(post) => {
+                    setEditMode('edit');
+                    setWriteModalVisible(true);
+                    setSelectedPost(post);
+                }}
+
+                onRemoveClick={(post) => {
+                    confirmDelete(post)
+                    setVisible(false);
+                }}
+
+                onUpdatePost={(data) => {
+                    handleSocialBoardPostChange(data);
+                }}
+            />
         </Row>
+
+        <WritePostModal
+        currentRecord={selectedPost}
+        editMode={editMode}
+        hideImage
+        chatType={'socialboard'}
+        visibleMode={writeModalVisible}
+        onUpdatePost={(data) => {
+            handleSocialBoardPostChange(data)
+        }}
+        onCreatePost={(data) => {
+            handleSocialBoardAddPost(data)
+        }}
+        changeVisibleMode={(v) => {
+            setWriteModalVisible(v);
+            if (!v) {
+                setSelectedPost({});
+            }
+        }} />
+        </div>
+        
     );
 }
 

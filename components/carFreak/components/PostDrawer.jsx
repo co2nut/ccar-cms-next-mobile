@@ -222,7 +222,7 @@ const PostDrawer = (props) => {
                 className="header-no-padding body-no-padding"
                 title={
                     <div className="flex-justify-space-between flex-items-align-center padding-y-sm background-ccar-button-yellow">
-                        <Button type="link" className="black headline" onClick={(e) => { closeModal() }}><Icon type="left" /> Back</Button>
+                        <Button type="link" className="black headline" onClick={(e) => { closeModal() }}><Icon type="left" /> Back </Button>
                     </div>}
                 visible={visible}
                 onClose={(e) => { closeModal() }}
