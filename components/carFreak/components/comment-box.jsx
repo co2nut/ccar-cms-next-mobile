@@ -11,7 +11,7 @@ import { formatNumber, getObjectId, getPlural, getUserName, notEmptyLength, obje
 import client from '../../../feathers';
 import { pinIcon } from '../../../icon';
 import { loading, loginMode } from '../../../redux/actions/app-actions';
-import LightBoxGallery from '../../general/light-box-gallery';
+import LightBoxGallery from '../../general/LightBoxGallery';
 import ParseTag from '../../general/ParseTag';
 import UserAvatar from '../../general/UserAvatar';
 import { chatRestrictTime, getTagString } from '../config';

@@ -82,7 +82,6 @@ class NewCarVersion3 extends React.Component {
             submitting: false,
             value: '',
             visible: false,
-            hideSearchBar: true,
             brandDetail: [],
             filterAnd: {
                 $and: [
@@ -100,99 +99,6 @@ class NewCarVersion3 extends React.Component {
         this.filterByBrand = this.filterByBrand.bind(this);
     }
 
-    handleScroll = (e) => {
-        this.checkForHiddenSearchBar();
-    };
-
-    checkForHiddenSearchBar() {
-
-        if (!searchBarRef || !searchBarRef.current) {
-            return;
-        } else {
-            let data = searchBarRef.current.getBoundingClientRect();
-            if (!data.height || !data.y || !this.state.window.innerHeight || !this.props.app) {
-                return;
-            } else {
-                let searchBarHeight = data.height;
-                let searchBarPositionY = data.y;
-                let windowHeight = this.state.window.innerHeight;
-                let menuHeight = isValidNumber(this.props.app.menuHeight) ? parseInt(this.props.app.menuHeight) : 90;
-                let minScreenHeight = 0 + menuHeight;
-                let maxScreenHeight = windowHeight;
-
-                this.setState({
-                    hideSearchBar: (searchBarPositionY + searchBarHeight >= minScreenHeight && searchBarPositionY + searchBarHeight <= maxScreenHeight)
-                })
-            }
-        }
-    }
-
-    callback = (key) => {
-        if (key == 1) {
-            this.setState({
-                filterAnd: {
-                    $and: [
-                        { 'price': { $gte: +(0) } },
-                        { 'price': { $lte: +(188763) } }
-                    ]
-                },
-                sorting: 'price:1'
-            }, () => this.getData(0))
-        } else if (key == 2) {
-            this.setState({ sorting: 'year:-1', filterAnd: {} }, () => this.getData(0))
-        } else if (key == 3) {
-            this.setState({
-                filterAnd: {
-                    $and: [
-                        { 'price': { $gte: +(0) } },
-                        { 'price': { $lte: +(188763) } }
-                    ]
-                },
-                sorting: 'price:1'
-            }, () => this.getData(0))
-        } else if (key == 4) {
-            this.setState({
-                filterAnd: {
-                    $and: [
-                        { 'price': { $gte: +(0) } },
-                        { 'price': { $lte: +(30000) } }
-                    ]
-                },
-                sorting: 'price:1'
-            }, () => this.getData(0))
-        } else if (key == 5) {
-            this.setState({
-                filterAnd: {
-                    $and: [
-                        { 'price': { $gte: +(20000) } },
-                        { 'price': { $lte: +(60000) } }
-                    ]
-                },
-                sorting: 'price:1'
-            }, () => this.getData(0))
-        } else if (key == 6) {
-            this.setState({
-                filterAnd: {
-                    $and: [
-                        { 'price': { $gte: +(60000) } },
-                        { 'price': { $lte: +(100000) } }
-                    ]
-                },
-                sorting: 'price:1'
-            }, () => this.getData(0))
-        } else if (key == 7) {
-            this.setState({
-                filterAnd: {
-                    $and: [
-                        { 'price': { $gte: +(100000) } },
-                    ]
-                },
-                sorting: 'price:1'
-            }, () => this.getData(0))
-        } else {
-            this.setState({ filterAnd: {} }, this.getData(0))
-        }
-    }
 
     handleSubmit = () => {
         if (!this.state.value) {
@@ -275,46 +181,6 @@ class NewCarVersion3 extends React.Component {
             })
     }
 
-    customfunction() {
-        this.props.loading(true)
-        client.service('news').find({
-            query: {
-                $sort: {
-                    createdAt: -1
-                },
-                $limit: 5,
-                publisher: { $ne: 'youtube' }
-            }
-        }).then((res) => {
-            this.props.loading(false);
-            if (res.data.length > 0) {
-                this.props.fetchNews(res.data)
-            }
-        }).catch(err => {
-            this.props.loading(false);
-            message.error(err.message)
-        });
-
-        this.props.loading(true)
-        client.service('news').find({
-            query: {
-                $sort: {
-                    createdAt: -1
-                },
-                $limit: 6,
-                publisher: 'youtube'
-            }
-        }).then((res) => {
-            this.props.loading(false);
-            if (res.data.length > 0) {
-                this.props.fetchClub(res.data)
-            }
-        }).catch(err => {
-            this.props.loading(false);
-            message.error(err.message)
-        });
-    }
-
     getFuelPrice() {
         this.props.loading(true)
         client.service('fuelprices').find({
@@ -334,8 +200,6 @@ class NewCarVersion3 extends React.Component {
     }
 
     UNSAFE_componentWillMount() {
-        this.customfunction()
-        this.callback('5')
         // this.getData(0)
         this.getFuelPrice()
 
@@ -358,7 +222,6 @@ class NewCarVersion3 extends React.Component {
     }
 
     componentDidMount() {
-        this.checkForHiddenSearchBar();
         this.setState({
             window: window,
         })
@@ -663,7 +526,7 @@ class NewCarVersion3 extends React.Component {
 
     render() {
         return (
-            <LayoutV2 hideSearchBar={this.state.hideSearchBar}>
+            <LayoutV2 >
                 <div className="section-version3" style={{ marginTop: '20px' }}>
                     <div className="container-version3 padding-sm" id="filter-top" style={{ touchAction: 'pan-y' }} >
                         <Row>
@@ -677,7 +540,7 @@ class NewCarVersion3 extends React.Component {
                                     options={notEmptyLength(this.state.filterCarBrands) ? this.state.filterCarBrands : []}
                                     onSelect={(brand, model) => {
                                         if (_.get(brand, 'value')) {
-                                            this.props.router.push(`/newcar/filter?${queryStringifyNestedObject({ make: brand.value.toLowerCase(), page: 1 })}`)
+                                            this.props.router.push(`/newcar/filter?${queryStringifyNestedObject({ make: brand.value.toLowerCase(), page: 1 })}`, `/newcar/filter?${queryStringifyNestedObject({ make: brand.value.toLowerCase(), page: 1 })}`)
                                         }
                                     }}
                                 />

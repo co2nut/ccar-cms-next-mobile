@@ -105,7 +105,7 @@ const PostMobileView = (props) => {
                                     {getUserName(_.get(post, `userId`), 'freakId')}
                                 </div>
                                 <div className="small-text grey">
-                                    {moment().fromNow()}
+                                    {moment(_.get(post , `createdAt`)).fromNow()}
                                 </div>
                             </span>
                         </span>

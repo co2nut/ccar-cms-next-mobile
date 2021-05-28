@@ -613,6 +613,11 @@
     border: solid #dedede 1px;
 }
 
+.thin-border-2 {
+    border-width: thin;
+    border-style: solid;
+}
+
 .border-none {
     border: none;
 }

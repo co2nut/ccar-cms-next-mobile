@@ -5,7 +5,7 @@ import { withRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { arrayLengthCount } from '../../common-function';
-import LightBoxGallery from './light-box-gallery';
+import LightBoxGallery from './LightBoxGallery';
 import { imageNotFound } from '../profile/config';
 
 

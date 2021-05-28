@@ -25,7 +25,7 @@ import UserAvatar from '../../general/UserAvatar';
 import AddCompareProductButton from '../../general/add-compare-product-button';
 import CalculatorModal from '../../general/calculator-modal';
 import Car360ViewButton from '../../general/car-360-view-button';
-import LightBoxGallery from '../../general/light-box-gallery';
+import LightBoxGallery from '../../general/LightBoxGallery';
 import { convertParameterToProductListUrl, formatNumber, getUserName, notEmptyLength } from '../../../common-function';
 import SellerBusinessCard from '../../seller/SellerBusinessCard';
 import WhatsAppButton from '../../general/whatapps-button';

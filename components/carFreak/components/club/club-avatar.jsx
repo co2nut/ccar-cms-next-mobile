@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'next/dist/client/router';
 import { isValidNumber } from '../../../../common-function';
 import { loading } from '../../../../redux/actions/app-actions';
-import LightBoxGallery from '../../../general/light-box-gallery';
 import { ccarLogo } from '../../../profile/config';
+import LightBoxGallery from '../../../general/LightBoxGallery';
 
 
 const ClubAvatar = (props) => {

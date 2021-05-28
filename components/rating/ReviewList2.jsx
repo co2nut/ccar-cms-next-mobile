@@ -7,7 +7,7 @@ import ScrollContainer from 'react-indiana-drag-scroll';
 import ReactPlayer from 'react-player';
 import { connect } from 'react-redux';
 import { isObject, notEmptyLength } from '../../common-function';
-import LightBoxGallery from '../general/light-box-gallery';
+import LightBoxGallery from '../general/LightBoxGallery';
 import UserAvatar from '../general/UserAvatar';
 import HideReviewButton from './HideReviewButton';
 import RemoveReviewButton from './RemoveReviewButton';

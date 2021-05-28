@@ -11,7 +11,7 @@ import LikePostButton from './like-post-button';
 import SocialInput from './social-input';
 import UserAvatar from '../../general/UserAvatar';
 import { formatNumber, getObjectId, getUserName, notEmptyLength, objectRemoveEmptyValue  } from '../../../common-function';
-import LightBoxGallery from '../../general/light-box-gallery';
+import LightBoxGallery from '../../general/LightBoxGallery';
 import ParseTag from '../../general/ParseTag';
 import { loading, loginMode } from '../../../redux/actions/app-actions';
 
