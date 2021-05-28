@@ -55,6 +55,7 @@ const CarFreakPage = (props) => {
     const [visible, setVisible] = useState(false);
     const [editMode, setEditMode] = useState('');
     const [selectedPost, setSelectedPost] = useState({});
+    const [writePostChatType, setWritePostChatType] = useState('carfreaks');
     const [writeModalVisible, setWriteModalVisible] = useState(false);
     const [scope, setScope] = useState('public');
     const [userChatLikes, setUserChatLikes] = useState([]);
@@ -259,7 +260,7 @@ const CarFreakPage = (props) => {
 
     return (
         <React.Fragment>
-            <LayoutV2 searchTypes={carFreakGlobalSearch} enterSearchCarFreaks hideOpenApp >
+            <LayoutV2 searchTypes={carFreakGlobalSearch} enterSearchCarFreaks hideOpenApp showCompareCarButton={false} >
 
                 <Mobile>
                     <CarFreakLayout
@@ -268,11 +269,10 @@ const CarFreakPage = (props) => {
                             setScope(scope || 'public');
                         }}
                         onWritePostClick={(type) => {
-                            if (type == 'carFreaks') {
-                                setEditMode(null);
-                                setWriteModalVisible(true);
-                                setSelectedPost(null);
-                            }
+                            setWritePostChatType(type)
+                            setEditMode(null);
+                            setWriteModalVisible(true);
+                            setSelectedPost(null);
                         }}>
                         <Row>
                             <InfiniteScrollWrapper onScrolledBottom={() => {
@@ -377,7 +377,7 @@ const CarFreakPage = (props) => {
             <WritePostDrawer
                 data={selectedPost}
                 editMode={editMode}
-                chatType={'carfreaks'}
+                chatType={writePostChatType || 'socialboard'}
                 visible={writeModalVisible}
                 notify
                 onUpdatePost={(data) => {

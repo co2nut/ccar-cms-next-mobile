@@ -133,19 +133,19 @@ const CarMarketPage = (props) => {
         setMainConfig(config);
         setProductLoading(true);
         try {
-            let path = convertParameterToProductListUrl(data, config)
-            let asPath = path.split('?')[0].split('/');
-            let parameter = _.get(path.split('?'), '[1]') || '';
-            asPath = _.map(asPath, function (item, i) {
+            let asPath = convertParameterToProductListUrl(data, config)
+            let path = asPath.split('?')[0].split('/');
+            let parameter = _.get(asPath.split('?'), '[1]') || '';
+            path = _.map(asPath, function (item, i) {
                 if (i > 1) {
                     item = `[parameter${i - 1}]`
                 }
                 return item;
             })
-            asPath = `${asPath.join('/')}${parameter ? `?${parameter}` : ''}`
+            path = `${path.join('/')}${parameter ? `?${parameter}` : ''}`
 
             setProductList([]);
-            props.router.push(asPath, path, { shallow: true })
+            props.router.push(path, asPath, { shallow: true })
         } catch (error) {
 
         }

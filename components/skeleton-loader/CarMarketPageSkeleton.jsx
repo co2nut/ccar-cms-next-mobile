@@ -51,13 +51,13 @@ const CarMarketPage = (props) => {
 
                                 <Col span={15}>
                                     <Col style={{ paddingRight: '5px' }} xs={8} sm={8} md={8} lg={8} xl={8}>
-                                        <div className="w-100 text-truncate-twoline flex-items-align-center" style={{ height: 38, padding: 2, borderRadius: 5, backgroundColor:  "#EDECEA", color: "##000000A6" }} value="readyStock" >
+                                        <div className="w-100 text-truncate-twoline flex-items-align-center" style={{ height: 38, padding: 2, borderRadius: 5, backgroundColor: "#EDECEA", color: "##000000A6" }} value="readyStock" >
                                             <p style={{ fontSize: "10px", textAlign: "center", fontWeight: "bold", marginBottom: '0px' }}> READY </p>
                                             <p style={{ fontSize: "10px", textAlign: "center", fontWeight: "bold", marginBottom: '0px' }}> STOCK</p>
                                         </div>
                                     </Col>
                                     <Col style={{ paddingRight: '5px' }} xs={8} sm={8} md={8} lg={8} xl={8}>
-                                        <div className="w-100" style={{ alignItems: 'center', paddingTop: '15%', height: 38, borderRadius: 5, backgroundColor:  "#EDECEA", color:  "##000000A6" }} value="registrationUrl" >
+                                        <div className="w-100" style={{ alignItems: 'center', paddingTop: '15%', height: 38, borderRadius: 5, backgroundColor: "#EDECEA", color: "##000000A6" }} value="registrationUrl" >
                                             <p style={{ fontSize: "10px", textAlign: "center", fontWeight: "bold", marginBottom: '0px' }}>REG</p>
                                         </div>
                                     </Col>
@@ -73,20 +73,14 @@ const CarMarketPage = (props) => {
 
                             <Row style={{ marginBottom: '10px', marginTop: '10px' }} >
                                 <Col xs={24} sm={24} md={24} lg={24} xl={24} className="background-white margin-bottom-xl">
-                                    <Row>
-                                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                            <div className="d-flex scroller-type"   >
-                                                <ProductListSkeletonList />
-                                            </div>
-                                        </Col>
-                                    </Row>
+                                    <ProductListSkeletonList />
                                 </Col>
                             </Row>
                         </Col>
                     </Row>
-                </div>
             </div>
-        </LayoutV2>
+            </div>
+        </LayoutV2 >
     )
 }
 

@@ -101,7 +101,7 @@ const CarFreakLayout = (props) => {
                                     </div>
                                     {
                                         props.hideScope == true ?
-                                            null 
+                                            null
                                             :
                                             <div className="flex-justify-end flex-items-align-center margin-top-md">
                                                 <span className='d-inline-block' >
@@ -159,7 +159,7 @@ const CarFreakLayout = (props) => {
                                 }
                             }}
                             >
-                                <Menu.Item key="carFreaks" style={{ padding: '10px 0px' }} >
+                                <Menu.Item key="carfreaks" style={{ padding: '10px 0px' }} >
                                     <div className=" flex-justify-space-between flex-items-align-center" style={{ width: 200 }} >
                                         <span className='d-inline-block subtitle1 ccar-button-yellow' >
                                             CarFreaks
@@ -169,7 +169,7 @@ const CarFreakLayout = (props) => {
                                         </span>
                                     </div>
                                 </Menu.Item>
-                                <Menu.Item key="socialBoard" className="white" style={{ padding: '10px 0px' }}>
+                                <Menu.Item key="socialboard" className="white" style={{ padding: '10px 0px' }}>
                                     <div className="flex-justify-space-between flex-items-align-center" style={{ width: 200 }} >
                                         <span className='d-inline-block subtitle1 ccar-button-yellow' >
                                             Social Board

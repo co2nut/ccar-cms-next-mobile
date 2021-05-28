@@ -7,7 +7,7 @@ import queryString from 'query-string';
 import React from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
-import { convertRangeFormatToText, formatNumber, isValidNumber, notEmptyLength, numberToFixed, objectRemoveEmptyValue, queryStringifyNestedObject } from '../../../common-function';
+import { convertRangeFormatToText, formatNumber, getObjectId, isValidNumber, notEmptyLength, numberToFixed, objectRemoveEmptyValue, queryStringifyNestedObject, windowScroll } from '../../../common-function';
 import client from '../../../feathers';
 import { carBrandsList } from '../../../params/carBrandsList';
 import { bodyTypeOri } from '../../../params/bodyTypeOri';
@@ -19,6 +19,7 @@ import LayoutV2 from '../../general/LayoutV2';
 import BrandFiltering from '../BrandFiltering';
 import Scrollbars from 'react-custom-scrollbars';
 import MakeModal from '../../product-list/filter-modal/MakeModal';
+import InfiniteScrollWrapper from '../../general/InfiniteScrollWrapper';
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 992 })
@@ -84,6 +85,8 @@ class Filter extends React.Component {
             total: 0,
             visible: false,
             expandKey: '',
+            expandVariantKey: '',
+            carspecLoading: true,
         };
     }
 
@@ -116,7 +119,7 @@ class Filter extends React.Component {
         });
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.getDataFromUrl();
         this.updateFilterGroupFromUrl();
     }
@@ -198,11 +201,13 @@ class Filter extends React.Component {
     }
 
     pushParameterToUrl() {
+        windowScroll(0, 0);
         let mergeObj = {
             page: this.state.page,
             sorting: this.state.sorting
         }
         let path = '/newcar/filter';
+        let asPath = path;
         if (_.isObject(this.state.filterGroup) && !_.isEmpty(objectRemoveEmptyValue(this.state.filterGroup))) {
 
             mergeObj = { ...mergeObj, ..._.cloneDeep(this.state.filterGroup) };
@@ -212,12 +217,12 @@ class Filter extends React.Component {
         }
 
         if (_.isPlainObject(mergeObj) && !_.isEmpty(mergeObj)) {
-            path += `?${queryStringifyNestedObject(mergeObj)}`;
+            asPath += `?${queryStringifyNestedObject(mergeObj)}`;
         }
         this.setState({
             expandKey: null,
         })
-        this.props.router.push(path, path, { shallow: false });
+        this.props.router.push(asPath, asPath, { shallow: true });
     }
 
     getDataFromUrl() {
@@ -318,24 +323,6 @@ class Filter extends React.Component {
         this.setState({ sorting: e })
     }
 
-    getRowKey(item, i) {
-        if (this.state.activeKey == item.rowKey + '' + i) {
-            this.setState({ rowKey: -1, activeKey: -1 })
-        } else {
-            let cloneItem = _.map(_.cloneDeep(item.variants), (v) => {
-                v.make = item.make
-                v.model = item.model
-                v.bodyType = item.bodyType
-                return v
-            })
-
-            this.setState({
-                rowKey: item.rowKey,
-                rowData: cloneItem,
-                activeKey: item.rowKey + '' + i
-            })
-        }
-    }
     convertFilterRange(value, name) {
 
         if (notEmptyLength(value) && name) {
@@ -451,11 +438,11 @@ class Filter extends React.Component {
                                             delete cloneFilterGroup[item[0]];
                                             self.setState({
                                                 filterGroup: {
-                                                    ...cloneFilterGroup, 
+                                                    ...cloneFilterGroup,
                                                     page: 1,
                                                 }
                                             })
-                                        }} color="orange">{item[1] || 'N/A'} </Tag> 
+                                        }} color="orange">{item[1] || 'N/A'} </Tag>
                                     )
                                 })
                             }
@@ -474,32 +461,32 @@ class Filter extends React.Component {
         return (
             <div className="width-100" >
                 <div className="margin-top-sm">
-                    <div style={{textAlign:'left'}}>
-                        <p style={{fontWeight:'700'}}>Sort</p>
+                    <div style={{ textAlign: 'left' }}>
+                        <p style={{ fontWeight: '700' }}>Sort</p>
                     </div>
                     <Row>
                         <Col span={20}><p>Price: Low to High</p></Col>
                         <Col span={4} style={{ textAlign: 'right' }}>
-                            <div style={{ width: '20px', height: '20px', float: 'right' }} 
-                            className={`${this.state.sorting == 'price:1' ? 'background-black' : 'background-white'} cursor-pointer thin-border round-border`} 
-                            onClick={(e) => {
-                                this.setState({
-                                    sorting : 'price:1',
-                                })
-                            }}
+                            <div style={{ width: '20px', height: '20px', float: 'right' }}
+                                className={`${this.state.sorting == 'price:1' ? 'background-black' : 'background-white'} cursor-pointer thin-border round-border`}
+                                onClick={(e) => {
+                                    this.setState({
+                                        sorting: 'price:1',
+                                    })
+                                }}
                             > </div>
                         </Col>
                     </Row>
                     <Row>
                         <Col span={20}><p>Price: High to Low</p></Col>
                         <Col span={4}>
-                            <div style={{ width: '20px', height: '20px', float: 'right' }} 
-                            className={`${this.state.sorting == 'price:-1' ? 'background-black' : 'background-white'} cursor-pointer thin-border round-border`} 
-                            onClick={(e) => {
-                                this.setState({
-                                    sorting : 'price:-1',
-                                })
-                            }}
+                            <div style={{ width: '20px', height: '20px', float: 'right' }}
+                                className={`${this.state.sorting == 'price:-1' ? 'background-black' : 'background-white'} cursor-pointer thin-border round-border`}
+                                onClick={(e) => {
+                                    this.setState({
+                                        sorting: 'price:-1',
+                                    })
+                                }}
                             > </div>
                         </Col>
                     </Row>
@@ -507,13 +494,13 @@ class Filter extends React.Component {
                     <Row>
                         <Col span={20}><p> Year: Old to New </p></Col>
                         <Col span={4}>
-                            <div style={{ width: '20px', height: '20px', float: 'right' }} 
-                            className={`${this.state.sorting == 'year:1' ? 'background-black' : 'background-white'} cursor-pointer thin-border round-border`} 
-                            onClick={(e) => {
-                                this.setState({
-                                    sorting : 'year:1',
-                                })
-                            }}
+                            <div style={{ width: '20px', height: '20px', float: 'right' }}
+                                className={`${this.state.sorting == 'year:1' ? 'background-black' : 'background-white'} cursor-pointer thin-border round-border`}
+                                onClick={(e) => {
+                                    this.setState({
+                                        sorting: 'year:1',
+                                    })
+                                }}
                             > </div>
                         </Col>
                     </Row>
@@ -521,13 +508,13 @@ class Filter extends React.Component {
                     <Row>
                         <Col span={20}><p> Year: New to Old </p></Col>
                         <Col span={4}>
-                            <div style={{ width: '20px', height: '20px', float: 'right' }} 
-                            className={`${this.state.sorting == 'year:-1' ? 'background-black' : 'background-white'} cursor-pointer thin-border round-border`} 
-                            onClick={(e) => {
-                                this.setState({
-                                    sorting : 'year:-1',
-                                })
-                            }}
+                            <div style={{ width: '20px', height: '20px', float: 'right' }}
+                                className={`${this.state.sorting == 'year:-1' ? 'background-black' : 'background-white'} cursor-pointer thin-border round-border`}
+                                onClick={(e) => {
+                                    this.setState({
+                                        sorting: 'year:-1',
+                                    })
+                                }}
                             > </div>
                         </Col>
                     </Row>
@@ -539,22 +526,22 @@ class Filter extends React.Component {
     brand() {
         return (
             <BrandFiltering
-            showCount={false}
-            showModel={false}
-            options={notEmptyLength(this.state.filterCarBrands) ? this.state.filterCarBrands : []}
-            onSelect={(brand, model) => {
-                if (_.get(brand, 'value')) {
-                    this.setState(
-                        {
-                            filterGroup: {
-                                ...this.state.filterGroup,
-                                make: brand.value.toLowerCase(),
-                            },
-                            page: 1,
-                        }
-                    )
-                }
-            }}
+                showCount={false}
+                showModel={false}
+                options={notEmptyLength(this.state.filterCarBrands) ? this.state.filterCarBrands : []}
+                onSelect={(brand, model) => {
+                    if (_.get(brand, 'value')) {
+                        this.setState(
+                            {
+                                filterGroup: {
+                                    ...this.state.filterGroup,
+                                    make: brand.value.toLowerCase(),
+                                },
+                                page: 1,
+                            }
+                        )
+                    }
+                }}
             />
         )
     }
@@ -615,8 +602,8 @@ class Filter extends React.Component {
                                     })
                                 }
                                 }>
-                                    <img src={v.icon} style={{width:'50%'}}/>
-                                    <p style={{ marginTop: '-10px', textAlign: 'center', fontWeight: '600', textTransform: 'uppercase', marginBottom: '0px', fontSize:'10px' }}> {v.value} </p>
+                                    <img src={v.icon} style={{ width: '50%' }} />
+                                    <p style={{ marginTop: '-10px', textAlign: 'center', fontWeight: '600', textTransform: 'uppercase', marginBottom: '0px', fontSize: '10px' }}> {v.value} </p>
                                 </div>
                                 {/* <p style={{color:'black', textAlign:'center', paddingTop:'10px'}}> {v.value}</p> */}
                             </Col>
@@ -645,8 +632,8 @@ class Filter extends React.Component {
                                         })
                                     }
                                     }>
-                                        <img src={v.icon} style={{width:'40%'}} />
-                                        <p style={{ textAlign: 'center', fontWeight: '600', textTransform: 'uppercase', marginBottom: '0px', marginTop: '3px', fontSize:'12px' }}> {v.value} </p>
+                                        <img src={v.icon} style={{ width: '40%' }} />
+                                        <p style={{ textAlign: 'center', fontWeight: '600', textTransform: 'uppercase', marginBottom: '0px', marginTop: '3px', fontSize: '12px' }}> {v.value} </p>
                                     </div>
                                     {/* <p style={{color:'black', textAlign:'center', paddingTop:'10px'}}> {v.value}</p> */}
                                 </div>
@@ -666,8 +653,8 @@ class Filter extends React.Component {
                                         })
                                     }
                                     }>
-                                        <img src={v.icon} style={{width:'40%'}} />
-                                        <p style={{ textAlign: 'center', fontWeight: '600', textTransform: 'uppercase', marginBottom: '0px', marginTop: '3px', fontSize:'12px' }}> {v.value} </p>
+                                        <img src={v.icon} style={{ width: '40%' }} />
+                                        <p style={{ textAlign: 'center', fontWeight: '600', textTransform: 'uppercase', marginBottom: '0px', marginTop: '3px', fontSize: '12px' }}> {v.value} </p>
                                     </div>
                                     {/* <p style={{color:'black', textAlign:'center', paddingTop:'10px'}}> {v.value}</p> */}
                                 </div>
@@ -679,187 +666,81 @@ class Filter extends React.Component {
         )
     }
 
+    _getSpec(spec, fieldName) {
+        let index = _.findIndex(spec, ['field', fieldName])
+        if (index !== -1) {
+            return spec[index]['value']
+        }
+        return '-'
+    }
     _renderVariants() {
-        const columns = [
-            {
-                title: 'Model',
-                dataIndex: 'model',
-                key: 'model',
-                render: (text, record) => {
-                    return (
-                        <span>
-                            {_.capitalize(record.make) + ' ' + _.capitalize(record.model) + ' ' + _.capitalize(record.variant) + ' ' + record.year}
-                        </span>
-                    )
-                },
-            },
-            {
-                title: 'Transmission',
-                dataIndex: 'transmission',
-                key: 'transmission',
-            },
-            {
-                title: 'Price',
-                dataIndex: 'price',
-                key: 'price',
-                render: (text, record) => (
-                    <span style={{ color: 'rgb(251, 176, 64)' }}>
-                        {text ? "RM" + formatNumber(text, null, null, 2) : '-'}
-                    </span>
-                ),
-            },
-            {
-                title: 'Monthly Payment',
-                dataIndex: 'monthlyPayment',
-                key: 'monthlyPayment',
-                render: (text, record) => {
-                    return (
-                        <span style={{ color: 'rgb(80, 135, 251)' }}>
-                            {record.price ? "RM" + formatNumber(record.monthlyPayment, null, null, 2) : '-'}
-                        </span>
-                    )
-                },
-            },
-            {
-                title: 'Driven Wheel',
-                dataIndex: 'drivenwheel',
-                key: 'drivenwheel',
-                render: (text, record) => {
-                    return (
-                        <span style={{ color: 'rgb(80, 135, 251)' }}>
-                            {record.drivenwheel ? _.upperCase(record.drivenwheel) : '-'}
-                        </span>
-                    )
-                },
-            },
-            {
-                title: 'Fuel Type',
-                dataIndex: 'fuelType',
-                key: 'fuelType',
-                render: (text, record) => {
-                    return (
-                        <span style={{ color: 'rgb(80, 135, 251)' }}>
-                            {record.fuelType ? _.upperCase(record.fuelType) : '-'}
-                        </span>
-                    )
-                },
-            },
-            {
-                title: 'Engine Capacity',
-                dataIndex: 'engineCapacity',
-                key: 'engineCapacity',
-                render: (text, record) => {
-                    return (
-                        <span style={{ color: 'rgb(80, 135, 251)' }}>
-                            {record.engineCapacity ? record.engineCapacity : '-'}
-                        </span>
-                    )
-                },
-            },
-            // {
-            //   title: 'Action',
-            //   key: 'action',
-            //   render: (text, record) => (
-            //     <span>
-            //         <Button style={{ marginRight: '10px', width: '100px' }} 
-            //         onClick={() => this.pushCompare(record)}
-            //         > + Compare </Button>
-            //     </span>
-            //   ),
-            // },
-        ];
 
-        let uniqbrands = this.state.carspecs
-        let getDecimal = uniqbrands.length / 4
-        var rowDivided = Math.ceil(getDecimal)
-        var count = 0
-        var rowKey = 0
-        let list = []
+        let uniqbrands = this.state.carspecs;
+        let list = [];
 
+        console.log(uniqbrands);
         if (notEmptyLength(uniqbrands)) {
 
             uniqbrands.map((item, i) => {
-                count++
-                if (count <= 3) {
-                    item.rowKey = rowKey
-                    list.push(
-                        <React.Fragment>
-                            <Col xs={24} sm={24} md={8} lg={6} xl={6} key={i}>
-                                <Link shallow={false} href={routePaths.newCarDetails.to || '/'} as={typeof (routePaths.newCarDetails.as) == 'function' ? routePaths.newCarDetails.as(item) : '/'} >
-                                    <a>
-                                        <Col span={10}>
-                                            <img src={item.uri} style={{ width: '100%', padding: '5px', marginLeft: '5px' }}></img>
-                                        </Col>
-                                        <Col span={14}>
-                                            <div className="newcars-wrap-p padding-top-md padding-left-md">
-                                                <p style={{ textTransform: 'capitalize', textAlign: 'left', fontSize: '16px', fontWeight: '600', marginBottom: '0px', color: "rgba(0, 0, 0, 0.65)" }}> {item.make}  {item.model}</p>
-                                                <p style={{ textTransform: 'capitalize', textAlign: 'left', fontSize: '12px', fontWeight: '600', marginBottom: '0px', color: "rgba(0, 0, 0, 0.65)" }}>RM {formatNumber(item.monthlyPayment, 'auto', true, 2, true)}/month</p>
-                                                <p style={{ textAlign: 'left', color: '#FBB040', fontSize: '12px', fontWeight: 700 }}>
-                                                {
-                                                    !item.minPrice && !item.maxPrice ?
-                                                        'TBC'
-                                                        :
-                                                    item.minPrice == item.maxPrice ?
+                list.push(
+                    <React.Fragment>
+                        <Col xs={24} sm={24} md={8} lg={6} xl={6} key={`carspec-${getObjectId(i)}`}>
+                            <Col span={10}>
+                                <img src={item.uri} style={{ width: '100%', padding: '5px', marginLeft: '5px' }}></img>
+                            </Col>
+                            <Col span={14} onClick={(e) => { this.setState({ expandVariantKey: this.state.expandVariantKey == `carspec-${getObjectId(i)}-collapse` ? null : `carspec-${getObjectId(i)}-collapse` }) }}>
+                                <div className="newcars-wrap-p padding-top-md padding-left-md">
+                                    <p style={{ textTransform: 'capitalize', textAlign: 'left', fontSize: '16px', fontWeight: '600', marginBottom: '0px', color: "rgba(0, 0, 0, 0.65)" }}> {item.make}  {item.model}</p>
+                                    <p style={{ textAlign: 'left', color: '#FBB040', fontSize: '12px', fontWeight: 700, marginBottom: '0px', }}>
+                                        {
+                                            !item.minPrice && !item.maxPrice ?
+                                                'TBC'
+                                                :
+                                                item.minPrice == item.maxPrice ?
                                                     `${item.minPrice ? 'RM ' + formatNumber(item.minPrice) : 'TBC'}`
-                                                        :
+                                                    :
                                                     `${item.minPrice ? 'RM ' + formatNumber(item.minPrice) : 'TBC'} - ${item.maxPrice ? 'RM ' + formatNumber(item.maxPrice) : 'TBC'}`
+                                        }
+                                    </p>
+                                    <p className="caption grey text-truncate">
+                                        {this._getSpec(_.get(item, `specification`) || [], 'Fuel Consumption (L/100km)')} KM/L | {this._getSpec(_.get(item, `specification`) || [], 'Peak Power (hp)')} HP | {this._getSpec(_.get(item, `specification`) || [], 'Peak Torque (Nm)')} Nm                                    </p>
+                                </div>
+                            </Col>
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="width-100">
+                                <Collapse className="collapse-no-header border-none collapse-body-no-padding collapse-body-overflow-visible" activeKey={this.state.expandVariantKey} >
+                                    <Collapse.Panel key={`carspec-${getObjectId(i)}-collapse`} showArrow={false}>
+                                        <Scrollbars autoHeight autoHide >
+                                            <div className="width-100 padding-md flex-justify-start flex-items-align-center">
+                                                {
+                                                    _.map(_.get(item, `variants`) || [], (variant) => {
+                                                        return (
+                                                            <Link href={routePaths.newCarDetails.to} as={routePaths.newCarDetails.as(item, { variantId: _.get(variant, `_id`) })}>
+                                                                <a>
+                                                                    <span className='d-inline-block thin-border round-border padding-x-md padding-y-sm margin-right-md' >
+                                                                        <div className="font-weight-bold grey caption text-truncate flex-items-align-center flex-justify-center">
+                                                                            {_.get(variant, `variant`) || _.get(variant, `newVariant`) || 'N/A'}
+                                                                        </div>
+                                                                        <div className="font-weight-bold caption text-truncate flex-justify-center flex-items-align-center" style={{ color: '#FBB040' }}>
+                                                                            {_.get(variant, `price`) ? 'RM' : ''} {formatNumber(_.get(variant, `price`)) || 'N/A'}
+                                                                        </div>
+                                                                    </span>
+                                                                </a>
+                                                            </Link>
+                                                        )
+                                                    })
                                                 }
-                                                    </p>
-                                                </div>
-                                           </Col>
-                                    </a>
-                                </Link>
-                            </Col>
-                            <Divider style={{ marginTop: '10px', marginBottom: '10px', background: 'rgba(0, 0, 0, 0.2)' }} />
-                        </React.Fragment>
-                    )
-                } else {
-                    count = 0
-                    item.rowKey = rowKey
-                    list.push(
-                        <React.Fragment>
-                            <Col xs={24} sm={24} md={8} lg={6} xl={6} key={i}>
-                                <Link shallow={false} href={routePaths.newCarDetails.to || '/'} as={typeof (routePaths.newCarDetails.as) == 'function' ? routePaths.newCarDetails.as(item) : '/'} >
-                                    <a>
-                                        <Col span={10}>
-                                            <img src={item.uri} style={{ width: '100%', padding: '5px', marginLeft: '5px' }}></img>
-                                        </Col>
-                                        <Col span={14}>
-                                            <div className="newcars-wrap-p padding-top-md padding-left-md">
-                                                <p style={{ textTransform: 'capitalize', textAlign: 'left', fontSize: '12px', fontWeight: '600', marginBottom: '0px', color: "rgba(0, 0, 0, 0.65)" }}> {item.make}  {item.model}</p>
-                                                <p style={{ textTransform: 'capitalize', textAlign: 'left', fontSize: '12px', fontWeight: '600', marginBottom: '0px', color: "rgba(0, 0, 0, 0.65)" }}>RM {formatNumber(item.monthlyPayment, 'auto', true, 2, true)}/month</p>
-                                                <p style={{ textAlign: 'left', color: '#FBB040', fontSize: '12px', fontWeight: 700 }}>
-                                                    {
-                                                        !item.minPrice && !item.maxPrice ?
-                                                            'TBC'
-                                                            :
-                                                            item.minPrice == item.maxPrice ?
-                                                                `${item.minPrice ? 'RM ' + formatNumber(item.minPrice) : 'TBC'}`
-                                                                :
-                                                                `${item.minPrice ? 'RM ' + formatNumber(item.minPrice) : 'TBC'} - ${item.maxPrice ? 'RM ' + formatNumber(item.maxPrice) : 'TBC'}`
-                                                    }
-                                                </p>
                                             </div>
-                                        </Col>
-                                    </a>
-                                </Link>
-                            </Col>
-                            <Divider style={{ marginTop: '10px', marginBottom: '10px', background: 'rgba(0, 0, 0, 0.2)' }} />
-                        </React.Fragment>
-                    )
-                    rowKey++
-                }
+                                        </Scrollbars>
+                                    </Collapse.Panel>
+                                </Collapse>
+                            </div>
+                        </Col>
+                        <Divider style={{ marginTop: '10px', marginBottom: '10px', background: 'rgba(0, 0, 0, 0.2)' }} />
+                    </React.Fragment>
+                )
             })
-
-            if (Number.isInteger(getDecimal) === false) {
-                list.push((
-                    <Col span={24} id={rowKey} style={this.state.rowKey == rowKey ? { display: 'block' } : { display: 'none' }}>
-                        <div style={{ padding: '0 26px' }}>
-                            <Table rowKey="_id" bordered columns={columns} dataSource={_.sortBy(this.state.rowData, ['year'])} pagination={false} />
-                        </div>
-                    </Col>
-                ))
-            }
 
             return (
                 <Row>{list}</Row>
@@ -876,92 +757,92 @@ class Filter extends React.Component {
     render() {
         return (
             <LayoutV2>
-                    <div className="section-version3" style={{ touchAction: 'pan-y' }}>
-                        <div className="container-version3 padding-sm" id="filter-top" >
+                <div className="section-version3" style={{ touchAction: 'pan-y' }}>
+                    <div className="container-version3 padding-sm" id="filter-top" >
 
-                            <Row style={{ marginTop: '3.5em' }}>
-                                <Col span={20}>
-                                    <p style={{fontWeight:'700', fontSize:'14px'}}> {this.state.total} Car(s) </p>
-                                </Col>
-                                <Col span={4} style={{ textAlign: 'end' }}>
-                                    <div onClick={() => { this.setState({ expandKey: this.state.expandKey == '5' ? null : '5' }) }}>
-                                        <img style={{ width: '40%', height: '20px' }} src="/assets/sorting-2.png"></img>
-                                    </div>
-                                </Col>
-
-                                <Col span={5} offset={1}>
-                                    <div onClick={() => { this.setState({ expandKey: this.state.expandKey == '1' ? null : '1' }) }}>
-                                        BRAND <Icon type="down" />
-                                    </div>
-                                </Col>
-                                <Col span={5} offset={1}>
-                                    <div onClick={e => this.setState({ expandKey: this.state.expandKey == '2' ? null : '2' })}>
-                                        BODY <Icon type="down" />
-                                    </div>
-                                </Col>
-                                <Col span={5} offset={1}>
-                                    <div onClick={e => this.setState({ expandKey: this.state.expandKey == '3' ? null : '3' })}>
-                                        FUEL <Icon type="down" />
-                                    </div>
-                                </Col>
-                                <Col span={5} offset={1}>
-                                    <div onClick={e => this.setState({ expandKey: this.state.expandKey == '4' ? null : '4' })}>
-                                        PRICE <Icon type="down" />
-                                    </div>
-                                </Col>
-                            </Row>
-
-                                <div className="margin-y-md">
-                                    {this._renderFilterTags(this.state.filterGroup)}
+                        <Row style={{ marginTop: '3.5em' }}>
+                            <Col span={20}>
+                                <p style={{ fontWeight: '700', fontSize: '14px' }}> {this.state.total} Car(s) </p>
+                            </Col>
+                            <Col span={4} style={{ textAlign: 'end' }}>
+                                <div onClick={() => { this.setState({ expandKey: this.state.expandKey == '5' ? null : '5' }) }}>
+                                    <img style={{ width: '40%', height: '20px' }} src="/assets/sorting-2.png"></img>
                                 </div>
+                            </Col>
 
-                                <Row>
-                                    <Collapse className="collapse-no-header border-none collapse-body-no-padding collapse-body-overflow-visible" activeKey={this.state.expandKey}>
-                                        <Collapse.Panel key="1" showArrow={false} collapsible={true}>
-                                            <div className="width-100 margin-top-xs">
-                                                {this.brand()}
-                                            </div>
-                                        </Collapse.Panel>
-                                        <Collapse.Panel key="2" showArrow={false} collapsible={true}>
-                                            <div className="width-100" >
-                                                {this.type()}
-                                            </div>
-                                        </Collapse.Panel>
-                                        <Collapse.Panel key="3" showArrow={false} collapsible={true}>
-                                            <div className="width-100" >
-                                                {this.fuel()}
-                                            </div>
-                                        </Collapse.Panel>
-                                        <Collapse.Panel key="4" showArrow={false} collapsible={true}>
-                                            <div className="width-100" >
-                                                {this.menu()}
-                                            </div>
-                                        </Collapse.Panel>
-                                        <Collapse.Panel key="5" showArrow={false} collapsible={true}>
-                                            {this.sortingView()}
-                                        </Collapse.Panel>
-                                    </Collapse>
-                                </Row>
+                            <Col span={5} offset={1}>
+                                <div onClick={() => { this.setState({ expandKey: this.state.expandKey == '1' ? null : '1' }) }}>
+                                    BRAND <Icon type="down" />
+                                </div>
+                            </Col>
+                            <Col span={5} offset={1}>
+                                <div onClick={e => this.setState({ expandKey: this.state.expandKey == '2' ? null : '2' })}>
+                                    BODY <Icon type="down" />
+                                </div>
+                            </Col>
+                            <Col span={5} offset={1}>
+                                <div onClick={e => this.setState({ expandKey: this.state.expandKey == '3' ? null : '3' })}>
+                                    FUEL <Icon type="down" />
+                                </div>
+                            </Col>
+                            <Col span={5} offset={1}>
+                                <div onClick={e => this.setState({ expandKey: this.state.expandKey == '4' ? null : '4' })}>
+                                    PRICE <Icon type="down" />
+                                </div>
+                            </Col>
+                        </Row>
 
-                                <Row>
-                                    <Col xs={24} sm={24} md={24} lg={24} xl={24} className="margin-top-md">
-                                        <div className="padding-bottom-md background-white thick-border fill-parent">
-                                            {this._renderVariants()}
+                        <div className="margin-y-md">
+                            {this._renderFilterTags(this.state.filterGroup)}
+                        </div>
+
+                        <Row>
+                            <Collapse className="collapse-no-header border-none collapse-body-no-padding collapse-body-overflow-visible" activeKey={this.state.expandKey}>
+                                <Collapse.Panel key="1" showArrow={false} collapsible={true}>
+                                    <div className="width-100 margin-top-xs">
+                                        {this.brand()}
+                                    </div>
+                                </Collapse.Panel>
+                                <Collapse.Panel key="2" showArrow={false} collapsible={true}>
+                                    <div className="width-100" >
+                                        {this.type()}
+                                    </div>
+                                </Collapse.Panel>
+                                <Collapse.Panel key="3" showArrow={false} collapsible={true}>
+                                    <div className="width-100" >
+                                        {this.fuel()}
+                                    </div>
+                                </Collapse.Panel>
+                                <Collapse.Panel key="4" showArrow={false} collapsible={true}>
+                                    <div className="width-100" >
+                                        {this.menu()}
+                                    </div>
+                                </Collapse.Panel>
+                                <Collapse.Panel key="5" showArrow={false} collapsible={true}>
+                                    {this.sortingView()}
+                                </Collapse.Panel>
+                            </Collapse>
+                        </Row>
+
+                        <Row>
+                            <Col xs={24} sm={24} md={24} lg={24} xl={24} className="margin-top-md">
+                                <div className="padding-bottom-md background-white thick-border fill-parent">
+                                    {this._renderVariants()}
+                                </div>
+                            </Col>
+                            {
+                                this.state.total > PAGESIZE ?
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <div className="flex-justify-center margin-bottom-sm">
+                                            <Pagination simple pageSize={PAGESIZE} current={this.state.page} total={this.state.total} onChange={(e) => { this.setState({ page: e }) }} />
                                         </div>
                                     </Col>
-                                    {
-                                        this.state.total > PAGESIZE ?
-                                            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                                <div className="flex-justify-center margin-bottom-sm">
-                                                    <Pagination simple pageSize={PAGESIZE} current={this.state.page} total={this.state.total} onChange={(e) => { this.setState({ page: e }) }} />
-                                                </div>
-                                            </Col>
-                                            :
-                                            null
-                                    }
-                                </Row>
-                        </div>
+                                    :
+                                    null
+                            }
+                        </Row>
                     </div>
+                </div>
 
             </LayoutV2>
         );
