@@ -972,7 +972,7 @@ class LayoutV2 extends React.Component {
                                             <div className="padding-md">
                                                 <Row className="margin-bottom-md">
                                                     <Col span={11} className="thickBorder round-border">
-                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '2' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/car-market-homepage/index')}}> 
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '2' ? 'yellow' : ''}`} onClick={() => {this.props.router.push(routePaths.carsOnSale.as().pathname)}}> 
                                                             <img src="/assets/menu-icon/buy-car.png" style={{width:'40%'}}></img>
                                                             <p style={{marginBottom:'0px', color:'#000000'}}> CarMarket </p>
                                                         </div>
@@ -1071,7 +1071,7 @@ class LayoutV2 extends React.Component {
                                             <div className="padding-md">
                                                 <Row className="margin-bottom-md">
                                                     <Col span={11} className="thickBorder round-border">
-                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '2' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/car-market-homepage/index')}}> 
+                                                        <div style={{fontSize:'14px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '2' ? 'yellow' : ''}`} onClick={() => {this.props.router.push(routePaths.carsOnSale.as().pathname)}}> 
                                                             <img src="/assets/menu-icon/buy-car.png" style={{width:'30%'}}></img>
                                                             <p style={{marginBottom:'0px', color:'#000000'}}> CarMarket </p>
                                                         </div>
@@ -1151,7 +1151,7 @@ class LayoutV2 extends React.Component {
                                     <Col span={24}>
                                         <div className="flex-justify-start" style={{ display: 'flex', overflowX: 'scroll', color: '#ffffff', paddingRight: '2px' }}>
                                             <span className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '1' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/') }}> Home</span>
-                                            <span className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '2' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/car-market-homepage/index') }} > CarMarket</span>
+                                            <span className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '2' ? 'yellow' : ''}`} onClick={() => { this.props.router.push(routePaths.carsOnSale.as().pathname) }} > CarMarket</span>
                                             <span className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '3' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/newcar') }} > All-NewCar</span>
                                             <span className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '4' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/live') }} > LIVE</span>
                                             <span className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '6' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/car-freaks') }} > CarFreaks</span>

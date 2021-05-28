@@ -11,7 +11,7 @@ const GridProductSkeletonList = (props) => {
     const [size, setSize] = useState(6);
 
     useEffect(() => {
-        setSize(_.isNaN(parseInt(props.size)) ? 1 : parseInt(props.size));
+        setSize(_.isNaN(parseInt(props.size)) ? 6 : parseInt(props.size));
     }, [props.size])
 
     return (

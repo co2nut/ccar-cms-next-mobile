@@ -1109,7 +1109,7 @@ export function convertProductRouteParamsToFilterObject(routeParams) {
     try {
         sorting = JSON.parse(sorting);
     } catch (error) {
-        
+
     }
 
     if (!_.get(sorting, ['carspec.year']) && !_.get(sorting, ['mileageFilter']) && !_.get(sorting, ['searchPrice'])) {
@@ -1798,6 +1798,14 @@ export function getLiveSeoData(data) {
         description,
         canonical,
         images,
+    }
+
+}
+
+
+export function windowScroll(x = 0, y = 0) {
+    if (typeof (window) != undefined) {
+        window.scroll(x, y)
     }
 
 }

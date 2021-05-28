@@ -80,6 +80,7 @@ const PostDrawer = (props) => {
 
     useEffect(() => {
 
+        console.log(_.get(post , `chatType`));
         if (_.isPlainObject(post) && !_.isEmpty(post) && visible) {
             getData();
         }
@@ -280,7 +281,7 @@ const PostDrawer = (props) => {
                         </span>
                     </div>
                     {
-                        _.get(post, `chatType` == 'carfreaks') ?
+                        _.get(post, `chatType` ) == 'carfreaks'?
                             <div className="margin-bottom-sm">
                                 <LightBoxCarousel height={IMAGE_HEIGHT} images={_.compact(_.map(_.get(post, ['mediaList']), function (v) {
                                     return _.get(v, ['url']) || null;

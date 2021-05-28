@@ -249,7 +249,7 @@ const BrandFiltering = (props) => {
                             filteredOptions.length > 0 ?
                                 filteredOptions.map(function (item, parentsIndex) {
                                     return (
-                                        <Menu.ItemGroup title={item.title} className="newcar-menu-header" id={parentsIndex + 'direction'}>
+                                        <Menu.ItemGroup title={item.title} className="newcar-menu-header" id={parentsIndex + 'direction'} key={parentsIndex + 'direction'}>
                                             {item.data.map(function (row2, childIndex) {
                                                 return (
                                                     <Menu.Item className={props.selected == _.toLower(row2.value) ? 'brandpics background-yellow-lighten-5' : "brandpics"} id={parentsIndex + '' + childIndex} key={parentsIndex + '' + childIndex}>

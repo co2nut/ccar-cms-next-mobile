@@ -63,6 +63,8 @@ const SocialBoardPage = (props) => {
     const [chatInfo, setChatInfo] = useState({});
     const [visible, setVisible] = useState(false);
 
+    const [writePostChatType, setWritePostChatType] = useState('socialboard');
+
     useEffect(() => {
         getSocialBoardData((socialBoardPage - 1) * PAGE_SIZE)
     }, [socialBoardPage])
@@ -159,7 +161,7 @@ const SocialBoardPage = (props) => {
         setSocialBoards(posts);
     }
     return (
-        <LayoutV2 searchTypes={carFreakGlobalSearch} enterSearchCarFreaks scrollRange={document.body.scrollHeight * 0.5} onScrolledBottom={() => {
+        <LayoutV2 searchTypes={carFreakGlobalSearch} enterSearchCarFreaks showCompareCarButton={false} scrollRange={document.body.scrollHeight * 0.5} onScrolledBottom={() => {
             if (arrayLengthCount(socialBoards) < totalSocialBoard) {
                 setSocialBoardPage(socialBoardPage + 1);
             }
@@ -167,11 +169,10 @@ const SocialBoardPage = (props) => {
             <Mobile>
                 <CarFreakLayout hideScope
                     onWritePostClick={(type) => {
-                        if (type == 'socialBoard') {
-                            setEditMode(null);
-                            setWriteModalVisible(true);
-                            setSelectedPost(null);
-                        }
+                        setWritePostChatType(type)
+                        setEditMode(null);
+                        setWriteModalVisible(true);
+                        setSelectedPost(null);
                     }}>
                     <Row gutter={[10, 10]}>
                         <Col xs={24} sm={24} md={18} lg={18} xl={18}>
@@ -275,7 +276,7 @@ const SocialBoardPage = (props) => {
             <WritePostDrawer
                 data={selectedPost}
                 editMode={editMode}
-                chatType={'socialboard'}
+                chatType={writePostChatType || 'socialboard'}
                 visible={writeModalVisible}
                 notify
                 onUpdatePost={(data) => {
