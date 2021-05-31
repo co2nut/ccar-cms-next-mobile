@@ -102,12 +102,12 @@ const AddCompareProductButton1 = (props) => {
           isSavedCompare(props.data._id) ?
             <a onClick={() => props.readOnly ? null : setConfirmModalState(true)}>
               {/* {props.savedButton ? props.savedButton() : <Button type="normal" style={{ background: 'rgb(89, 54, 26)', padding: 0 }} className="ads-purchase-button w-100"><img src="/assets/profile/icon-list/carmarket-bar-icon/compare.png" alt="compare" /></Button>} */}
-              {props.savedButton ? props.savedButton() : <div style={{ background: 'rgb(89, 54, 26)', padding: 5, textAlign:'center', borderRadius:'4px' }} className="w-100" ><img src="/assets/profile/icon-list/carmarket-bar-icon/compare.png" alt="compare" style={{width:'100%'}}/></div>}
+              {props.savedButton ? props.savedButton() : <div style={{ background: 'rgb(89, 54, 26)', padding: 7, textAlign:'center', borderRadius:'4px' }} className="w-100" ><img src="/assets/profile/icon-list/carmarket-bar-icon/compare.png" alt="compare" style={{width:'100%'}}/></div>}
             </a>
             :
             <a onClick={() => props.readOnly ? null : pushToList(props.data)}>
               {/* {props.saveButton ? props.saveButton() : <Button type="normal" className="w-100 ads-purchase-button ads-purchase-compare-btn"><img src="/assets/profile/icon-list/carmarket-bar-icon/compare.png" alt="compare" /></Button>} */}
-              {props.saveButton ? props.saveButton() : <div style={{textAlign:'center', padding: 5, borderRadius:'4px'}} className="w-100 ads-purchase-compare-btn"><img src="/assets/profile/icon-list/carmarket-bar-icon/compare.png" alt="compare" style={{width:'100%'}} /></div>}
+              {props.saveButton ? props.saveButton() : <div style={{textAlign:'center',padding: 7, borderRadius:'4px'}} className="w-100 ads-purchase-compare-btn"><img src="/assets/profile/icon-list/carmarket-bar-icon/compare.png" alt="compare" style={{width:'100%'}} /></div>}
             </a>
         }
       {/* </Tooltip> */}
