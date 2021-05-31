@@ -105,7 +105,7 @@ const DealerProfile = (props) => {
                                     {_renderDealerDetailsBox()}
                                 </Col>
                                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                    <UserReceivedReview data={profile} /> 
+                                    <UserReceivedReview data={profile} />  
                                 </Col>
                             </Row>
                         </TabPane>

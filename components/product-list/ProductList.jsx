@@ -631,7 +631,7 @@ const ProductList = (props) => {
                           </a>
                         </Link>
                         <div className="relative-wrapper">
-                          <p style={{ marginBottom: '0px' }} className="small-text">
+                          <p style={{ marginBottom: '0px', fontSize:'10px' }} className="small-text">
                             {v.carspecsAll ?
                               v.carspecsAll.transmission + ' | ' +
                               renderMileageRange(v.mileage, v.mileage2) + ' | ' +
