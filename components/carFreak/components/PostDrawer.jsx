@@ -20,7 +20,7 @@ import PostMenuModal from './PostMenuModal';
 import FollowButton from '../../profile/FollowButton';
 import LightBoxCarousel from '../../general/LightBoxCarousel';
 import { imageNotFound } from '../../profile/config';
-import LightBoxGallery from '../../general/light-box-gallery';
+import LightBoxGallery from '../../general/LightBoxGallery';
 import ParseTag from '../../general/ParseTag';
 import LikePostButton from './like-post-button';
 import { commentIcon, shareIcon } from '../../live/config';

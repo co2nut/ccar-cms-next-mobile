@@ -1,7 +1,7 @@
 import { Col, Modal, Row } from 'antd';
 import _ from 'lodash';
 import React, { useState } from 'react';
-import LightBoxGallery from './light-box-gallery';
+import LightBoxGallery from './LightBoxGallery';
 import { arrayLengthCount } from '../../common-function';
 
 

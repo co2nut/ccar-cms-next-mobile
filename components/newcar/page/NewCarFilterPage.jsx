@@ -120,7 +120,6 @@ class Filter extends React.Component {
     }
 
     componentDidMount() {
-        this.getDataFromUrl();
         this.updateFilterGroupFromUrl();
     }
 
@@ -161,7 +160,7 @@ class Filter extends React.Component {
         }
 
         if (!_.isEqual(prevState.filterGroup, this.state.filterGroup)) {
-            console.log('here');
+            console.log('filterGroupChange');
             this.pushParameterToUrl();
         }
 
@@ -678,17 +677,16 @@ class Filter extends React.Component {
         let uniqbrands = this.state.carspecs;
         let list = [];
 
-        console.log(uniqbrands);
         if (notEmptyLength(uniqbrands)) {
 
             uniqbrands.map((item, i) => {
                 list.push(
                     <React.Fragment>
-                        <Col xs={24} sm={24} md={8} lg={6} xl={6} key={`carspec-${getObjectId(i)}`}>
+                        <Col xs={24} sm={24} md={8} lg={6} xl={6} key={`carspec-${getObjectId(i)}`} onClick={(e) => { this.setState({ expandVariantKey: this.state.expandVariantKey == `carspec-${getObjectId(i)}-collapse` ? null : `carspec-${getObjectId(i)}-collapse` }) }}>
                             <Col span={10}>
                                 <img src={item.uri} style={{ width: '100%', padding: '5px', marginLeft: '5px' }}></img>
                             </Col>
-                            <Col span={14} onClick={(e) => { this.setState({ expandVariantKey: this.state.expandVariantKey == `carspec-${getObjectId(i)}-collapse` ? null : `carspec-${getObjectId(i)}-collapse` }) }}>
+                            <Col span={14} >
                                 <div className="newcars-wrap-p padding-top-md padding-left-md">
                                     <p style={{ textTransform: 'capitalize', textAlign: 'left', fontSize: '16px', fontWeight: '600', marginBottom: '0px', color: "rgba(0, 0, 0, 0.65)" }}> {item.make}  {item.model}</p>
                                     <p style={{ textAlign: 'left', color: '#FBB040', fontSize: '12px', fontWeight: 700, marginBottom: '0px', }}>

@@ -23,7 +23,7 @@ import { withRouter } from 'next/router';
 import { updateSellerProfile } from '../../redux/actions/sellerProfile-actions';
 import { formatNumber, getUserName, isObject, isValidNumber, notEmptyLength, roundToHalf } from '../../common-function';
 import FollowButton from './FollowButton';
-import LightBoxGallery from '../general/light-box-gallery';
+import LightBoxGallery from '../general/LightBoxGallery';
 import ShareButtonDialog from '../general/ShareButtonDialog';
 import FollowingListModal from './FollowingListModal';
 import FollowerListModal from './FollowerListModal';

@@ -2,7 +2,7 @@ import { Avatar, Form, Tooltip } from 'antd';
 import _ from 'lodash';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import LightBoxGallery from './light-box-gallery';
+import LightBoxGallery from './LightBoxGallery';
 import { loading } from '../../redux/actions/app-actions';
 import { isValidNumber } from '../../common-function';
 import { darkThemeColorList } from '../../params/darkThemeColorList';

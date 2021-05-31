@@ -6,7 +6,7 @@ import { darkThemeColorList } from '../../params/darkThemeColorList';
 import { withRouter } from 'next/router';
 import { loading } from '../../redux/actions/app-actions';
 import { isValidNumber } from '../../common-function';
-import LightBoxGallery from '../general/light-box-gallery';
+import LightBoxGallery from '../general/LightBoxGallery';
 
 
 /*

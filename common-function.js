@@ -1809,3 +1809,17 @@ export function windowScroll(x = 0, y = 0) {
     }
 
 }
+
+export function getWindowInnerHeight() {
+    if (typeof (window) != undefined) {
+        return window.innerHeight;
+    }
+
+}
+
+export function getWindowInnerWidth() {
+    if (typeof (window) != undefined) {
+        return window.innerWidth;
+    }
+
+}

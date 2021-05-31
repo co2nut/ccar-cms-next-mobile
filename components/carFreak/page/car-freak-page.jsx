@@ -307,6 +307,7 @@ const CarFreakPage = (props) => {
                                                         onEditClick={(post) => {
                                                             setEditMode('edit');
                                                             setWriteModalVisible(true);
+                                                            setWritePostChatType('carfreaks')
                                                             setSelectedPost(post);
                                                         }}
 
@@ -361,6 +362,7 @@ const CarFreakPage = (props) => {
                 onEditClick={(post) => {
                     setEditMode('edit');
                     setWriteModalVisible(true);
+                    setWritePostChatType('carfreaks')
                     setSelectedPost(post);
                 }}
 
