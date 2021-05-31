@@ -22,6 +22,7 @@ import UserReceivedReview from './UserReceivedReview';
 import UserSavedCarFreakPosts from './UserSavedCarFreakPosts';
 import UserSocialBoard from './UserSocialBoard';
 import UserSavedSocialBoard from './UserSavedSocialBoard';
+import { routePaths } from '../../route';
 
 
 
@@ -34,7 +35,15 @@ const adsverImg = '/buy-car-ads.png'
 const DealerProfile = (props) => {
 
     const [profile, setProfile] = useState({});
-    const [videoTabKey, setVideoTabKey] = useState('recordedLive');
+    const [tabKey, setTabKey] = useState('carsForSale');
+
+    useEffect(() => {
+
+        console.log('props.router', props.router);
+        if (_.get(props.router, `query.tabKey`)) {
+            setTabKey(`${props.router.query.tabKey}`)
+        }
+    }, [props.router])
 
     useEffect(() => {
         if (_.isPlainObject(props.data) && !_.isEmpty(props.data)) {
@@ -43,7 +52,7 @@ const DealerProfile = (props) => {
             setProfile({});
         }
 
-    }, [props.data])
+    }, [props.data, tabKey])
 
     useEffect(() => {
     }, [profile])
@@ -59,7 +68,7 @@ const DealerProfile = (props) => {
                 </Col>
                 <Col xs={0} sm={0} md={24} lg={24} xl={24}>
                     <div>
-                        <img className="w-100" src={adsverImg} /> 
+                        <img className="w-100" src={adsverImg} />
                     </div>
                 </Col>
             </Row>
@@ -70,50 +79,47 @@ const DealerProfile = (props) => {
         return (
             <Row type="flex" align="middle" className='background-white'>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} >
-                    <Tabs defaultActiveKey="1"
-                        // tabBarExtraContent={
-                        //     _.get(props.user, ['info', 'user', '_id']) && _.get(props.user, ['info', 'user', '_id']) == profile._id && (_.get(profile, ['role']) != 'normaluser' && _.get(profile, ['role']) != 'mobile-user') ?
-                        //         <Button className=" background-ccar-button-yellow black border-ccar-button-yellow text-align-center" shape="round" href={frontUrl} >Manage My Ads</Button>
-                        //         :
-                        //         null
-                        // }
+                    <Tabs activeKey={tabKey}
+                        onChange={(key) => {
+                            props.router.push(`${routePaths.profile.to}?tabKey=${key || ''}`, routePaths.profile.as(profile, { tabKey: key }), { shallow: true })
+                        }}
                     >
-                        <TabPane tab="Cars For Sale" key="1">
+                        <TabPane tab="Cars For Sale" key="carsForSale">
                             <Row gutter={[20, 10]} className='margin-top-md'>
                                 <Col xs={24} sm={24} md={24} lg={24} xl={18}>
-                                    <UserCarOnSale data={profile} />  
+                                    <UserCarOnSale data={profile} />
                                 </Col>
                             </Row>
                         </TabPane>
-                        <TabPane tab="CarFreaks" key="2">
+                        <TabPane tab="CarFreaks" key="carfreaks">
                             <Row gutter={[20, 10]} className='margin-top-md'>
                                 <Col xs={24} sm={24} md={24} lg={18} xl={18}>
-                                    <UserCarFreakPosts data={profile} />  
+                                    <UserCarFreakPosts data={profile} />
                                 </Col>
                             </Row>
                         </TabPane>
-                        <TabPane tab="Social Board" key="3">
+                        <TabPane tab="Social Board" key="socialboard">
                             <Row gutter={[20, 10]} className='margin-top-md'>
                                 <Col xs={24} sm={24} md={24} lg={18} xl={18}>
-                                    <UserSocialBoard data={profile} />   
+                                    <UserSocialBoard data={profile} />
                                 </Col>
                             </Row>
                         </TabPane>
-                        <TabPane tab="Reviews" key="4">
+                        <TabPane tab="Reviews" key="reviews">
                             <Row gutter={[20, 10]} className='margin-top-md padding-x-sm'>
-                            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                                     {_renderDealerDetailsBox()}
                                 </Col>
                                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                    <UserReceivedReview data={profile} /> 
+                                    <UserReceivedReview data={profile} />
                                 </Col>
                             </Row>
                         </TabPane>
                         {
                             _.get(props.user, ['info', 'user', '_id']) && _.get(props.user, ['info', 'user', '_id']) == _.get(profile, ['_id']) ?
-                                <TabPane tab="Saved CarFreaks" key="5">
+                                <TabPane tab="Saved CarFreaks" key="savedCarFreaks">
                                     <Col xs={24} sm={24} md={24} lg={24} xl={24} className="padding-x-sm">
-                                        <UserSavedCarFreakPosts data={profile}/>  
+                                        <UserSavedCarFreakPosts data={profile} />
                                     </Col>
                                 </TabPane>
                                 :
@@ -121,9 +127,9 @@ const DealerProfile = (props) => {
                         }
                         {
                             _.get(props.user, ['info', 'user', '_id']) && _.get(props.user, ['info', 'user', '_id']) == _.get(profile, ['_id']) ?
-                                <TabPane tab="Saved Social Board" key="6">
+                                <TabPane tab="Saved Social Board" key="savedSocialBoard">
                                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                        <UserSavedSocialBoard data={profile}/>
+                                        <UserSavedSocialBoard data={profile} />
                                     </Col>
                                     {/* <Col xs={6} sm={6} md={0} lg={6} xl={6}>
                                         {_renderDealerDetailsBox()}
@@ -147,25 +153,25 @@ const DealerProfile = (props) => {
                         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                             <ProfileDetailsBox data={profile} showProfileActions={props.isOwn} type="dealer"
                                 onChangeCoverPhoto={(res) => {
-                                if (props.onChangeCoverPhoto) {
-                                    props.onChangeCoverPhoto(res);  
+                                    if (props.onChangeCoverPhoto) {
+                                        props.onChangeCoverPhoto(res);
+                                    }
                                 }
                                 }
-                            }
                                 onChange={(res) => {
                                     if (props.onChange) {
                                         props.onChange(res);
                                     }
-                                    }
-                                    }
-                                    />
-                                </Col>
-                                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                    <Divider className="no-margin" />
-                                    {_renderMenu()}
-                                </Col>
-                            </Row>
-                        </div>
+                                }
+                                }
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <Divider className="no-margin" />
+                            {_renderMenu()}
+                        </Col>
+                    </Row>
+                </div>
             </div>
 
             {

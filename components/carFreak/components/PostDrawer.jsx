@@ -60,6 +60,7 @@ const PostDrawer = (props) => {
 
     useEffect(() => {
         if (_.isPlainObject(props.data) && !_.isEmpty(props.data)) {
+            console.log('post change');
             setMessages([]);
             setPost(props.data);
         } else {
@@ -80,7 +81,6 @@ const PostDrawer = (props) => {
 
     useEffect(() => {
 
-        console.log(_.get(post , `chatType`));
         if (_.isPlainObject(post) && !_.isEmpty(post) && visible) {
             getData();
         }
@@ -94,7 +94,6 @@ const PostDrawer = (props) => {
 
 
     useEffect(() => {
-        console.log(props.visible);
         setVisible(props.visible)
     }, [props.visible]);
 
@@ -231,7 +230,7 @@ const PostDrawer = (props) => {
                 width="100%"
                 closable={false}
             >
-                <ScrollLoadWrapper autoHeight autoHeightMin={typeof (window) != undefined ? window.innerHeight * 0.8 : 500} autoHeightMax={typeof (window) != undefined ? window.innerHeight * 0.8 : 500} onScrolledBottom={() => { console.log('getData'); if (arrayLengthCount(messages) < messageTotal) { console.log('getData'); getData(); } }}>
+                <ScrollLoadWrapper autoHeight autoHeightMin={typeof (window) != undefined ? window.innerHeight * 0.8 : 500} autoHeightMax={typeof (window) != undefined ? window.innerHeight * 0.8 : 500} onScrolledBottom={() => { if (arrayLengthCount(messages) < messageTotal) { getData(); } }}>
                     <div className="flex-items-align-center flex-justify-space-between padding-md">
                         <span className='flex-items-align-center' >
                             <UserAvatar redirectProfile data={_.get(post, ['userId'])} size={50} className="margin-right-md" />

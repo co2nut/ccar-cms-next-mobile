@@ -180,7 +180,8 @@ const CarFreakLayout = (props) => {
                                     </div>
                                 </Menu.Item>
                             </Menu>}
-                        onVisibleChange={(v) => { setMenuOpened(v) }}>
+                        onVisibleChange={(v) => { setMenuOpened(v) }}
+                        >
 
                         <span className='d-inline-block width-100' id="writePostAffix" >
                             <Avatar size={50} className="background-ccar-button-yellow" icon={menuOpened ? <Icon type="close" className="white" /> : <Icon type="plus" className="white" />}
