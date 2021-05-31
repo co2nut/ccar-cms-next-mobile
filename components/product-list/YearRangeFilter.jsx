@@ -42,6 +42,8 @@ const YearRangeFiltering = (props) => {
                         newValue[0] = 2020 - newValue[0]
                         newValue[1] = 2020 - newValue[1]
                         newValue = _.reverse(newValue);
+                        console.log('newValue');
+                        console.log(newValue);
                         props.onChange({yearRange : newValue})
                     }
                 }}

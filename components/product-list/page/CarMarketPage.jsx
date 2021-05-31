@@ -133,10 +133,12 @@ const CarMarketPage = (props) => {
         setMainConfig(config);
         setProductLoading(true);
         try {
+            console.log('==============');
             let asPath = convertParameterToProductListUrl(data, config)
             let path = asPath.split('?')[0].split('/');
             let parameter = _.get(asPath.split('?'), '[1]') || '';
-            path = _.map(asPath, function (item, i) {
+            console.log(path);
+            path = _.map(path, function (item, i) {
                 if (i > 1) {
                     item = `[parameter${i - 1}]`
                 }
@@ -145,6 +147,8 @@ const CarMarketPage = (props) => {
             path = `${path.join('/')}${parameter ? `?${parameter}` : ''}`
 
             setProductList([]);
+            console.log(path);
+            console.log(asPath);
             props.router.push(path, asPath, { shallow: true })
         } catch (error) {
 
@@ -333,6 +337,7 @@ const CarMarketPage = (props) => {
         <Menu>
             <Menu.Item style={{ width: '' }}>
                 <YearRangeFilter onChange={(data) => {
+                    console.log(data);
                     if (_.isPlainObject(data) && !_.isEmpty(data)) {
                         setExpandKey(null)
                         setCurrentFilterGroup({
@@ -574,7 +579,7 @@ const CarMarketPage = (props) => {
                                             </Collapse.Panel>
                                             <Collapse.Panel key="3" showArrow={false} collapsible={true}>
                                                 <div className="width-100" >
-                                                    {/* {yearView} */}
+                                                    {year}
                                                 </div>
                                             </Collapse.Panel>
                                             <Collapse.Panel key="4" showArrow={false} collapsible={true}>

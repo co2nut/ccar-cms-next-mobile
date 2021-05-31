@@ -151,7 +151,7 @@ const UserCarFreakPosts = (props) => {
             return chat._id == _.get(post, ['_id']) ? post : chat;
         });
 
-        if(getObjectId(chatInfo) == getObjectId(post)){
+        if (getObjectId(chatInfo) == getObjectId(post)) {
             setChatInfo(post)
         }
 
