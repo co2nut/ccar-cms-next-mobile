@@ -139,13 +139,10 @@ const Setting = (props) => {
             let userNotificationTypes = Object.keys(profile.pushNotificationSettings);
             _.forEach(userNotificationTypes, function (userNotificationType) {
                 if (_.some(notificationTypes, ['value', userNotificationType]) && (profile.pushNotificationSettings[userNotificationType] === true || profile.pushNotificationSettings[userNotificationType] === false)) {
-                    console.log('here');
                     finalNotificationTypes[userNotificationType] = profile.pushNotificationSettings[userNotificationType]
                 }
             })
         }
-        console.log(_.get(profile, ['pushNotificationSettings']));
-        console.log(finalNotificationTypes);
         setPushNotificationSettings(finalNotificationTypes)
     }, [profile])
 
@@ -156,7 +153,6 @@ const Setting = (props) => {
             client.authenticate()
                 .then((res) => {
                     client.service('users').patch(profile._id, { pushNotificationSettings: pushNotificationSettings }).then((res) => {
-                        console.log(res);
                         message.success('Updated Successful');
                         props.loading(false);
                         if (props.onSuccess) {

@@ -10,7 +10,6 @@ import client from '../../../feathers';
 const searchBarRef = React.createRef();
 const Index = (props) => {
 
-
     return (
         <ReduxPersistWrapper cookie={props.cookie}>
             {
@@ -41,6 +40,7 @@ export async function getServerSideProps(context) {
     if (_.isPlainObject(profile) && !_.isEmpty(profile)) {
         seoData = getProfileSeoData(profile);
     }
+    console.log(seoData);
     return {
         props: {
             cookie: _.get(context, ['req', 'headers', 'cookie']) || null,

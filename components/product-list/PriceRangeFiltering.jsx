@@ -8,11 +8,9 @@ const priceRangeOptions = [[30000, '<'], [30000, 50000], [50000, 70000], [70000,
 ];
 
 function onChange(value) {
-    console.log('onChange: ', value);
   }
   
   function onAfterChange(value) {
-    console.log('onAfterChange: ', value);
   } 
 
   const marks = {

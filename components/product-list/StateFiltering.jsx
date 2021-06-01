@@ -100,7 +100,6 @@ const StateFiltering = (props) => {
             setAreaOptions([]);
             setAreaLoading(true);
 
-            console.log(state);
             brandFilterTotal(['area'], { filterGroup : {state : state}}).then((res) => {
                 setAreaLoading(false);
                 setAreaOptions(_.get(res, `areaList`) || [])

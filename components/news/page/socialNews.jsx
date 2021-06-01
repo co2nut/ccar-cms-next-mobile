@@ -206,7 +206,6 @@ const SocialNews = (props) => {
                 message.error(err.message)
             });
         } catch (error) {
-            console.log(error);
             message.error(error);
         }
     }

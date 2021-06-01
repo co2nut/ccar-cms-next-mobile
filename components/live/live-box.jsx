@@ -53,7 +53,6 @@ const LiveBox = (props) => {
 
 
   useEffect(() => {
-    console.log(props.data);
   }, [props.data])
 
   useEffect(() => {

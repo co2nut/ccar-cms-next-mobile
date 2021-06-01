@@ -29,8 +29,6 @@ export async function getServerSideProps(context) {
 
     let id = context.req.params.id || context.req.query.id || '';
     id = id.replace('?', '');
-    console.log('id');
-    console.log(id);
     let data = {};
     let seoData = {};
     if (id) {

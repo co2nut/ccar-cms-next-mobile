@@ -46,7 +46,6 @@ const TagInputParse = (props) => {
                 })
 
                 let users = _.get(userRes, 'data') || [];
-                console.log(users);
                 textArr = _.map(textArr, function (v) {
                     if (v.type == 'tag') {
                         let user = _.find(users, function (user) {

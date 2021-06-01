@@ -200,7 +200,6 @@ const Equipment = (props) => {
     }
 
     function callback(key) {
-        console.log(key);
       }
 
     function getOwnRating() {

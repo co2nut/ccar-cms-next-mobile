@@ -13,7 +13,6 @@ const Logout = (props) => {
         try {
             localStorage.clear()
             props.logoutSuccessful();
-            console.log(localStorage.get('redux'));
             client.logout().then((res) => {
                 message.success('Log out successful')
                 props.router.push('/');

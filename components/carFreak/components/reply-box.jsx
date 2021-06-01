@@ -33,9 +33,6 @@ const ReplyBox = (props) => {
     const [totalLike, setTotalLike] = useState(0);
     const [editMode, setEditMode] = useState(false)
 
-    useEffect(() => { 
-    console.log(props.className)
-    } , [props.className])
     
     useEffect(() => {
 

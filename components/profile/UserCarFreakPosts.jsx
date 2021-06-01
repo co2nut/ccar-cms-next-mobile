@@ -190,7 +190,6 @@ const UserCarFreakPosts = (props) => {
                                     //     win.focus();
                                     // }
                                 } else {
-                                    console.log('redirect');
                                     setChatInfo(post);
                                     setVisible(true);
                                     setEditMode('');

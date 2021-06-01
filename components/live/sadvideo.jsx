@@ -221,7 +221,6 @@ class LivePage extends React.Component {
               this.peerConnection.setLocalDescription(sdp);
               this.sendToPeer('clientRequestVideoWithDealerSocketId', { sdp, dealerSocketId: this.props.dealerSocketId });
           }).catch(x => {
-              console.log(x);
               console.log('offer failed');
           });
       });

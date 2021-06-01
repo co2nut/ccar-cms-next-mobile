@@ -91,7 +91,6 @@ const CarspecsCompareTable = (props) => {
 
     useEffect(() => {
 
-        console.log(props.data);
         if (notEmptyLength(props.data)) {
             let data = _.cloneDeep(props.data);
             if (!isNaN(parseInt(props.limit)) && data.length > parseInt(props.limit)) {
@@ -108,7 +107,6 @@ const CarspecsCompareTable = (props) => {
                         }
                     }
                 }).then(res => {
-                    console.log(res);
                     props.loading(false);
  
                     if (notEmptyLength(res.data)) {

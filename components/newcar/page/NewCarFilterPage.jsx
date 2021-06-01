@@ -160,12 +160,10 @@ class Filter extends React.Component {
         }
 
         if (!_.isEqual(prevState.filterGroup, this.state.filterGroup)) {
-            console.log('filterGroupChange');
             this.pushParameterToUrl();
         }
 
         if (!_.isEqual(prevProps.router.query, this.props.router.query)) {
-            console.log(this.props.router.query);
             this.getDataFromUrl();
             this.updateFilterGroupFromUrl();
         }
@@ -283,7 +281,6 @@ class Filter extends React.Component {
 
         this.props.loading(true)
 
-        console.log(filterGroup);
         axios.get(`${client.io.io.uri}priceRangeSearchNew`,
             {
                 params: {
@@ -295,7 +292,6 @@ class Filter extends React.Component {
                 }
             }
         ).then((res) => {
-            console.log(res);
             this.props.loading(false);
             if (notEmptyLength(res.data.data)) {
                 this.setState({
