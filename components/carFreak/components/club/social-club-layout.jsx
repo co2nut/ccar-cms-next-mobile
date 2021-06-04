@@ -5,6 +5,8 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import WriteClubModal from './write-club-modal';
 import { loading, loginMode } from '../../../../redux/actions/app-actions';
+import { generateDummyArrayObj } from '../../../../dummy';
+import Scrollbars from 'react-custom-scrollbars';
 
 
 const SocialClubLayout = (props) => {
@@ -86,14 +88,28 @@ const SocialClubLayout = (props) => {
                             My Club
                         </span>
                         <Modal
-                            title="Basic Modal" 
                             visible={isModalVisible} 
                             onOk={handleOk} 
                             onCancel={handleCancel}
                             centered
                         >
-                            My Club
+                            <div className="text-align-center">
+                                My Club
+                            </div>
+                            <Scrollbars autoHeight>
+                            {
+                                _.map(generateDummyArrayObj(10), (club) => {
+                                    return (
+                                        <Col span={8}>
+                                            <img src={club.dummyImage} style={{width : '100px', height : 100}} />
+                                        </Col>
+                                    )
+                                })
+                            }
+                            </Scrollbars>
+                            
                         </Modal>
+
                         <span className={`d-inline-block margin-right-xs subtitle1 black cursor-pointer ${tabKey == 'myClubInvitation' ? 'ccar-button-yellow border-bottom-ccar-button-yellow' : 'black border-bottom-black'}`} onClick={(e) => {
                             handleChange('myClubInvitation');
                             if (!_.get(props.user, ['authenticated']) || !_.get(props.user, ['info', 'user', '_id'])) {

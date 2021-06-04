@@ -15,7 +15,7 @@ function generateDummyInt(min = 0, max = 10, fixedPoint = 0) {
 
 function generateDummyImage(length = 1) {
 
-    const images = [
+    let images = [
         'https://www.shutterstock.com/image-photo/row-tops-heads-cats-dogs-paws-1034939470',
         'https://www.shutterstock.com/image-photo/pitiful-striped-young-cat-sits-looks-1709429356',
         'https://www.shutterstock.com/image-photo/white-pomerian-puppy-sitting-on-carpet-1983921932',
@@ -102,7 +102,7 @@ function generateDummyImage(length = 1) {
 
 function generateDummyVideo(length = 1) {
 
-    const videos = [
+    let videos = [
         'https://vimeo.com/7466309',
         'https://vimeo.com/10985679',
         'https://vimeo.com/85683143',
@@ -148,7 +148,7 @@ function generateDummyVideo(length = 1) {
 }
 
 
-function generateDummyString(length = 100) {
+function generateDummyString(length) {
     var verbs, nouns, adjectives, adverbs, preposition;
     nouns = ["bird", "clock", "boy", "plastic", "duck", "teacher", "old lady", "professor", "hamster", "dog"];
     verbs = ["kicked", "ran", "flew", "dodged", "sliced", "rolled", "died", "breathed", "slept", "killed"];
