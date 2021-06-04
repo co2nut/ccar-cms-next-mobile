@@ -15,76 +15,24 @@ function generateDummyInt(min = 0, max = 10, fixedPoint = 0) {
 
 function generateDummyImage(length = 1) {
 
-    const images = [
-        'https://www.shutterstock.com/image-photo/row-tops-heads-cats-dogs-paws-1034939470',
-        'https://www.shutterstock.com/image-photo/pitiful-striped-young-cat-sits-looks-1709429356',
-        'https://www.shutterstock.com/image-photo/white-pomerian-puppy-sitting-on-carpet-1983921932',
-        'https://www.shutterstock.com/image-photo/plush-white-dog-wooden-background-281054369',
-        'https://www.shutterstock.com/image-photo/plush-white-dog-wooden-background-281054381',
-        'https://www.shutterstock.com/image-photo/rabbit-on-green-grass-336890459',
-        'https://www.shutterstock.com/image-photo/dog-show-champion-pomeranian-portrait-1036161856',
-        'https://www.shutterstock.com/image-photo/adorable-pomeranian-looking-550829419',
-        'https://www.shutterstock.com/image-photo/two-cute-white-puppies-breed-pomeranian-1734784361',
-        'https://www.shutterstock.com/image-photo/pomeranian-dog-white-backdrop-1056214517',
-        'https://www.shutterstock.com/image-photo/dog-pomeranian-spitz-smiling-watch-evening-449602594',
-        'https://www.shutterstock.com/image-photo/chihuahua-dog-chiwawa-on-table-1716379762',
-        'https://www.shutterstock.com/image-photo/portrait-brown-tan-shorthaired-chihuahua-puppy-757866418',
-        'https://www.shutterstock.com/image-photo/chihuahua-dog-sitting-on-white-studio-1203805705',
-        'https://www.shutterstock.com/image-photo/closeup-portrait-funny-ginger-cat-wearing-1563541219',
-        'https://www.shutterstock.com/image-photo/portrait-surprised-cat-scottish-straight-closeup-499196506',
-        'https://www.shutterstock.com/image-vector/cat-paws-wallpaper-legs-dog-paw-417469627',
-        'https://www.shutterstock.com/image-photo/adorable-cat-dog-together-under-plaid-1896243127',
-        'https://www.shutterstock.com/image-photo/british-cat-golden-retriever-646123102',
-        'https://www.shutterstock.com/image-photo/cat-dog-sleeping-together-kitten-puppy-1479239243',
-        'https://www.shutterstock.com/image-photo/cute-little-red-kitten-sleeps-on-235089946',
-        'https://www.shutterstock.com/image-photo/playful-happy-kitten-hands-cute-grey-1729901461',
-        'https://www.shutterstock.com/image-photo/adorable-cat-dog-resting-together-on-1095001973',
-        'https://www.shutterstock.com/image-photo/row-tops-heads-cats-dogs-paws-1034939470',
-        'https://www.shutterstock.com/image-photo/pitiful-striped-young-cat-sits-looks-1709429356',
-        'https://www.shutterstock.com/image-photo/white-pomerian-puppy-sitting-on-carpet-1983921932',
-        'https://www.shutterstock.com/image-photo/plush-white-dog-wooden-background-281054369',
-        'https://www.shutterstock.com/image-photo/plush-white-dog-wooden-background-281054381',
-        'https://www.shutterstock.com/image-photo/rabbit-on-green-grass-336890459',
-        'https://www.shutterstock.com/image-photo/dog-show-champion-pomeranian-portrait-1036161856',
-        'https://www.shutterstock.com/image-photo/adorable-pomeranian-looking-550829419',
-        'https://www.shutterstock.com/image-photo/two-cute-white-puppies-breed-pomeranian-1734784361',
-        'https://www.shutterstock.com/image-photo/pomeranian-dog-white-backdrop-1056214517',
-        'https://www.shutterstock.com/image-photo/dog-pomeranian-spitz-smiling-watch-evening-449602594',
-        'https://www.shutterstock.com/image-photo/chihuahua-dog-chiwawa-on-table-1716379762',
-        'https://www.shutterstock.com/image-photo/portrait-brown-tan-shorthaired-chihuahua-puppy-757866418',
-        'https://www.shutterstock.com/image-photo/chihuahua-dog-sitting-on-white-studio-1203805705',
-        'https://www.shutterstock.com/image-photo/closeup-portrait-funny-ginger-cat-wearing-1563541219',
-        'https://www.shutterstock.com/image-photo/portrait-surprised-cat-scottish-straight-closeup-499196506',
-        'https://www.shutterstock.com/image-vector/cat-paws-wallpaper-legs-dog-paw-417469627',
-        'https://www.shutterstock.com/image-photo/adorable-cat-dog-together-under-plaid-1896243127',
-        'https://www.shutterstock.com/image-photo/british-cat-golden-retriever-646123102',
-        'https://www.shutterstock.com/image-photo/cat-dog-sleeping-together-kitten-puppy-1479239243',
-        'https://www.shutterstock.com/image-photo/cute-little-red-kitten-sleeps-on-235089946',
-        'https://www.shutterstock.com/image-photo/playful-happy-kitten-hands-cute-grey-1729901461',
-        'https://www.shutterstock.com/image-photo/adorable-cat-dog-resting-together-on-1095001973',
-        'https://www.shutterstock.com/image-photo/row-tops-heads-cats-dogs-paws-1034939470',
-        'https://www.shutterstock.com/image-photo/pitiful-striped-young-cat-sits-looks-1709429356',
-        'https://www.shutterstock.com/image-photo/white-pomerian-puppy-sitting-on-carpet-1983921932',
-        'https://www.shutterstock.com/image-photo/plush-white-dog-wooden-background-281054369',
-        'https://www.shutterstock.com/image-photo/plush-white-dog-wooden-background-281054381',
-        'https://www.shutterstock.com/image-photo/rabbit-on-green-grass-336890459',
-        'https://www.shutterstock.com/image-photo/dog-show-champion-pomeranian-portrait-1036161856',
-        'https://www.shutterstock.com/image-photo/adorable-pomeranian-looking-550829419',
-        'https://www.shutterstock.com/image-photo/two-cute-white-puppies-breed-pomeranian-1734784361',
-        'https://www.shutterstock.com/image-photo/pomeranian-dog-white-backdrop-1056214517',
-        'https://www.shutterstock.com/image-photo/dog-pomeranian-spitz-smiling-watch-evening-449602594',
-        'https://www.shutterstock.com/image-photo/chihuahua-dog-chiwawa-on-table-1716379762',
-        'https://www.shutterstock.com/image-photo/portrait-brown-tan-shorthaired-chihuahua-puppy-757866418',
-        'https://www.shutterstock.com/image-photo/chihuahua-dog-sitting-on-white-studio-1203805705',
-        'https://www.shutterstock.com/image-photo/closeup-portrait-funny-ginger-cat-wearing-1563541219',
-        'https://www.shutterstock.com/image-photo/portrait-surprised-cat-scottish-straight-closeup-499196506',
-        'https://www.shutterstock.com/image-vector/cat-paws-wallpaper-legs-dog-paw-417469627',
-        'https://www.shutterstock.com/image-photo/adorable-cat-dog-together-under-plaid-1896243127',
-        'https://www.shutterstock.com/image-photo/british-cat-golden-retriever-646123102',
-        'https://www.shutterstock.com/image-photo/cat-dog-sleeping-together-kitten-puppy-1479239243',
-        'https://www.shutterstock.com/image-photo/cute-little-red-kitten-sleeps-on-235089946',
-        'https://www.shutterstock.com/image-photo/playful-happy-kitten-hands-cute-grey-1729901461',
-        'https://www.shutterstock.com/image-photo/adorable-cat-dog-resting-together-on-1095001973',
+    let images = [
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
+        'https://picsum.photos/seed/picsum',
     ]
     if (!_.isNumber(length)) {
         length = 1;
@@ -102,7 +50,7 @@ function generateDummyImage(length = 1) {
 
 function generateDummyVideo(length = 1) {
 
-    const videos = [
+    let videos = [
         'https://vimeo.com/7466309',
         'https://vimeo.com/10985679',
         'https://vimeo.com/85683143',
@@ -148,7 +96,7 @@ function generateDummyVideo(length = 1) {
 }
 
 
-function generateDummyString(length = 100) {
+function generateDummyString(length) {
     var verbs, nouns, adjectives, adverbs, preposition;
     nouns = ["bird", "clock", "boy", "plastic", "duck", "teacher", "old lady", "professor", "hamster", "dog"];
     verbs = ["kicked", "ran", "flew", "dodged", "sliced", "rolled", "died", "breathed", "slept", "killed"];
