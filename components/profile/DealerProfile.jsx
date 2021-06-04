@@ -39,7 +39,6 @@ const DealerProfile = (props) => {
 
     useEffect(() => {
 
-        console.log('props.router', props.router);
         if (_.get(props.router, `query.tabKey`)) {
             setTabKey(`${props.router.query.tabKey}`)
         }

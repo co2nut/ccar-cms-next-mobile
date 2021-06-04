@@ -1,13 +1,12 @@
 import _ from 'lodash';
 import { withRouter } from 'next/dist/client/router';
 import { connect } from 'react-redux';
-import CSTAR from '../../../components/faq/page/cstar';
+import CSTAR from '../../../components/faq/page/CSTAR';
 import ReduxPersistWrapper from '../../../components/general/ReduxPersistWrapper';
 
 
 const searchBarRef = React.createRef();
 const Index = (props) => {
-
 
     return (
         <ReduxPersistWrapper cookie={props.cookie}>

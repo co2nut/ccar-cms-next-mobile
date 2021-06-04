@@ -136,7 +136,7 @@ const CarMarketPage = (props) => {
             let asPath = convertParameterToProductListUrl(data, config)
             let path = asPath.split('?')[0].split('/');
             let parameter = _.get(asPath.split('?'), '[1]') || '';
-            path = _.map(asPath, function (item, i) {
+            path = _.map(path, function (item, i) {
                 if (i > 1) {
                     item = `[parameter${i - 1}]`
                 }
@@ -166,9 +166,7 @@ const CarMarketPage = (props) => {
                 ...extraFilterGroup,
             }
             delete query.data;
-            console.log(query);
             let routeParams = convertProductRouteParamsToFilterObject(query);
-            console.log(routeParams);
             //Condition is not params, is static path
             if (_.isPlainObject(routeParams) && !_.isEmpty(routeParams)) {
                 routeParams.filterGroup = routeParams.filterGroup || {};
@@ -574,7 +572,7 @@ const CarMarketPage = (props) => {
                                             </Collapse.Panel>
                                             <Collapse.Panel key="3" showArrow={false} collapsible={true}>
                                                 <div className="width-100" >
-                                                    {/* {yearView} */}
+                                                    {year}
                                                 </div>
                                             </Collapse.Panel>
                                             <Collapse.Panel key="4" showArrow={false} collapsible={true}>

@@ -20,12 +20,10 @@ const WindowScrollDisableWrapper = (props) => {
         if (typeof (document) != undefined) {
             if (props.disabled) {
                 document.body.style.position = 'fixed';
-                console.log(scrollY);
                 document.body.style.top = `-${scrollY}px`;
             } else {
                 if(props.disabled === false){
                     document.body.style.position = '';
-                    console.log(parseInt(document.body.style.top || '0') * -1);
                     window.scrollTo({
                         top : parseInt(document.body.style.top || '0') * -1,
                         behavior : 'auto'

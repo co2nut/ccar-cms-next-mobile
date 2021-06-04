@@ -100,7 +100,6 @@ class ViewCarDetails2Page extends React.Component {
     processAddonProduct() {
         let currentDateTime = moment().format()
         if (this.state.productDetails) {
-            console.log('run');
             let v = _.cloneDeep(this.state.productDetails)
 
             v.addonSpotlight = _.find(v.addon, { 'addonType': 'spotlight' })
@@ -174,7 +173,6 @@ class ViewCarDetails2Page extends React.Component {
 
     componentDidMount() {
 
-        console.log(this.state.productDetails);
         this.setState({
             window: window,
             soldOutModalVisible: _.get(this.state.productDetails, ['status']) == 'sold',
@@ -258,7 +256,6 @@ class ViewCarDetails2Page extends React.Component {
                     }
                 }
             }, 100).then(res => {
-                console.log(res);
                 this.setState({
                     dealerSameModelCars: _.get(res, `data`) || []
                 })
@@ -286,7 +283,6 @@ class ViewCarDetails2Page extends React.Component {
                     model: _.get(this.state.productDetails, `carspec.model`) || '',
                 },
             }, DEALER_OTHER_CARS_SIZE).then(res => {
-                console.log(res);
                 this.setState({
                     similarCars: _.get(res, `data`) || []
                 })
@@ -318,7 +314,6 @@ class ViewCarDetails2Page extends React.Component {
                     createdBy: getObjectId(_.get(this.state.productDetails, `createdBy`))
                 },
             }, SIMILAR_CARS_SIZE).then(res => {
-                console.log(res);
                 this.setState({
                     dealerOtherCars: _.get(res, `data`) || []
                 })

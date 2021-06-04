@@ -1583,7 +1583,7 @@ export function getProfileSeoData(profile) {
 
     let canonical = `${checkEnvReturnCmsUrl(client.io.io.uri)}/profile/${profile.userurlId}`;
     let images = [{
-        url: profile.avatar,
+        url: profile.avatar || '',
         alt: 'CCAR User Profile Image'
     }];
 
@@ -1593,7 +1593,6 @@ export function getProfileSeoData(profile) {
         canonical,
         images,
     }
-
 }
 
 

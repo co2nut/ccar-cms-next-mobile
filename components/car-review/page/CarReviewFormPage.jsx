@@ -87,9 +87,6 @@ const CarReviewFormPage = (props) => {
         })
     }
 
-    useEffect(() => {
-        console.log('images', images);
-    }, [images])
 
     function getModels() {
         if (props.form.getFieldValue('make')) {

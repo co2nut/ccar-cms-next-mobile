@@ -151,7 +151,7 @@ const UserCarFreakPosts = (props) => {
             return chat._id == _.get(post, ['_id']) ? post : chat;
         });
 
-        if(getObjectId(chatInfo) == getObjectId(post)){
+        if (getObjectId(chatInfo) == getObjectId(post)) {
             setChatInfo(post)
         }
 
@@ -190,7 +190,6 @@ const UserCarFreakPosts = (props) => {
                                     //     win.focus();
                                     // }
                                 } else {
-                                    console.log('redirect');
                                     setChatInfo(post);
                                     setVisible(true);
                                     setEditMode('');

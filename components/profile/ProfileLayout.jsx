@@ -171,8 +171,6 @@ const ProfileLayout = (props) => {
 
     function getProfile() {
         props.loading(true);
-        console.log(_.get(props.user, ['info', 'user', 'userurlId']));
-        console.log(props.router.query.id);
         if (_.get(props.user, ['info', 'user', 'userurlId']) == props.router.query.id) {
             client.service('users').find({
                 query: {

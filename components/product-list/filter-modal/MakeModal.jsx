@@ -148,7 +148,6 @@ const MakeModal = (props) => {
                 if (notEmptyLength(res.data.usedCarPrice)) {
                     let uniqModels = _.filter(_.cloneDeep(_.uniqBy(res.data.usedCarPrice, 'model')));
                     setModelOptions(_.isArray(uniqModels) && notEmptyLength(uniqModels) ? uniqModels : []);
-                    console.log(uniqModels);
                 } else {
                     setModelOptions([])
                 }

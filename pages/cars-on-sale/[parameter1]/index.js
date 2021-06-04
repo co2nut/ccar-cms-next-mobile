@@ -83,7 +83,6 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
 
-    console.log(`rebuilding`);
     let filterObj = {};
     filterObj = convertProductRouteParamsToFilterObject(context.params);
     if (_.get(filterObj, ['filterGroup'])) {

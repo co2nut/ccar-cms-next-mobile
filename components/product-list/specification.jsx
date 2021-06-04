@@ -200,7 +200,6 @@ const Specification = (props) => {
     }
 
     function callback(key) {
-        console.log(key);
       }
 
     function getOwnRating() {

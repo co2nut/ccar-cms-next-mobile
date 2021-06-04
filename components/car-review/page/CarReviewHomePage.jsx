@@ -92,8 +92,6 @@ const CarReviewHomePage = (props) => {
                 }
             }
         }).then(res => {
-            console.log('res');
-            console.log(res);
             setRatings(ratingPage == 1 ? _.get(res, 'data.data') : _.concat(ratings, _.get(res, 'data.data') || []))
             setRatingTotal(_.get(res, 'data.total') || 0);
             setRatingLoading(false);

@@ -60,7 +60,6 @@ const PostDrawer = (props) => {
 
     useEffect(() => {
         if (_.isPlainObject(props.data) && !_.isEmpty(props.data)) {
-            console.log('post change');
             setMessages([]);
             setPost(props.data);
         } else {

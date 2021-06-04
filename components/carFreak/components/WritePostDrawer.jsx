@@ -62,7 +62,6 @@ const WritePostDrawer = (props) => {
 
 
     useEffect(() => {
-        console.log('visible', props.visible);
         if ((!_.get(props.user, ['authenticated']) || !_.get(props.user, ['info', 'user', '_id'])) && props.visible) {
             props.loginMode(true);
             message.error('Please login first');

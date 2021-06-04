@@ -180,10 +180,6 @@ class Details extends React.Component {
             videos: _.get(videoRes, `data.data`),
           })
 
-          console.log(variantsRes);
-          console.log(peerComparisonRes);
-          console.log(newRes);
-          console.log(videoRes);
 
         })
       }

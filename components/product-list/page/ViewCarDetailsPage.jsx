@@ -58,7 +58,6 @@ const Div = (props) => {
 
 const { TabPane } = Tabs;
 function callback(key) {
-    console.log(key);
 }  
 
 class ViewCarDetailsPage extends React.Component {

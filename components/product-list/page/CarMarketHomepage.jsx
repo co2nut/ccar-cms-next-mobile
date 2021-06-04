@@ -465,7 +465,6 @@ class CarMarketHomepage extends React.Component {
                                     _.map(priceRangeOptions, function (priceRange) {
                                         return (
                                             <Button className="margin-x-sm" onClick={(e) => {
-                                                console.log(priceRange);
                                                 self.pushParameterToUrl({ priceRange: priceRange }, { page: 1 })
                                             }}>
                                                 {
