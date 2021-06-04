@@ -80,21 +80,21 @@ const CarFreakLayout = (props) => {
                                                 <a>
                                                     <span className={`d-inline-block cursor-pointer margin-right-lg caption font-weight-bold ${tabKey == 'car-freaks' ? 'border-bottom-yellow yellow' : ' black'} `} >
                                                         CarFreaks
-                                            </span>
+                                                    </span>
                                                 </a>
                                             </Link>
                                             <Link shallow={false} href={routePaths.socialBoard.to || '/'} as={typeof (routePaths.socialBoard.as) == 'function' ? routePaths.socialBoard.as() : '/'}>
                                                 <a>
                                                     <span className={`d-inline-block cursor-pointer margin-right-lg caption font-weight-bold ${tabKey == 'social-board' ? 'border-bottom-yellow yellow' : ' black'} `}  >
                                                         Social Board
-                                            </span>
+                                                    </span>
                                                 </a>
                                             </Link>
                                             <Link shallow={false} href={routePaths.socialClub.to || '/'} as={typeof (routePaths.socialClub.as) == 'function' ? routePaths.socialClub.as() : '/'}>
                                                 <a>
                                                     <span className={`d-inline-block cursor-pointer margin-right-lg caption font-weight-bold ${tabKey == 'social-club' ? 'border-bottom-yellow yellow' : ' black'} `} >
-                                                        CarFreaks Club
-                                            </span>
+                                                         CarFreaks Club
+                                                    </span>
                                                 </a>
                                             </Link>
                                         </span>
@@ -148,7 +148,12 @@ const CarFreakLayout = (props) => {
                         :
                         null
                 }
-                <Affix offsetBottom={50} style={{ position: 'absolute', right: 15 }} >
+
+                {
+                    props.hideAddPost == true ?
+                    null
+                    :
+                    <Affix offsetBottom={50} style={{ position: 'absolute', right: 15 }} >
                     <Dropdown trigger="click" placement="topLeft"
                         getPopupContainer={() => typeof (document) != undefined ? document.getElementById('writePostAffix') : null}
                         overlay={
@@ -189,6 +194,7 @@ const CarFreakLayout = (props) => {
                         </span>
                     </Dropdown>
                 </Affix>
+                }
             </div>
 
         </React.Fragment>

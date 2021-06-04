@@ -1,11 +1,11 @@
-import { Button, Card, Col, Empty, Form, message, Row, Select, Tabs } from 'antd';
+import { Avatar, Button, Card, Col, Divider, Empty, Form, message, Rate, Row, Select, Tabs } from 'antd';
 import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
 import { withRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { notEmptyLength } from '../../common-function';
+import { notEmptyLength, roundToHalf } from '../../common-function';
 import client from '../../feathers';
 import { loading } from '../../redux/actions/app-actions';
 import { fetchFeaturesList, updateCheckedFeaturesDate } from '../../redux/actions/productsList-actions';
@@ -15,6 +15,7 @@ import OverallRating from '../rating/OverallRating';
 import RatingProgress from '../rating/RatingProgress';
 import WriteReviewButton from '../rating/WriteReviewButton';
 import ReviewList2 from '../rating/ReviewList2';
+import { carspecRatingCategories } from '../car-review/config';
 
 
 const { TabPane } = Tabs;
@@ -95,6 +96,7 @@ const Description = (props) => {
     const [ownRating, setOwnRating] = useState([])
     const [displayContact, setDisplayContact] = useState(false)
     const [carspecIds, setCarspecIds] = useState([])
+    const [ratingCarspec, setRatingCarspec] = useState({});
 
     const [count, setCount] = useState(0)
 
@@ -147,17 +149,30 @@ const Description = (props) => {
 
     useEffect(() => {
         init();
-        setCarspecIds(_.compact([_.get(productDetails , 'carspecsAll._id')]));
+        setCarspecIds(_.compact([_.get(productDetails, 'carspecsAll._id')]));
+        getRatingCarspec();
+
     }, [productDetails, props.user])
 
-    // useEffect(() => {
-    //     setCount(count + 1);
-    //     if (count < 10) {
-    //         console.log(props.user);
-    //         props.loading(!props.app.loading)
-    //     }
-    // }, [props.user])
 
+    function getRatingCarspec() {
+        if (_.isPlainObject(_.get(productDetails, 'carspecsAll')) && !_.isEmpty(_.get(productDetails, 'carspecsAll'))) {
+            client.service('carspecs').find({
+                query: {
+                    make: _.get(productDetails, `carspecsAll.make`),
+                    model: _.get(productDetails, `carspecsAll.model`),
+                    year: _.get(productDetails, `carspecsAll.year`),
+                    variant: _.get(productDetails, `carspecsAll.variant`),
+                    $limit: 1,
+                    $sort: {
+                        createdAt: 1,
+                    }
+                }
+            }).then(res => {
+                setRatingCarspec(_.get(res, `data[0]`) || {})
+            })
+        }
+    }
 
 
     function init() {
@@ -167,98 +182,35 @@ const Description = (props) => {
             setRatingPage(1);
         }
         setRatingTotal(0);
-        getOwnRating();
     }
 
     function getRatings(skip) {
         if (_.get(productDetails, ['carspecsId', '_id'])) {
 
-            let query = {
-                carspecId: _.get(productDetails, ['carspecsId', '_id']),
-                type: 'carspec',
-                $populate: [
-                    {
-                        path: 'carspecId',
-                        ref: 'carspecs'
+            axios.get(`${client.io.io.uri}getRatedCarspecs`, {
+                params: {
+                    limit: RATINGPAGESIZE,
+                    skip: skip,
+                    match: {
+                        make: _.get(productDetails, `carspecsAll.make`),
+                        model: _.get(productDetails, `carspecsAll.model`),
+                        year: _.get(productDetails, `carspecsAll.year`),
+                        variant: _.get(productDetails, `carspecsAll.variant`),
                     },
-                    {
-                        path: 'reviewerId',
-                        ref: 'users'
-                    }
-                ],
-                $limit: RATINGPAGESIZE,
-                $skip: skip,
-            }
+                    userId: _.get(props.user, ['info', 'user', '_id']) || ''
+                }
+            }).then(res => {
+                setRatings(ratingPage == 1 ? _.get(res, 'data.data') : _.concat(ratings, _.get(res, 'data.data') || []))
+                setRatingTotal(_.get(res, 'data.total') || 0);
+            }).catch(err => {
+                message.error(err.message)
+            });
 
-            if (props.user.authenticated) {
-                query.reviewerId = {
-                    $ne: props.user.info.user._id,
-                }
-
-                query["hideBy.userId"] = {
-                    $ne: props.user.info.user._id,
-                }
-            }
-            props.loading(true);
-            client.service('rating').find({
-                query
-            }).then((res) => {
-                props.loading(false);
-                if (notEmptyLength(res.data)) {
-                    let data = ratings.concat(res.data);
-                    setRatingTotal(res.total);
-                    setRatings(data);
-                }
-            })
-                .catch((err) => {
-                    props.loading(false);
-                    message.error(err.message);
-                })
         } else {
             setRatings([]);
         }
     }
 
-
-
-    function getOwnRating() {
-        if (_.get(productDetails, ['carspecsId', '_id']) && props.user.authenticated) {
-
-            props.loading(true);
-            client.service('rating').find({
-                query: {
-                    type: 'carspec',
-                    carspecId: _.get(productDetails, ['carspecsId', '_id']),
-                    reviewerId: props.user.info.user._id,
-                    $populate: [
-                        {
-                            path: 'carspecId',
-                            ref: 'carspecs'
-                        },
-                        {
-                            path: 'reviewerId',
-                            ref: 'users'
-                        }
-                    ],
-                    $limit: 1,
-                }
-
-            }).then((res) => {
-                props.loading(false);
-                if (notEmptyLength(res.data)) {
-                    setOwnRating(res.data);
-                } else {
-                    setOwnRating([]);
-                }
-            })
-                .catch((err) => {
-                    props.loading(false);
-                    message.error(err.message);
-                })
-        } else {
-            setOwnRating([]);
-        }
-    }
 
     const callback = (key) => {
     }
@@ -460,39 +412,71 @@ const Description = (props) => {
 
         if (_.isEmpty(data) === true) { return }
         let dataString = _.cloneDeep(data)
-        let phoneFormat = /((601)|(01))[0-46-9]*[0-9]{7,10}/gim
-        let phoneFormat2 = /([601]|[01]|)[0-46-9]-*[0-9]{7,10}/g
+        // let phoneFormat = /((601)|(01))[0-46-9]*[0-9]{7,10}/gim
+        // let phoneFormat2 = /([601]|[01]|)[0-46-9]-*[0-9]{7,10}/g
+        // let phoneFormat3 = /((\+6 01)|(01))[0-46-9]*[0-9]{7,10}/gim
+        // let phoneFormat4 = /((\+6 0[0-9][0-9]))\-[0-9]{0,3} [0-9]{0,4}/gim
+        // let phoneFormat5 = /((\+6 0[0-9][0-9]))\-[0-9]{0,4} [0-9]{0,4}/gim
+
+        let phoneFormat = [
+            // /((601)|(01))[0-46-9]*[0-9]{7,10}/gim,
+            // /([601]|[01]|)[0-46-9]-*[0-9]{7,10}/g,
+            // /((\+6 01)|(01))[0-46-9]*[0-9]{7,10}/gim,
+            // /((\+6 0[0-9][0-9]))\-[0-9]{0,3} [0-9]{0,4}/gi,
+            // /((\+6 0[0-9][0-9]))\-[0-9]{0,4} [0-9]{0,4}/gi,
+            // /((\+6 0[0-9][0-9]))\-[0-9]{0,4} [0-9]{0,4}/gi,
+            /([0-9]{2} [0-9]{2}- [0-9]{3} [0-9]{4})|([0-9]{2} [0-9]{2}- [0-9]{4} [0-9]{4})|([0-9]{3}- [0-9]{3} [0-9]{4})|([0-9]{2} [0-9]{2}-[0-9]{4} [0-9]{4})|([0-9]{2} [0-9]{2}-[0-9]{3} [0-9]{4})|([0-9]{3} - [0-9]{4} [0-9]{3})|([0-9]{3} [0-9]{4} [0-9]{3})|([0-9]{3} [0-9]{4} [0-9]{4})|([0-9]{3}-[0-9]{4}-[0-9]{4})|([0-9]{3}-[0-9]{3}-[0-9]{4})|(6[0-9]{3}.[0-9]{7})|(6[0-9]{3}.[0-9]{8})|(6[0-9]{3}.[0-9]{7})|(6 [0-9]{3}.[0-9]{3} [0-9]{4})|(6 [0-9]{3}.[0-9]{4} [0-9]{4})|(\+6 [0-9]{3}-[0-9]{3} [0-9]{4})|([0-9]{3}-[0-9]{3} [0-9]{4})|([0-9]{3}-[0-9]{4} [0-9]{4})|([0-9]{3}-[0-9]{4} [0-9]{3})|([0-9]{3}-[0-9]{8})|([0-9]{3} [0-9]{8})|([0-9]{3} [0-9]{7})|([0-9]{3}-[0-9]{7})|([0-9]{11})|([0-9]{10})|([0-9]{4} [0-9]{3} [0-9]{4})|([0-9]{4} [0-9]{4} [0-9]{4})|([0-9]{3} [0-9]{3} [0-9]{4})|([0-9]{2} [0-9]{2} [0-9]{4} [0-9]{4})|([0-9]{2} [0-9]{2} [0-9]{3} [0-9]{4})/gi
+        ]
 
         dataString = dataString.split('\n')
         dataString = dataString.map(function (v) {
 
+            if (_.isEmpty(v) === true) { return <br /> }
+
             let v2 = v
-            v = v.replace(/\s/g, '')
-            v = v.replace(/\+/g, '')
-            v = v.replace(/-/g, '')
-            let n = v.match(phoneFormat);
-            let s = v.split(phoneFormat2);
+            let n = [],s =[]
+            let currentphoneFormat = ''
+            for (let i = 0; i < phoneFormat.length; i++) {
+                 currentphoneFormat = phoneFormat[i];
+                 n=  v.match(currentphoneFormat);
+                 if(n!==null){break;}
+            }
+            n = _.without(n,'')
+            // let n = v.match(phoneFormat);
+            // if (n !== null) { let s = v.split(phoneFormat); }
+            // else if (n !== null) { let s = v.split(phoneFormat); }
 
 
             let x = ''
             if (_.isEmpty(n) === true) { return <p style={{ marginBottom: '0em' }}>{v2}</p> }
 
-            s = _.without(s, '6')
-            s = _.without(s, '0')
-            s = _.without(s, '')
+            s = v.split(n)
+
             x = s.map(function (v, i) {
 
                 if (n[i]) {
                     if (type === 'callContact') {
 
-                        if (n[i].charAt(0) !== '6') {
-                            n[i] = '6' + n[i]
+                            let linkvalue = n[i]
+                        // if (n[i].charAt(0) !== '6') {
+                        //     if(n[i].charAt(0)==='+'){
+                                
+                        //     }
+                        //     else{
+                        //     n[i] = '6' + n[i]
+                        // }
+                        // }
+                        linkvalue = linkvalue.replace(/\+/g, '')
+                        linkvalue = linkvalue.replace(/\s/g, '')
+                        linkvalue = linkvalue.replace(/-/g, '')
+                        if (linkvalue.charAt(0) !== '6') {
+                                linkvalue = '6' +linkvalue
                         }
 
                         if (isMobile) {
                             v = <><>{v}</> <a className='contactShow'
                                 target={'_blank'}
-                                href={"tel:" + n[i]}
+                                href={"tel:" + linkvalue}
                             >{n[i]}</a></>
                         }
                         else {
@@ -507,12 +491,12 @@ const Description = (props) => {
                                 target={'_blank'}
                                 href={
                                     "https://web.whatsapp.com/send?phone="
-                                    + n[i].replace('+', '') + "&text=Hi "
+                                    + linkvalue.replace('+', '') + "&text=Hi "
                                     + username
                                     + ", I am interested in your car ad on ccar.my and I would like to know more about "
                                     + productDetails.title
                                     + " (RM "
-                                    + productDetails.price.toFixed(2) + "). Thank you. https://share.ccar.my/viewCar/"
+                                    + productDetails.price.toFixed(2) + "). Thank you. https://ccar.my/viewCar/"
                                     + productDetails._id}
 
                             >{n[i]}</a></>
@@ -531,9 +515,94 @@ const Description = (props) => {
 
     return (
         <div>
-            <Card size="small">
-                <p style={{ whiteSpace: 'pre-wrap' }}  >{displayContact ? changeProductDetails(productDetails.description, 'callContact') : changeProductDetails(productDetails.description)}</p>
-            </Card>
+            <Row gutter={[0, 10]}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                    <div>
+                        <div className=" padding-md flex-justify-end flex-items-align-center" style={{marginTop:'-30px', padding:0, marginBottom:'5px'}}>
+                            <WriteReviewButton
+                                title={_.trim(`Review on ${_.get(ratingCarspec, ['make']) || ''} ${_.get(ratingCarspec, ['model']) || ''} ${_.get(ratingCarspec, ['variant']) || ''}`)}
+                                data={{ type: 'carspec', carspecId: _.get(ratingCarspec, ['_id']) || '', reviewerId: props.user.authenticated ? props.user.info.user._id : null }}
+                                mode="add"
+                                handleError={(e) => { message.error(e.message) }}
+                                readOnly={props.readOnly}
+                                button={() => {
+                                    return (
+                                        <Button style={{ color: '#F57F17' }}><Avatar src={'/assets/add-post/create-post.png'} shape="square" size="small" className="margin-right-md" /> Write a Review</Button>
+                                        )
+                                    }}
+                                    onCreate={(data) => {
+                                        if (_.isPlainObject(data) && !_.isEmpty(data)) {
+                                            data.carspecId = ratingCarspec;
+                                            setRatings(_.compact(_.concat([data], ratings || [])))
+                                            getRatingCarspec();
+                                        }
+                                    }}
+                            />
+                        </div>
+                        <OverallRating rating={_.get(ratingCarspec, ['avgRating']) || 0} total={_.get(ratingCarspec, ['totalRating']) || 0} />
+                        <RatingProgress 
+                            data={_.get(ratingCarspec, ['ratingCategory']) || []}
+                            total={_.get(ratingCarspec, ['totalRating']) || 0}
+                            size={5}
+                            labels={[1,2,3,4,5]}
+                    /> 
+
+                    <Row className="text-align-center">
+                        {
+                            _.map(carspecRatingCategories, function (carspecRatingCategory) {
+                            return (
+                                <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                                    <Rate value={roundToHalf(_.get(ratingCarspec, `carspecAvgRating[${carspecRatingCategory.value}]`) || 0)} allowHalf disabled />
+                                        <div className="headline">
+                                            {carspecRatingCategory.name}
+                                        </div>
+                                </Col>
+                                    )
+                            })
+                        }
+                    </Row>
+                    </div>
+                </Col>
+            </Row>
+                <Row>
+                    <div className="fill-parent margin-top-md">
+                        {
+                            notEmptyLength(ratings) ?
+                            <div className="fill-parent padding-right-md wrapBorderRed" style={{ display: 'inline-block', overflowX: 'hidden', overflowY: "scroll", maxHeight: '500px', border: 'none' }}>
+                                <ReviewList2 data={ratings}
+                                    onChange={(e) => {
+                                    if (_.isPlainObject(e) && !_.isEmpty(e)) {
+                                    setRatings(_.map(ratings, function (rating) {
+                                    if (_.get(rating, `_id`) == _.get(e, `_id`)) {
+                                    return e;
+                                    }
+                                    return rating;
+                                    }))
+                                    }
+                                   }}
+                                />
+                            </div>
+                            :
+                            (
+                                <div style={{ height: '15em', backgroundColor: '#FFFFFF' }}>
+                                <Empty
+                                    style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}
+                                    image="/empty.png"
+                                    imageStyle={{
+                                        height: 60,
+                                    }}
+                                    description={
+                                        <span>
+                                            No Review Yet
+                                        </span>
+                                        }
+                                    >
+                                </Empty>
+                                </div>
+                            )
+                        }
+                            </div>
+                    </Row>
         </div >
     );
 }

@@ -1,5 +1,5 @@
 
-import { Card, Col, Empty, Form, Row } from 'antd';
+import { Card, Col, Empty, Form, Row, Dropdown, Menu, Avatar, Icon} from 'antd';
 import _ from 'lodash';
 import { withRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
@@ -11,7 +11,7 @@ import { imageNotFound } from '../../../profile/config';
 import OtherClubsBox from './other-clubs-box';
 import Link from 'next/link';
 import { routePaths } from '../../../../route';
-
+import { earthGreyIcon, followingGreyIcon, createCarFreakIcon, createSocialBoardIcon } from '../../../../icon';
 
 const PAGE_SIZE = 30;
 
@@ -20,7 +20,7 @@ const MyClubBox = (props) => {
     const [myClubs, setMyClubs] = useState([])
     const [myClubTotal, setMyClubTotal] = useState(0);
     const [myClubPage, setMyClubPage] = useState(1);
-
+    const [menuOpened, setMenuOpened] = useState(false)
     const [myJoinedClubs, setMyJoinedClubs] = useState([])
     const [myJoinedClubTotal, setMyJoinedClubTotal] = useState(0);
     const [myJoinedClubPage, setMyJoinedClubPage] = useState(1);
@@ -132,11 +132,11 @@ const MyClubBox = (props) => {
 
     return (
         <React.Fragment>
-            <Row gutter={[20, 0]}>
+            {/* <Row gutter={[20, 0]}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                     <React.Fragment>
                         <Card
-                            title="My Club(s)"
+                            title="My Club(s)" 
                         >
                             {
                                 _.isArray(myClubs) && notEmptyLength(myClubs) ?
@@ -209,15 +209,59 @@ const MyClubBox = (props) => {
                         </Card>
                     </React.Fragment>
                 </Col>
-                {/* <Col xs={6} sm={6} md={0} lg={6} xl={6}>
+                <Col xs={6} sm={6} md={0} lg={6} xl={6}>
                     <Card
                         title="Other CarFreaks Clubs"
                     >
                         <OtherClubsBox userId={props.userId} />
                     </Card>
-                </Col> */}
+                </Col>
+            </Row> */}
 
-            </Row>
+            {
+                menuOpened ?
+                    <div className="background-black-opacity-50 absolute-center" style={{ zIndex: 2 }} >
+                    </div>
+                    :
+                    null
+            }
+
+            <Dropdown trigger="click" placement="topLeft"
+                getPopupContainer={() => typeof (document) != undefined ? document.getElementById('writePostAffix') : null}
+                overlay={
+                    <Menu className="background-transparent box-shadow-none "
+                    onClick={(e) => {
+                        setMenuOpened(false)
+                    }}>
+                        <Menu.Item key="carfreaks" style={{ padding: '10px 0px' }} >
+                            <div className=" flex-justify-space-between flex-items-align-center" style={{ width: 200 }} >
+                                <span className='d-inline-block subtitle1 ccar-button-yellow' >
+                                    CarFreaks
+                                </span>
+                                <span className='d-inline-block avatar padding-sm background-white' >
+                                    <img src={createCarFreakIcon} style={{ height: 30, width: 30 }} />
+                                </span>
+                            </div>
+                        </Menu.Item>
+                        <Menu.Item key="socialboard" className="white" style={{ padding: '10px 0px' }}>
+                                    <div className="flex-justify-space-between flex-items-align-center" style={{ width: 200 }} >
+                                        <span className='d-inline-block subtitle1 ccar-button-yellow' >
+                                            Social Board
+                                        </span>
+                                        <span className='d-inline-block avatar padding-sm background-white' >
+                                            <img src={createSocialBoardIcon} style={{ height: 30, width: 30 }} />
+                                        </span>
+                                    </div>
+                        </Menu.Item>
+                    </Menu>
+                    }
+                    onVisibleChange={(v) => { setMenuOpened(v) }}
+                    >
+                        <span className='d-inline-block width-100' id="writePostAffix" >
+                            <Avatar size={50} className="background-ccar-button-yellow" icon={menuOpened ? <Icon type="close" className="white" /> : <Icon type="plus" className="white" />}
+                        />
+                        </span>
+                    </Dropdown>
         </React.Fragment >
     )
 

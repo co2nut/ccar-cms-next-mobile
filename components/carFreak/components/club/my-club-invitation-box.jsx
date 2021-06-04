@@ -76,41 +76,41 @@ const MyClubInvitationBox = (props) => {
     return (
         <React.Fragment>
             <Row gutter={[10, 10]}>
-                <Col xs={18} sm={18} md={18} lg={18} xl={18}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                     {
                         _.isArray(invites) && notEmptyLength(invites) ?
                             <React.Fragment>
-                                <div className="thin-border round-border padding-md">
+                                <div>
                                     {
                                         _.map(invites, function (invite) {
                                             return (
                                                 <div className="flex-justify-space-between flex-items-align-center margin-bottom-md">
-                                                    <span className='d-inline-block flex-items-no-shrink' style={{ maxWidth: '60%' }} >
+                                                    <span className='d-inline-block flex-items-no-shrink' style={{ maxWidth: '50%' }} >
                                                         <div className="flex-items-align-center">
-                                                            <span className='d-inline-block margin-right-md' >
-                                                                <ClubAvatar data={_.get(invite, ['clubId'])} size={70} redirectProfile></ClubAvatar>
+                                                            <span className='d-inline-block margin-right-sm'>
+                                                                <ClubAvatar data={_.get(invite, ['clubId'])} size={50} redirectProfile></ClubAvatar>
                                                             </span>
                                                             <span className='d-inline-block' >
-                                                                <div className="font-weight-bold h6 black">
+                                                                <div className="font-weight-bold black">
                                                                     {_.get(invite, ['clubId', 'clubName']) || ''}
                                                                 </div>
                                                                 {
                                                                     _.isArray(_.get(invite, ['invitedBy'])) && !_.isEmpty(_.get(invite, ['invitedBy'])) ?
-                                                                        <div className="headline grey-darken-2">
+                                                                        <div style={{fontSize:'12px'}} className="grey-darken-2">
                                                                             Invited by {convertNameString(_.get(invite, ['invitedBy']))}
                                                                         </div>
                                                                         :
                                                                         null
                                                                 }
-                                                                <div className="headline grey-darken-2">
+                                                                <div style={{fontSize:'10px'}} className="grey-darken-2">
                                                                     Requested {moment(_.get(invite, ['createdAt'])).fromNow()}
                                                                 </div>
                                                             </span>
                                                         </div>
                                                     </span>
-                                                    <span className='d-inline-block flex-items-no-shrink' style={{ maxWidth: '40%' }} >
+                                                    <span className='d-inline-block flex-items-no-shrink' style={{ maxWidth: '50%' }} >
                                                         <div className="flex-items-align-center">
-                                                            <span className='d-inline-block margin-right-md' >
+                                                            <span className='d-inline-block margin-right-xs' >
                                                                 {
                                                                     _.get(invite, ['status']) != 'rejected' ?
                                                                         <JoinClubButton notify clubId={_.get(invite, ['clubId', '_id'])} userId={_.get(props.user, ['info', 'user', '_id'])}
@@ -148,14 +148,13 @@ const MyClubInvitationBox = (props) => {
                             null
                     }
                 </Col>
-                <Col xs={6} sm={6} md={6} lg={6} xl={6}>
+                {/* <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                     <Card
                         title="Other CarFreaks Clubs"
                     >
                         <OtherClubsBox userId={props.userId} />
                     </Card>
-                </Col>
-
+                </Col> */}
             </Row>
         </React.Fragment >
     )

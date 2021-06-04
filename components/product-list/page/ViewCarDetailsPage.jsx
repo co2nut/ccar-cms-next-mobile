@@ -44,7 +44,7 @@ import Equipment from '../equipment';
 import Specification from '../specification';
 import { routePaths } from '../../../route';
 import { flameRed, rayaFlame, rayaFood, rayaLamp, rayaMosque, rayaPeople } from '../../../icon';
-
+import WriteReviewButton from '../../rating/WriteReviewButton';
 
 const { TextArea } = Input;
 
@@ -627,6 +627,15 @@ _renderLayout = (v) => {
                 </div>
                 :
                 null}
+
+                <div className="margin-top-md">
+                    <span className="h6" style={{display:'inline-block'}}>Reviews</span>
+                    <span> 
+                      <Description
+                        readOnly={_.get(this.state, 'productDetails.status') != 'approved'} productDetails={this.state.productDetails}>
+                      </Description>
+                    </span>
+                </div>
 
                 <div className="padding-lg relative-wrapper"> 
                     <SellerBusinessCard data={this.state.productDetails.companys} data1={this.state.productDetails.createdBy} />  

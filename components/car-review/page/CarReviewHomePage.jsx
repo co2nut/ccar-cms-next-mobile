@@ -200,9 +200,8 @@ const CarReviewHomePage = (props) => {
                         <Row>
                             <Col span={4}>
                                 <Affix offsetTop={150}>
-                                    <div style={{height:'500px'}}>
-                                        <BrandList showAllIcon size={30} avatarClassName="margin-x-sm" data={brands} onClickBrand={(brand) => {
-                                            if (_.get(brand, ['value']) && _.get(brand , ['value']) != 'all') {
+                                    <BrandList showAllIcon size={30} avatarClassName="margin-x-sm" data={brands} onClickBrand={(brand) => {
+                                        if (_.get(brand, ['value']) && _.get(brand , ['value']) != 'all') {
                                             setFilterGroup({
                                             make: _.toLower(brand.value),
                                             });
@@ -213,10 +212,9 @@ const CarReviewHomePage = (props) => {
                                         }
                                         }}
                                             emptyView={null}
-                                        />
-                                    </div>
+                                    />
                                 </Affix>
-                            </Col>
+                            </Col> 
                             <Col span={20}>
                                 <Affix offsetTop={150}>
                                     <div className="flex-justify-space-between flex-items-align-center padding-bottom-md">
@@ -225,7 +223,7 @@ const CarReviewHomePage = (props) => {
                                         <span className='d-inline-block ' >
                                          <Link href={routePaths.writeCarReview.to || '/'} as={typeof(routePaths.writeCarReview.as) == 'function' ? routePaths.writeCarReview.as() : '/'} passHref>
                                         <a>
-                                            <Button style={{ color: '#F57F17' }}  ><Avatar src={'/assets/add-post/create-post.png'} shape="square" size="small" /></Button>
+                                            <Button style={{ color: '#F57F17' }}><Avatar src={'/assets/add-post/create-post.png'} shape="square" size="small" /></Button>
                                         </a>
                                         </Link>
                                         </span>
