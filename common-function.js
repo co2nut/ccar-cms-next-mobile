@@ -1593,7 +1593,6 @@ export function getProfileSeoData(profile) {
         canonical,
         images,
     }
-
 }
 
 

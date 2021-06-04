@@ -11,6 +11,143 @@ function generateDummyInt(min = 0, max = 10, fixedPoint = 0) {
     return parseFloat(numberToFixed(Math.random() * (max - min) + min, true, fixedPoint));
 }
 
+
+
+function generateDummyImage(length = 1) {
+
+    const images = [
+        'https://www.shutterstock.com/image-photo/row-tops-heads-cats-dogs-paws-1034939470',
+        'https://www.shutterstock.com/image-photo/pitiful-striped-young-cat-sits-looks-1709429356',
+        'https://www.shutterstock.com/image-photo/white-pomerian-puppy-sitting-on-carpet-1983921932',
+        'https://www.shutterstock.com/image-photo/plush-white-dog-wooden-background-281054369',
+        'https://www.shutterstock.com/image-photo/plush-white-dog-wooden-background-281054381',
+        'https://www.shutterstock.com/image-photo/rabbit-on-green-grass-336890459',
+        'https://www.shutterstock.com/image-photo/dog-show-champion-pomeranian-portrait-1036161856',
+        'https://www.shutterstock.com/image-photo/adorable-pomeranian-looking-550829419',
+        'https://www.shutterstock.com/image-photo/two-cute-white-puppies-breed-pomeranian-1734784361',
+        'https://www.shutterstock.com/image-photo/pomeranian-dog-white-backdrop-1056214517',
+        'https://www.shutterstock.com/image-photo/dog-pomeranian-spitz-smiling-watch-evening-449602594',
+        'https://www.shutterstock.com/image-photo/chihuahua-dog-chiwawa-on-table-1716379762',
+        'https://www.shutterstock.com/image-photo/portrait-brown-tan-shorthaired-chihuahua-puppy-757866418',
+        'https://www.shutterstock.com/image-photo/chihuahua-dog-sitting-on-white-studio-1203805705',
+        'https://www.shutterstock.com/image-photo/closeup-portrait-funny-ginger-cat-wearing-1563541219',
+        'https://www.shutterstock.com/image-photo/portrait-surprised-cat-scottish-straight-closeup-499196506',
+        'https://www.shutterstock.com/image-vector/cat-paws-wallpaper-legs-dog-paw-417469627',
+        'https://www.shutterstock.com/image-photo/adorable-cat-dog-together-under-plaid-1896243127',
+        'https://www.shutterstock.com/image-photo/british-cat-golden-retriever-646123102',
+        'https://www.shutterstock.com/image-photo/cat-dog-sleeping-together-kitten-puppy-1479239243',
+        'https://www.shutterstock.com/image-photo/cute-little-red-kitten-sleeps-on-235089946',
+        'https://www.shutterstock.com/image-photo/playful-happy-kitten-hands-cute-grey-1729901461',
+        'https://www.shutterstock.com/image-photo/adorable-cat-dog-resting-together-on-1095001973',
+        'https://www.shutterstock.com/image-photo/row-tops-heads-cats-dogs-paws-1034939470',
+        'https://www.shutterstock.com/image-photo/pitiful-striped-young-cat-sits-looks-1709429356',
+        'https://www.shutterstock.com/image-photo/white-pomerian-puppy-sitting-on-carpet-1983921932',
+        'https://www.shutterstock.com/image-photo/plush-white-dog-wooden-background-281054369',
+        'https://www.shutterstock.com/image-photo/plush-white-dog-wooden-background-281054381',
+        'https://www.shutterstock.com/image-photo/rabbit-on-green-grass-336890459',
+        'https://www.shutterstock.com/image-photo/dog-show-champion-pomeranian-portrait-1036161856',
+        'https://www.shutterstock.com/image-photo/adorable-pomeranian-looking-550829419',
+        'https://www.shutterstock.com/image-photo/two-cute-white-puppies-breed-pomeranian-1734784361',
+        'https://www.shutterstock.com/image-photo/pomeranian-dog-white-backdrop-1056214517',
+        'https://www.shutterstock.com/image-photo/dog-pomeranian-spitz-smiling-watch-evening-449602594',
+        'https://www.shutterstock.com/image-photo/chihuahua-dog-chiwawa-on-table-1716379762',
+        'https://www.shutterstock.com/image-photo/portrait-brown-tan-shorthaired-chihuahua-puppy-757866418',
+        'https://www.shutterstock.com/image-photo/chihuahua-dog-sitting-on-white-studio-1203805705',
+        'https://www.shutterstock.com/image-photo/closeup-portrait-funny-ginger-cat-wearing-1563541219',
+        'https://www.shutterstock.com/image-photo/portrait-surprised-cat-scottish-straight-closeup-499196506',
+        'https://www.shutterstock.com/image-vector/cat-paws-wallpaper-legs-dog-paw-417469627',
+        'https://www.shutterstock.com/image-photo/adorable-cat-dog-together-under-plaid-1896243127',
+        'https://www.shutterstock.com/image-photo/british-cat-golden-retriever-646123102',
+        'https://www.shutterstock.com/image-photo/cat-dog-sleeping-together-kitten-puppy-1479239243',
+        'https://www.shutterstock.com/image-photo/cute-little-red-kitten-sleeps-on-235089946',
+        'https://www.shutterstock.com/image-photo/playful-happy-kitten-hands-cute-grey-1729901461',
+        'https://www.shutterstock.com/image-photo/adorable-cat-dog-resting-together-on-1095001973',
+        'https://www.shutterstock.com/image-photo/row-tops-heads-cats-dogs-paws-1034939470',
+        'https://www.shutterstock.com/image-photo/pitiful-striped-young-cat-sits-looks-1709429356',
+        'https://www.shutterstock.com/image-photo/white-pomerian-puppy-sitting-on-carpet-1983921932',
+        'https://www.shutterstock.com/image-photo/plush-white-dog-wooden-background-281054369',
+        'https://www.shutterstock.com/image-photo/plush-white-dog-wooden-background-281054381',
+        'https://www.shutterstock.com/image-photo/rabbit-on-green-grass-336890459',
+        'https://www.shutterstock.com/image-photo/dog-show-champion-pomeranian-portrait-1036161856',
+        'https://www.shutterstock.com/image-photo/adorable-pomeranian-looking-550829419',
+        'https://www.shutterstock.com/image-photo/two-cute-white-puppies-breed-pomeranian-1734784361',
+        'https://www.shutterstock.com/image-photo/pomeranian-dog-white-backdrop-1056214517',
+        'https://www.shutterstock.com/image-photo/dog-pomeranian-spitz-smiling-watch-evening-449602594',
+        'https://www.shutterstock.com/image-photo/chihuahua-dog-chiwawa-on-table-1716379762',
+        'https://www.shutterstock.com/image-photo/portrait-brown-tan-shorthaired-chihuahua-puppy-757866418',
+        'https://www.shutterstock.com/image-photo/chihuahua-dog-sitting-on-white-studio-1203805705',
+        'https://www.shutterstock.com/image-photo/closeup-portrait-funny-ginger-cat-wearing-1563541219',
+        'https://www.shutterstock.com/image-photo/portrait-surprised-cat-scottish-straight-closeup-499196506',
+        'https://www.shutterstock.com/image-vector/cat-paws-wallpaper-legs-dog-paw-417469627',
+        'https://www.shutterstock.com/image-photo/adorable-cat-dog-together-under-plaid-1896243127',
+        'https://www.shutterstock.com/image-photo/british-cat-golden-retriever-646123102',
+        'https://www.shutterstock.com/image-photo/cat-dog-sleeping-together-kitten-puppy-1479239243',
+        'https://www.shutterstock.com/image-photo/cute-little-red-kitten-sleeps-on-235089946',
+        'https://www.shutterstock.com/image-photo/playful-happy-kitten-hands-cute-grey-1729901461',
+        'https://www.shutterstock.com/image-photo/adorable-cat-dog-resting-together-on-1095001973',
+    ]
+    if (!_.isNumber(length)) {
+        length = 1;
+    }
+    if (length > images.length) {
+        length = images.length;
+    }
+
+    images = _.shuffle(images);
+    
+
+    return length == 1 ? images[0] : _.slice(images, length);
+}
+
+
+function generateDummyVideo(length = 1) {
+
+    const videos = [
+        'https://vimeo.com/7466309',
+        'https://vimeo.com/10985679',
+        'https://vimeo.com/85683143',
+        'https://vimeo.com/45272625',
+        'https://vimeo.com/282191207',
+        'https://www.youtube.com/watch?v=3TWnpeFg_wo&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=10&ab_channel=%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel',
+        'https://www.youtube.com/watch?v=UTT4x4_D3xE&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=10&ab_channel=%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E9%9F%B3%E4%B9%90%E4%BA%BA%E5%AE%98%E6%96%B9%E9%A2%91%E9%81%93',
+        'https://www.youtube.com/watch?v=KBpkD06Yp_o&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=12&ab_channel=%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E9%9F%B3%E4%B9%90%E4%BA%BA%E5%AE%98%E6%96%B9%E9%A2%91%E9%81%93',
+        'https://www.youtube.com/watch?v=pR3bvNzeWJc&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=14&ab_channel=%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E9%9F%B3%E4%B9%90%E4%BA%BA%E5%AE%98%E6%96%B9%E9%A2%91%E9%81%93',
+        'https://www.youtube.com/watch?v=5sbFn-FPdAk&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=16&ab_channel=%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E9%9F%B3%E4%B9%90%E4%BA%BA%E5%AE%98%E6%96%B9%E9%A2%91%E9%81%93',
+        'https://www.youtube.com/watch?v=LWSEVA0S3j0&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=17&ab_channel=%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E9%9F%B3%E4%B9%90%E4%BA%BA%E5%AE%98%E6%96%B9%E9%A2%91%E9%81%93',
+        'https://www.youtube.com/watch?v=fF_4a_AOPTQ&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=21&ab_channel=gm00888095gm00888095',
+        'https://www.youtube.com/watch?v=NTrml2KJ7jk&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=23&ab_channel=%E8%98%87%E6%89%93%E7%B6%A0sodagreen%E8%98%87%E6%89%93%E7%B6%A0sodagreen%E5%B7%B2%E9%AA%8C%E8%AF%81',
+        'https://www.youtube.com/watch?v=83TjxZWFXVI&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=24&ab_channel=%E8%98%87%E6%89%93%E7%B6%A0sodagreen%E8%98%87%E6%89%93%E7%B6%A0sodagreen%E5%B7%B2%E9%AA%8C%E8%AF%81',
+        'https://www.youtube.com/watch?v=uSdbiZQyPwE&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=25&ab_channel=MingChunLiuMingChunLiu',
+        'https://www.youtube.com/watch?v=2HwQQwDWO2s&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=27&ab_channel=%E8%98%87%E6%89%93%E7%B6%A0sodagreen%E8%98%87%E6%89%93%E7%B6%A0sodagreen%E5%B7%B2%E9%AA%8C%E8%AF%81',
+        'https://www.youtube.com/watch?v=WWCOypHRxwI&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=29&ab_channel=sodagreenofficialsodagreenofficial',
+        'https://www.youtube.com/watch?v=UV7jI2Gkehw&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=30&ab_channel=ubeMacubeMac',
+        'https://www.youtube.com/watch?v=_dqLb1xG26Y&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=31&ab_channel=%E6%B5%99%E6%B1%9F%E5%8D%AB%E8%A7%86%E9%9F%B3%E4%B9%90%E9%A2%91%E9%81%93ZJSTVMusicChannel-%E6%AC%A2%E8%BF%8E%E8%AE%A2%E9%98%85-%E6%B5%99%E6%B1%9F%E5%8D%AB%E8%A7%86%E9%9F%B3%E4%B9%90%E9%A2%91%E9%81%93ZJSTVMusicChannel-%E6%AC%A2%E8%BF%8E%E8%AE%A2%E9%98%85-',
+        'https://www.youtube.com/watch?v=A6g0ncregRc&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=37&ab_channel=%E8%98%87%E6%89%93%E7%B6%A0sodagreen%E8%98%87%E6%89%93%E7%B6%A0sodagreen',
+        'https://www.youtube.com/watch?v=cuEja-aL1Uk&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=38&ab_channel=%E8%98%87%E6%89%93%E7%B6%A0sodagreen%E8%98%87%E6%89%93%E7%B6%A0sodagreen%E5%B7%B2%E9%AA%8C%E8%AF%81',
+        'https://www.youtube.com/watch?v=ateMdTtm3rY&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=44&ab_channel=%E8%98%87%E6%89%93%E7%B6%A0sodagreen%E8%98%87%E6%89%93%E7%B6%A0sodagreen%E5%B7%B2%E9%AA%8C%E8%AF%81',
+        'https://www.youtube.com/watch?v=BwgCurwoiK0&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=45&ab_channel=%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E9%9F%B3%E4%B9%90%E4%BA%BA%E5%AE%98%E6%96%B9%E9%A2%91%E9%81%93',
+        'https://www.youtube.com/watch?v=BFGSkRuoTx4&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=46&ab_channel=%E8%98%87%E6%89%93%E7%B6%A0sodagreen%E8%98%87%E6%89%93%E7%B6%A0sodagreen%E5%B7%B2%E9%AA%8C%E8%AF%81',
+        'https://www.youtube.com/watch?v=niAK5NaPrsA&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=51&ab_channel=%E8%8B%8F%E6%89%93%E7%BB%BF-%E4%B8%BB%E9%A2%98%E8%8B%8F%E6%89%93%E7%BB%BF-%E4%B8%BB%E9%A2%98',
+        'https://www.youtube.com/watch?v=qJF9JHI8eU8&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=59&ab_channel=sodagreenofficialsodagreenofficial',
+        'https://www.youtube.com/watch?v=Jg34oKzDgto&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=76&ab_channel=%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E9%9F%B3%E4%B9%90%E4%BA%BA%E5%AE%98%E6%96%B9%E9%A2%91%E9%81%93',
+        'https://www.youtube.com/watch?v=5Yoxv_PAJcE&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=81&ab_channel=%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E9%9F%B3%E4%B9%90%E4%BA%BA%E5%AE%98%E6%96%B9%E9%A2%91%E9%81%93',
+        'https://www.youtube.com/watch?v=LV7eT2_VwMw&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=84&ab_channel=%E8%98%87%E6%89%93%E7%B6%A0sodagreen%E8%98%87%E6%89%93%E7%B6%A0sodagreen%E5%B7%B2%E9%AA%8C%E8%AF%81',
+        'https://www.youtube.com/watch?v=sJlHuWJI1v0&list=PLzErmEkduO5KY8Y2CXFLNOBszd1x-cABf&index=120&ab_channel=%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E5%90%B3%E9%9D%92%E5%B3%B0%E5%AE%98%E6%96%B9%E5%B0%88%E5%B1%AC%E9%A0%BB%E9%81%93WuQingFeng%27sOfficialChannel%E9%9F%B3%E4%B9%90%E4%BA%BA%E5%AE%98%E6%96%B9%E9%A2%91%E9%81%93',
+    ]
+    if (!_.isNumber(length)) {
+        length = 1;
+    }
+    if (length > videos.length) {
+        length = videos.length;
+    }
+
+    videos = _.shuffle(videos);
+    
+
+    return length == 1 ? videos[0] : _.slice(videos, length);
+}
+
+
 function generateDummyString(length = 100) {
     var verbs, nouns, adjectives, adverbs, preposition;
     nouns = ["bird", "clock", "boy", "plastic", "duck", "teacher", "old lady", "professor", "hamster", "dog"];
@@ -43,6 +180,10 @@ function generateDummyObj() {
     return {
         dummyInt: generateDummyInt(0, 1000),
         dummyStr: generateDummyString(),
+        dummyImage : generateDummyImage(1),
+        dummyImages : generateDummyImage(10),
+        dummyVideo : generateDummyVideo(1),
+        dummyVideos : generateDummyVideo(10),
     }
 }
 
@@ -78,7 +219,10 @@ function generateDummyArrayStr(length = 10) {
 export {
     generateDummyInt,
     generateDummyString,
+    generateDummyObj,
     generateDummyArrayObj,
     generateDummyArrayInt,
     generateDummyArrayStr,
+    generateDummyImage,
+    generateDummyVideo,
 }
