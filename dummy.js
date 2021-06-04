@@ -13,26 +13,34 @@ function generateDummyInt(min = 0, max = 10, fixedPoint = 0) {
 
 
 
-function generateDummyImage(length = 1) {
+function generateDummyImage(length = 1, width = 200, height = 300) {
 
+    if (!_.isNumber(width)) {
+        width = 200;
+    }
+    if (!_.isNumber(height)) {
+        height = 300;
+    }
     let images = [
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
-        'https://picsum.photos/seed/picsum',
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
+        `https://picsum.photos/seed/${generateDummyInt(0, 10000)}/${width}/${height}`,
     ]
     if (!_.isNumber(length)) {
         length = 1;
