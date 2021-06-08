@@ -37,11 +37,6 @@ const AllClubBox = (props) => {
                                                     <a>
                                                         <div className="width-100 relative-wrapper cursor-pointer" style={{ height: 200 }}>
                                                             <img src={_.get(v, ['clubAvatar']) || imageNotFound} className="fill-parent absolute-center img-cover" ></img>
-                                                            <div className="fill-parent background-black-opacity-50 flex-items-align-center flex-justify-center padding-md absolute-center stack-element-opacity-100">
-                                                                <span className='d-inline-block white h6 text-truncate-threeline' >
-                                                                    {_.get(v, ['clubName']) || ''}
-                                                                </span>
-                                                            </div>
                                                         </div>
                                                     </a>
                                                 </Link>
@@ -54,11 +49,6 @@ const AllClubBox = (props) => {
                                                 <a>
                                                     <div className="width-100 relative-wrapper cursor-pointer" style={{ height: 200 }}>
                                                         <img src={_.get(v, ['clubAvatar']) || imageNotFound} className="fill-parent absolute-center img-cover" ></img>
-                                                        <div className="fill-parent background-black-opacity-50 flex-items-align-center flex-justify-center padding-md absolute-center stack-element-opacity-100">
-                                                            <span className='d-inline-block white h6 text-truncate-threeline' >
-                                                                {_.get(v, ['clubName']) || ''}
-                                                            </span>
-                                                        </div>
                                                     </div>
                                                 </a>
                                             </Link>

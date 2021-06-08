@@ -1,4 +1,4 @@
-import { Avatar, Button, Col, Form, Input, message, Modal, Row, Upload } from 'antd';
+import { Avatar, Button, Col, Drawer, Form, Icon, Input, message, Modal, Radio, Row, Select, Switch, Tooltip, Upload } from 'antd';
 import axios from 'axios';
 import _ from 'lodash';
 import { withRouter } from 'next/dist/client/router';
@@ -11,6 +11,7 @@ import { setUser } from '../../../../redux/actions/user-actions';
 import client from '../../../../feathers';
 import UserAvatar from '../../../general/UserAvatar';
 import { getUserName } from '../../../../common-function';
+import { clubPrivateIcon, clubPublicIcon } from '../../../../icon';
 const { TextArea } = Input;
 
 
@@ -137,7 +138,10 @@ const WriteClubModal = (props) => {
                     }
                 ).then((res) => {
                     let fileList = _.get(res, ['data', 'result'])
+
                     if (!editMode) {
+                        values.nonMemberAccessibilitySettings = values.nonMemberAccessibilitySettings || { autoApproval: false, socialInteraction: false, };
+                        values.nonMemberAccessibilitySettings.visible = values.clubType == 'public';
                         createClub({ ...values, clubAvatar: _.get(fileList, [0, 'url']) })
                     } else {
                         updateClub(_.get(club, ['_id']), { ...values, clubAvatar: _.get(fileList, [0, 'url']) })
@@ -214,7 +218,6 @@ const WriteClubModal = (props) => {
                         .catch((err) => {
                             setIsLoading(false);
                             message.error("Unable to create club. T.T")
-
                         })
                 }).catch(err => {
                     setIsLoading(false);
@@ -224,18 +227,21 @@ const WriteClubModal = (props) => {
     }
     return (
         <React.Fragment>
-            <Modal
+            <Drawer
+                className="header-no-padding body-no-padding"
+                title={
+                    <div className="flex-justify-space-between flex-items-align-center padding-y-sm background-ccar-button-yellow">
+                        <Button type="link" className="black headline" onClick={(e) => { closeModal() }}><Icon type="left" /> Back </Button>
+                    </div>}
                 visible={visible}
-                footer={null}
-                centered
+                onClose={(e) => { closeModal() }}
                 maskClosable={false}
-                onCancel={() => {
-                    closeModal();
-                }}
-                width={700}
-                bodyStyle={{ backgroundColor: 'white' }}
+                mask
+                width="100%"
+                style={{ zIndex : 1003 }}
+                closable={false}
             >
-                <Form layout="vertical">
+                <Form layout="vertical" className="padding-x-md padding-y-xs">
                     <Row>
                         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                             <div className="flex-justify-space-between flex-items-align-start">
@@ -243,30 +249,24 @@ const WriteClubModal = (props) => {
                                     <div className="flex-justify-start flex-items-align-center">
                                         <UserAvatar data={_.get(props.user, ['info', 'user'])} size={50} className="margin-right-md" />
                                         <span className='d-inline-block' >
-                                            <div className="headline text-truncate black">
+                                            <div className="small-text text-truncate black">
                                                 {getUserName(_.get(props.user, ['info', 'user']), 'fullName') || ''}
                                             </div>
-                                            <div className="caption text-truncate font-weight-light">
+                                            <div className="small-text text-truncate font-weight-light">
                                                 Admin
-                                    </div>
+                                            </div>
                                         </span>
                                     </div>
                                 </span>
-
                                 <span className='d-inline-block' >
-
                                     <div style={{ 'position': 'relative', textAlign: 'center' }} className="margin-md">
-
                                         <Upload {...props} showUploadList={false} accept="image/*" onChange={(v) => { handlePreview(v.file); setUploadImage(v.file) }} multiple={false}>
-                                            <Avatar size={50} src={uploadImagePreview} className='cursor-pointer'></Avatar>
-
+                                            <Avatar size={40} src={uploadImagePreview} className='cursor-pointer'></Avatar>
                                             <Avatar size={30} src={profileImage} style={{ 'position': 'absolute', top: 0, bottom: 0, right: 0, left: 0, margin: 'auto' }} className="padding-xs cursor-pointer" />
-
                                         </Upload>
                                     </div>
 
-                                    <div style={{ textAlign: 'center' }}>
-
+                                    <div style={{ textAlign: 'center', fontSize : '0.5rem' }}>
                                         <h5 className="font-weight-thin">File size: Max 1MB</h5>
                                         <h5 className="font-weight-thin">File Extension: JPEG, PNG</h5>
                                     </div>
@@ -295,9 +295,130 @@ const WriteClubModal = (props) => {
                                 })(<TextArea rows={4} placeholder="Please enter your bio (maximum 1000 characters)" maxLength={1000} />)}
                             </Form.Item>
                         </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="headline margin-bottom-sm">
+                                Privacy
+                            </div>
+                            <Form.Item style={{ margin: 0 }} >
+                                {getFieldDecorator('clubType', {
+                                    initialValue: _.get(props.data, ['clubType']) || 'public',
+                                    rules: [{ required: true, message: 'Please input.' }],
+                                })(
+
+                                    <Select
+                                        placeholder="Choose privacy"
+                                        className="club-privacy-select"
+                                        size="large"
+                                        optionLabelProp="label"
+                                        dropdownMatchSelectWidth
+                                    >
+                                        <Select.Option value="public" className="padding-y-sm" label={
+                                            <div className="flex-justify-start flex-items-align-center padding-y-sm">
+                                                <img src={clubPublicIcon} style={{ width: 20, height: 20 }} className="margin-right-md" />
+                                                <span className='d-inline-block ' style={{ lineHeight: 'normal' }} >
+                                                    <div className="font-weight-bold caption no-padding" style={{ lineHeight: 'auto' }}>
+                                                        Public
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        }>
+                                            <div className="flex-justify-start flex-items-align-center padding-y-sm">
+                                                <img src={clubPublicIcon} style={{ width: 25, height: 25 }} className="margin-right-md" />
+                                                <span className='d-inline-block width-80' style={{ lineHeight: 'normal' }} >
+                                                    <div className="font-weight-bold small-text no-padding" style={{ lineHeight: 'auto' }}>
+                                                        Public
+                                                  </div>
+                                                    <div className="small-text text-overflow-break no-padding width-100 font-weight-thin grey-darken-1" style={{ whiteSpace: 'break-spaces', lineHeight: 'normal' }}>
+                                                        Anyone can see all the posts, discussions, events and member in the group.
+                                                  </div>
+                                                </span>
+                                            </div>
+                                        </Select.Option>
+                                        <Select.Option value="private" label={
+
+                                            <div className="flex-justify-start flex-items-align-center padding-y-sm">
+                                                <img src={clubPrivateIcon} style={{ width: 20, height: 20 }} className="margin-right-md" />
+                                                <span className='d-inline-block width-80' style={{ lineHeight: 'normal' }} >
+                                                    <div className="font-weight-bold caption no-padding" style={{ lineHeight: 'auto' }}>
+                                                        Private
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        }>
+
+                                            <div className="flex-justify-start flex-items-align-center padding-y-sm">
+                                                <img src={clubPrivateIcon} style={{ width: 25, height: 25 }} className="margin-right-md" />
+                                                <span className='d-inline-block width-80' style={{ lineHeight: 'normal' }} >
+                                                    <div className="font-weight-bold small-text no-padding" style={{ lineHeight: 'auto' }}>
+                                                        Private
+                                                  </div>
+                                                    <div className="small-text text-overflow-break no-padding width-100 font-weight-thin grey-darken-1" style={{ whiteSpace: 'break-spaces', lineHeight: 'normal' }}>
+                                                        Only members can see all the posts, discussions, events and member in the group.
+                                                  </div>
+                                                </span>
+                                            </div>
+                                        </Select.Option>
+                                    </Select>
+                                )}
+                            </Form.Item>
+                        </Col>
+                        {
+                            props.form.getFieldValue('clubType') == 'public' ?
+                                [
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <div className="flex-justify-space-between flex-items-align-center padding-y-md">
+                                            <span className='d-inline-block ' style={{ maxWidth: '70%' }} >
+                                                <div className="font-weight-bold headline no-padding" style={{ lineHeight: 'auto' }}>
+                                                    Like, Comment & Write Posts
+                                        </div>
+                                                <div className="small-text text-overflow-break no-padding" style={{ lineHeight: 'normal' }}>
+                                                    Anyone can like, comment & write posts in the group.
+                                        </div>
+                                            </span>
+                                            <span className='d-inline-block ' >
+                                                <Form.Item style={{ margin: 0 }} >
+                                                    {getFieldDecorator('nonMemberAccessibilitySettings.socialInteraction', {
+                                                        initialValue: _.get(props.data, ['nonMemberAccessibilitySettings', 'socialInteraction']) || false,
+                                                        rules: [{ required: true, message: 'Please input.' }],
+                                                        valuePropName: 'checked',
+                                                    })(
+                                                        <Switch size="small" />
+                                                    )}
+                                                </Form.Item>
+                                            </span>
+                                        </div>
+                                    </Col>,
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <div className="flex-justify-space-between flex-items-align-center padding-y-md">
+                                            <span className='d-inline-block ' style={{ maxWidth: '70%' }} >
+                                                <div className="font-weight-bold headline no-padding" style={{ lineHeight: 'auto' }}>
+                                                    Automatic Member Approvals
+                                    </div>
+                                                <div className="small-text text-overflow-break no-padding" style={{ lineHeight: 'normal' }}>
+                                                    Anyone can join the group instantly without admin approval
+                                    </div>
+                                            </span>
+                                            <span className='d-inline-block ' >
+                                                <Form.Item style={{ margin: 0 }} >
+                                                    {getFieldDecorator('nonMemberAccessibilitySettings.autoApproval', {
+                                                        initialValue: _.get(props.data, ['nonMemberAccessibilitySettings', 'autoApproval']) || false,
+                                                        rules: [{ required: true, message: 'Please input.' }],
+                                                        valuePropName: 'checked',
+                                                    })(
+                                                        <Switch size="small" />
+                                                    )}
+                                                </Form.Item>
+                                            </span>
+                                        </div>
+                                    </Col>
+                                ]
+                                :
+                                null
+                        }
+
 
                         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <div className="width-100">
+                            <div className="width-100 margin-top-md">
                                 <Button block disabled={isLoading} className=" background-ccar-button-yellow" onClick={(e) => { handleSubmit() }}>Submit</Button>
                             </div>
                         </Col>
@@ -316,7 +437,7 @@ const WriteClubModal = (props) => {
 
                     </Row>
                 </Form>
-            </Modal>
+            </Drawer>
 
             <ClubInviteModal
                 visible={inviteVisible}

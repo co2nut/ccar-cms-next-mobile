@@ -126,59 +126,29 @@ const SocialClubPage = (props) => {
     return (
         <React.Fragment>
             <LayoutV2 searchTypes={carFreakGlobalSearch} enterSearchCarFreaks scrollRange={document.body.scrollHeight * 0.5} onScrolledBottom={() => {
-                if (tabKey == 'allClubs' && (clubPage * PAGE_SIZE) < clubTotal) {
+                if ((clubPage * PAGE_SIZE) < clubTotal) {
+                    console.log('here1');
                     setClubPage(clubPage + 1)
-                }
-                if (tabKey == 'myClubInvitation' && (invitePage * PAGE_SIZE) < inviteTotal) {
-                    setInvitePage(clubPage + 1)
                 }
             }}>
 
 
                 <Mobile>
-                    <CarFreakLayout hideScope hideAddPost>  
-                    <SocialClubLayout 
-                        // tabKey={tabKey} 
-                        // onCreate={(item) => {
-                        //     if (_.isPlainObject(item) && !_.isEmpty(item)) {
-                        //         setClubs([item].concat(clubs))
-                        //         }
-                        //     }}
-                        // onChange={(tabKey) => {
-                        //     setTabKey(tabKey); 
-                        // }}
+                    <CarFreakLayout hideScope hideAddPost >
+                        <SocialClubLayout
+                            onCreateClub={(club) => {
+                                if (_.isPlainObject(club) && !_.isEmpty(club)) {
+                                    setClubs(_.concat([club], clubs))
+                                    setClubTotal(clubTotal + 1)
+                                }
+                            }}
                         >
-                        <React.Fragment>
-                            <AllClubBox data={clubs} /> 
-                        </React.Fragment> 
-                        <React.Fragment>
-                            <MyClubInvitationBox data={invites} userId={_.get(props.user, ['info', 'user', '_id'])} />
-                        </React.Fragment>
-                        {/* {
-                            tabKey == 'myClub' ?
                             <React.Fragment>
-                                <MyClubBox userId={_.get(props.user, ['info', 'user', '_id'])} /> 
+                                <AllClubBox data={clubs} />
                             </React.Fragment>
-                            :
-                            tabKey == 'myClubInvitation' ?
-                                _.isArray(invites) && notEmptyLength(invites) ?
-                                <React.Fragment>
-                                    <MyClubInvitationBox data={invites} userId={_.get(props.user, ['info', 'user', '_id'])} />
-                                </React.Fragment>
-                            :
-                                !isLoading ?
-                                <div className="width-100 flex-items-align-center flex-justify-center background-white" style={{ height: 400 }}><Empty /></div>
-                                    : <div></div>
-                                    :
-                                    _.isArray(clubs) && notEmptyLength(clubs) ?
-                                <React.Fragment>
-                                    <AllClubBox data={clubs} /> 
-                                </React.Fragment> 
-                            :
-                                !isLoading ?
-                                                <div className="width-100 flex-items-align-center flex-justify-center background-white" style={{ height: 400 }}><Empty /></div>
-                                                : <div></div>
-                            } */}
+                            <React.Fragment>
+                                <MyClubInvitationBox data={invites} userId={_.get(props.user, ['info', 'user', '_id'])} />
+                            </React.Fragment>
                             <div className="width-100 flex-justify-center" style={{ height: 50 }}>
                                 {
                                     isLoading ?
