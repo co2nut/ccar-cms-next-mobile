@@ -5,6 +5,7 @@ import ReduxPersistWrapper from '../../../components/general/ReduxPersistWrapper
 import SocialClubProfilePage from '../../../components/carFreak/page/social-club-profile-page';
 import client from '../../../feathers';
 import { getClubSeoData } from '../../../common-function';
+import SocialClubProfilePage1 from '../../../components/carFreak/page/social-club-profile-page1';
 
 const searchBarRef = React.createRef();
 const Index = (props) => {
@@ -14,7 +15,8 @@ const Index = (props) => {
         <ReduxPersistWrapper cookie={props.cookie}>
             {
                 props.app.initedRedux ?
-                    <SocialClubProfilePage />
+                    // <SocialClubProfilePage /> 
+                    <SocialClubProfilePage1 />
                     :
                     null
             }
