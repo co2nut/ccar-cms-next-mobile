@@ -117,7 +117,7 @@ class LoginModal extends React.Component {
         visible={_.get(this.props, ['app', 'loginMode'])}
         onOk={() => (this.refClick.click())}
         onCancel={() => this.props.loginMode(false)}
-        style={{ borderRadius: '100px', marginLeft:'60px' }}
+        style={{ borderRadius: '100px' }}
         footer={null}
         bodyStyle={{ padding: 0 }}
         className="modal-body-background-transparent relative-wrapper"
@@ -296,7 +296,7 @@ class LoginModal extends React.Component {
 
           {/* <img src={tbhCny} style={{ width: 283, height: 400,position: 'absolute', left: -115, bottom: -30, margin : 'auto' }}></img> */}
           <div className="relative-wrapper">
-            <img src={tbh} style={{ width: 166, height: 330, position: 'absolute', left: -102, bottom: -6, margin : 'auto' }}></img>
+            {/* <img src={tbh} style={{ width: 166, height: 330, position: 'absolute', left: -102, bottom: -6, margin : 'auto' }}></img> */}
           </div>
           {/* <img src={tbh2Cny} style={{ width: 150, height: 100,position: 'absolute', left: -15, bottom: 8, margin : 'auto' }}></img> */}
           {/* <img src={cnyLionHead} style={{ width: 100, height: 150, position: 'absolute', right: -30, top: -95 }}></img> */}

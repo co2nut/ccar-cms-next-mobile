@@ -1,5 +1,5 @@
 import { Button, Col, Form, Icon, message, Row, Avatar, Modal } from 'antd';
-import _ from 'lodash';
+import _, { set } from 'lodash';
 import { withRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
@@ -9,13 +9,17 @@ import { generateDummyArrayObj } from '../../../../dummy';
 import Scrollbars from 'react-custom-scrollbars';
 import Link from 'next/link';
 import { routePaths } from '../../../../route';
+import MyClubModal from './MyClubModal';
+import MyClubInvitationModal from './MyClubInvitationModal';
 
 const SocialClubLayout = (props) => {
 
     const [tabKey, setTabKey] = useState('car-freaks');
     const [writeModalVisible, setWriteModalVisible] = useState(false);
     const [editMode, setEditMode] = useState(false);
-    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const [myClubModalVisible, setMyClubModalVisible] = useState(false);
+    const [myClubInvitationVisible, setMyClubInvitationVisible] = useState(false);
 
     useEffect(() => {
 
@@ -41,10 +45,6 @@ const SocialClubLayout = (props) => {
         }
     }
 
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
-
     const handleOk = () => {
         setIsModalVisible(false);
     };
@@ -57,12 +57,6 @@ const SocialClubLayout = (props) => {
         <React.Fragment>
             <Row gutter={[15, 15]}>
                 <Col span={24} style={{ textAlign: 'right' }} >
-                    {/* <Button size="medium" className="border-ccar-yellow" onClick={(e) => {
-                        setEditMode(false);
-                        setWriteModalVisible(true);
-                    }}>
-                        <Icon type="edit"/> Create a Club
-                    </Button> */}
                     <Button onClick={(e) => {
                         setEditMode(false);
                         setWriteModalVisible(true);
@@ -71,56 +65,21 @@ const SocialClubLayout = (props) => {
                 </Col>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                     <div className="width-100 flex-justify-end flex-items-align-center">
-                        <span className={`d-inline-block margin-right-md subtitle1 black cursor-pointer ${tabKey == 'allClubs' ? 'ccar-button-yellow border-bottom-ccar-button-yellow' : 'black border-bottom-black'}`} onClick={(e) => {
+                        {/* <span className={`d-inline-block margin-right-md subtitle1 black cursor-pointer ${tabKey == 'allClubs' ? 'ccar-button-yellow border-bottom-ccar-button-yellow' : 'black border-bottom-black'}`} onClick={(e) => {
                             handleChange('allClubs');
                         }} >
                             All
-                        </span>
+                        </span> */}
                         <span className={`d-inline-block margin-right-md subtitle1 black cursor-pointer ${tabKey == 'myClub' ? 'ccar-button-yellow border-bottom-ccar-button-yellow' : 'black border-bottom-black'}`}
-                            // onClick={(e) => {
-                            // handleChange('myClub');
-                            // if (!_.get(props.user, ['authenticated']) || !_.get(props.user, ['info', 'user', '_id'])) {
-                            //     message.error('Please Login First!')
-                            //     props.loginMode(true);
-                            // }
-                            // }} 
-                            onClick={showModal}
+                            onClick={() => {
+                                setMyClubModalVisible(true);
+                            }}
                         >
                             My Club
                         </span>
-                        <Modal
-                            visible={isModalVisible}
-                            onOk={handleOk}
-                            onCancel={handleCancel}
-                            centered
-                        >
-                            <div className="text-align-center subtitle1">
-                                My Club
-                            </div>
-                            <Scrollbars autoHeight>
-                                {
-                                    _.map(generateDummyArrayObj(10), (club) => {
-                                        return (
-                                            <Link shallow={false}  href={routePaths.socialClubDetails.to || '/'} as={typeof (routePaths.socialClubDetails.as) == 'function' ? routePaths.socialClubDetails.as(club) : '/'}>
-                                                <a>
-                                                <Col span={8}>
-                                                    <img src={club.dummyImage} style={{ width: '100px', height: 100, borderRadius: '50px' }} />
-                                                </Col>
-                                                </a>
-                                                
-                                            </Link>
-                                        )
-                                    })
-                                }
-                            </Scrollbars>
-                        </Modal>
-
-                        <span className={`d-inline-block margin-right-xs subtitle1 black cursor-pointer ${tabKey == 'myClubInvitation' ? 'ccar-button-yellow border-bottom-ccar-button-yellow' : 'black border-bottom-black'}`} onClick={(e) => {
-                            handleChange('myClubInvitation');
-                            if (!_.get(props.user, ['authenticated']) || !_.get(props.user, ['info', 'user', '_id'])) {
-                                message.error('Please Login First!')
-                                props.loginMode(true);
-                            }
+                        <span className={`d-inline-block margin-right-xs subtitle1 black cursor-pointer ${tabKey == 'myClubInvitation' ? 'ccar-button-yellow border-bottom-ccar-button-yellow' : 'black border-bottom-black'}`} 
+                        onClick={(e) => {
+                            setMyClubInvitationVisible(true);
                         }} >
                             My Club Invitation
                         </span>
@@ -131,6 +90,20 @@ const SocialClubLayout = (props) => {
                 </Col>
             </Row>
 
+            <MyClubModal
+                visible={myClubModalVisible}
+                onCancel={() => {
+                    setMyClubModalVisible(false);
+                }}
+            ></MyClubModal>
+
+            <MyClubInvitationModal
+                visible={myClubInvitationVisible}
+                onCancel={() => {
+                    setMyClubInvitationVisible(false);
+                }}
+            ></MyClubInvitationModal>
+
             <WriteClubModal
                 visible={writeModalVisible}
                 onCancel={() => {
@@ -139,8 +112,8 @@ const SocialClubLayout = (props) => {
                 editMode={editMode}
                 onCreate={(res) => {
                     if (_.isPlainObject(res) && !_.isEmpty(res)) {
-                        if (props.onCreate) {
-                            props.onCreate(res);
+                        if (props.onCreateClub) {
+                            props.onCreateClub(res);
                         }
                     }
                 }}

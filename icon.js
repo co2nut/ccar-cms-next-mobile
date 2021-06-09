@@ -21,6 +21,8 @@ export const pinIcon = '/assets/car-freak/pin.png';
 export const createCarFreakIcon = '/assets/car-freak/CarFreaks.png';
 export const createSocialBoardIcon = '/assets/car-freak/social-board.png';
 export const carFreakReplyIcon = '/assets/car-freak/reply.png';
+export const clubPrivateIcon = '/assets/car-freak/private@3x.png';
+export const clubPublicIcon = '/assets/car-freak/public@3x.png';
 
 //Car Market
 export const carspecNotFoundImage = '/coming-soon.png'

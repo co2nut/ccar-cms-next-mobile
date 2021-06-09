@@ -83,8 +83,8 @@ const WrappedApp = ({ Component, pageProps, router }) => {
       />
       <Head>
         <link rel="icon" href={ccarLogo2 || "https://yt3.ggpht.com/a/AATXAJyACAnnk58_qfVZqvjaTkavsxOb8dSYGeciv4a7=s88-c-k-c0x00ffffff-no-rj"} />
-        <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;700&family=Ubuntu:ital@1&display=swap" rel="stylesheet" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;700&family=Ubuntu:ital@1&display=swap" rel="stylesheet" /> 
+       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
       </Head>
       <Component {...pageProps} key={router.route} />
     </React.Fragment>
