@@ -163,45 +163,45 @@ const ClubMemberBox = (props) => {
         if (_.isPlainObject(join) && !_.isEmpty(join)) {
             return (
                 <div className="flex-justify-space-between flex-items-align-center margin-bottom-md">
-                    <span className='flex-items-align-center' style={{ maxWidth: '70%' }} >
+                    <span className='flex-items-align-center' style={{ maxWidth: '80%' }} >
                         <span className='d-inline-block margin-right-md' >
-                            <UserAvatar data={_.get(join, ['userId'])} redirectProfile size={70} />
+                            <UserAvatar data={_.get(join, ['userId'])} redirectProfile size={50} />
                         </span>
                         <span className='d-inline-block' >
-                            <div className="subtitle1 font-weight-normal text-truncate">
+                            <div className="font-weight-normal text-truncate">
                                 {getUserName(_.get(join, ['userId']), 'fullName')}
                             </div>
-                            <div className="headline text-truncate grey-darken-2 capitalize">
+                            <div className="text-truncate grey-darken-2 capitalize">
                                 {_.get(join, ['role']) || ''}
                             </div>
-                            <div className="headline text-truncate grey-darken-2">
+                            <div className="text-truncate-twoline grey-darken-2">
                                 Joined about {moment(_.get(join, ['joinedAt'])).fromNow()}
                             </div>
                         </span>
                     </span>
-                    <span className='d-inline-block ' >
-                        <FollowButton type="user" userId={_.get(join, ['userId', '_id'])} followerId={_.get(props.user, ['info', 'user', '_id'])} className="margin-right-md"></FollowButton>
+                    <span className='d-inline-block' style={{textAlign:'right'}}>
+                        <FollowButton type="user" userId={_.get(join, ['userId', '_id'])} followerId={_.get(props.user, ['info', 'user', '_id'])}></FollowButton>
                         {
                             _.get(props.user, ['info', 'user', '_id']) != _.get(join, ['userId', '_id']) && viewType == clubProfileViewTypes[0] ?
                                 _.get(join, ['status']) == 'removed' ?
-                                    <span className="d-inline-block red margin-right-md" style={{ padding: '0px 15px' }} >
+                                    <span className="d-inline-block red margin-top-sm" style={{ padding: '0px 15px' }} >
                                         Removed
                                     </span>
                                     :
                                     <Popconfirm
-                                        title="Are you sure to remove this member?"
+                                        title="Are you sure to remove this member?" 
                                         onConfirm={(e) => {
                                             handleRemove(join);
                                         }}
                                         okText="Yes"
                                         cancelText="No"
                                     >
-                                        <Button className="background-red border-red white margin-right-md">Remove</Button>
+                                        <Button className="background-red border-red white margin-top-sm">Remove</Button>
                                     </Popconfirm>
                                 :
                                 _.get(props.user, ['info', 'user', '_id']) == _.get(join, ['userId', '_id']) && viewType != clubProfileViewTypes[0] ?
                                     _.get(join, ['status']) == 'removed' ?
-                                        <span className="d-inline-block red margin-right-md" style={{ padding: '0px 15px' }} >
+                                        <span className="d-inline-block red margin-top-sm" style={{ padding: '0px 15px' }} >
                                             Left
                                         </span>
                                         :
@@ -230,7 +230,7 @@ const ClubMemberBox = (props) => {
     return (
         <React.Fragment>
             <ClubBackdrop viewType={viewType}>
-                <div className={`thin-border round-border padding-md ${props.className || ''}`} style={{ ...props.style }}>
+                <div className={`thin-border round-border padding-sm ${props.className || ''}`} style={{ ...props.style }}>
                     <Row gutter={[10, 10]}>
                         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                             <div className="font-weight-bold subtitle1">
@@ -246,7 +246,7 @@ const ClubMemberBox = (props) => {
                                 }
                             </ScrollLoadWrapper>
                         </Col>
-                        <Divider />
+                        <Divider  style={{margin:0}}/>
                         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                             <div className="font-weight-bold subtitle1">
                                 Members
@@ -264,14 +264,14 @@ const ClubMemberBox = (props) => {
                                     })
                                 }
                             </ScrollLoadWrapper>
-                            <div className="flex-justify-center flex-items-align-center" style={{ height: 30 }}>
+                            {/* <div className="flex-justify-center flex-items-align-center" style={{ height: 30 }}>
                                 {
                                     memberIsLoading ?
                                         <Icon type="loading" style={{ fontSize: 30 }} />
                                         :
                                         null
                                 }
-                            </div>
+                            </div> */}
                         </Col>
 
                     </Row>

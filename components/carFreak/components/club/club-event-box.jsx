@@ -11,6 +11,7 @@ import WindowScrollLoadWrapper from '../../../general/WindowScrollLoadWrapper';
 import { arrayLengthCount, isValidNumber } from '../../../../common-function';
 import { validateViewType, clubProfileViewTypes } from '../../config';
 import ClubBackdrop from './club-backdrop';
+import EventDetailsBoxUi from './event-details-box-ui';
 
 
 const PAGE_SIZE = 10;
@@ -123,7 +124,7 @@ const ClubEventBox = (props) => {
             <ClubBackdrop viewType={viewType}>
                 <div className={`thin-border round-border padding-md ${props.className || ''}`} style={{ ...props.style }}>
                     <Row>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                        {/* <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                             <div className="flex-justify-space-between flex-items-align-center">
                                 <span className='d-inline-block h7' >
                                     Upcoming Event
@@ -137,10 +138,10 @@ const ClubEventBox = (props) => {
                                         null
                                 }
                             </div>
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                        </Col> */}
+                        {/* <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                             <Divider type="horizontal" ></Divider>
-                        </Col>
+                        </Col> */}
                         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                             <WindowScrollLoadWrapper scrollRange={document.body.scrollHeight * 0.5} onScrolledBottom={() => {
                                 if (arrayLengthCount(events) < eventTotal) {
@@ -153,7 +154,7 @@ const ClubEventBox = (props) => {
                                             return (
                                                 <React.Fragment>
                                                     <div className="width-100">
-                                                        <EventDetailsBox data={event}
+                                                        <EventDetailsBoxUi data={event} 
                                                             hideDescription
                                                             manualControl
                                                             onEditClick={(data) => {
