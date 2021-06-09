@@ -1,5 +1,5 @@
 
-import { Card, Col, Empty, Form, Row, Dropdown, Menu, Avatar, Icon} from 'antd';
+import { Card, Col, Empty, Form, Row, Dropdown, Menu, Avatar, Icon, Modal} from 'antd';
 import _ from 'lodash';
 import { withRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
@@ -24,6 +24,7 @@ const MyClubBox = (props) => {
     const [myJoinedClubs, setMyJoinedClubs] = useState([])
     const [myJoinedClubTotal, setMyJoinedClubTotal] = useState(0);
     const [myJoinedClubPage, setMyJoinedClubPage] = useState(1);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
 
     useEffect(() => {

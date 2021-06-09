@@ -456,3 +456,10 @@ video {
     color: #000000;
 }
 
+.write-post .ant-card-head, .ant-modal-header{
+    background: #ffffff !important;
+}
+
+.write-post .ant-modal-title{
+    text-align: center;
+}
