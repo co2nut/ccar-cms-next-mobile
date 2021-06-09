@@ -1,4 +1,4 @@
-import { Button, Col, Empty, Form, Icon, message, Row, Input, Divider } from 'antd';
+import { Button, Col, Empty, Form, Icon, message, Row, Input, Divider, Modal } from 'antd';
 import _ from 'lodash';
 import { withRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
@@ -18,79 +18,63 @@ import { generateDummyObj } from '../../../../dummy';
 const PAGE_SIZE = 10;
 const BOX_HEIGHT = 300;
 
-const tabs = [
-    {
-        text: 'All',
-        value: 'all',
-    },
 
-    {
-        text: 'CarFreaks',
-        value: 'carfreaks',
-    },
-
-    {
-        text: 'Social Board',
-        value: 'socialboard',
-    }
-]
 const ClubDiscussionBoxUi = (props) => {
 
-    const [posts, setPosts] = useState([]);
-    const [postTotal, setPostTotal] = useState(0);
-    const [postPage, setPostPage] = useState(1);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
-    const [clubId, setClubId] = useState('');
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
 
-    const [isLoading, setIsLoading] = useState(false);
+    const handleOk = () => {
+        setIsModalVisible(false);
+    };
 
-    const [tabKey, setTabKey] = useState('all');
-
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
 
     return (
         <React.Fragment>
             <div className="thin-border relative-wrapper width-100 padding-md">
-                <div style={{display:'inline-block'}} className='width-30 height-100'>
+                <div style={{display:'inline-block'}} className='width-20 height-100'>
                     <Row gutter={[0, 20]} className="width-100">
                         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <div className="width-100">
-                                <img src={generateDummyObj().dummyImage} style={{ width: '70px', height: 70, borderRadius: '50px' }}/>
-                            </div>
+                            <img src={generateDummyObj().dummyImage} style={{ width: '50px', height: 50, borderRadius: '50px' }}/>
                         </Col>
                     </Row>
                 </div>
-                <div style={{display:'inline-block', verticalAlign:'top'}} className='width-70 height-100 margin-top-md'>
-                    <Row gutter={[0, 20]} className="width-100">
+                <div style={{display:'inline-block', verticalAlign:'top'}} className='width-70 height-100 margin-top-md padding-left-md'>
+                    <Row gutter={[0, 20]} className="width-100" onClick={showModal}>
                         <Col xs={24} sm={24} md={24} lg={24} xl={24} style={{padding:0}}>
-                                <p style={{marginBottom:0}}> Topic </p>
-                                <Divider style={{margin:5}}/>
                                 <p style={{marginBottom:0}}> What's on your mind? </p>
                         </Col>
                      </Row>
                 </div>
                 <Divider style={{margin:0}}/>
-                    <Row>
-                        <Col span={11} style={{textAlign:'center'}}>
-                            <img src="https://img.icons8.com/doodle/30/000000/stack-of-photos--v1.png"/> Photo 
-                        </Col>
-                        <Divider type="vertical" style={{height:'20px', marginTop:'5px'}}/>
-                        <Col span={11} style={{textAlign:'center'}}>
-                            <img src="https://img.icons8.com/office/18/000000/employee-card.png"/> Tag People
-                        </Col>
-                    </Row>
+                <div style={{textAlign:'center', marginTop:'5px'}}>
+                    <span style={{marginRight:'10px'}}>
+                        Tag People <img src="https://img.icons8.com/material-sharp/20/ffcc32/conference-call.png" style={{marginLeft:'5px'}}/>
+                    </span>
+                    <Divider type="vertical" style={{height:'18px'}}/>
+                    <span style={{marginLeft:'20px'}}>
+                        Event <img src="https://img.icons8.com/android/15/ffcc32/tear-off-calendar.png" style={{marginLeft:'5px'}}/>
+                    </span>
+                </div>
             </div>
 
-            <div className="thin-border margin-top-md padding-sm">
-                <div style={{display:'inline-block'}} className='width-30'>
+            <div className="thin-border margin-top-md padding-md">
+                <div style={{display:'inline-block'}} className='width-20 '>
                     <Row className="width-100">
                         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                             <div className="width-100">
-                                <img src={generateDummyObj().dummyImage} style={{ width: '60px', height: 60, borderRadius: '50px' }}/>
+                                <img src={generateDummyObj().dummyImage} style={{ width: '50px', height: 50, borderRadius: '50px' }}/>
                             </div>
                         </Col>
                     </Row>
                 </div>
-                <div  style={{display:'inline-block', verticalAlign:'top'}} className='width-50 padding-top-md'>
+                <div  style={{display:'inline-block', verticalAlign:'top'}} className='width-60'>
                     <Row className="width-100">
                         <Col xs={24} sm={24} md={24} lg={24} xl={24} style={{padding:0}}>
                             <p style={{marginBottom:0}}>Club's Name in Area</p>
@@ -99,13 +83,59 @@ const ClubDiscussionBoxUi = (props) => {
                      </Row>
                 </div>
                 <div style={{display:'inline-block', verticalAlign:'top', textAlign:'right'}} className='width-20'>
-                    <img src="https://img.icons8.com/android/24/000000/more.png"/>
+                    <Icon type="more" />
                 </div>
 
                 <div>
-                    <img src={generateDummyObj().dummyImage} style={{ width: '100%', height: 200}}/>
+                    <img src={generateDummyObj().dummyImage} style={{ width: '100%', height: 200}}/> 
+                </div>
+
+                <div className="fill-parent flex-justify-start flex-items-align-center margin-top-md">
+                    <span className="d-inline-block margin-right-md">
+                        <div className="flex-items-align-center">
+                            <img src="/assets/car-freak/carfreaks-like.png" style={{width:'30px', height:'20px'}} className="margin-right-sm"/> 1 Like
+                        </div>
+                    </span>
+                    <span className="d-inline-block margin-right-md">
+                        <div className="flex-items-align-center">
+                            0 Reply
+                        </div>
+                    </span>
                 </div>
             </div>
+
+            <Modal
+                visible={isModalVisible} 
+                onOk={handleOk} 
+                onCancel={handleCancel}
+                title="Write a Post"
+                centered
+                footer={false}
+                className="write-post"
+            >
+                <div style={{display:'inline-block'}} className='width-20 height-100'>
+                    <Row gutter={[0, 20]} className="width-100">
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <img src={generateDummyObj().dummyImage} style={{ width: '50px', height: 50, borderRadius: '50px' }}/>
+                        </Col>
+                    </Row>
+                </div>
+                <div style={{display:'inline-block', verticalAlign:'top'}} className='width-70 height-100 margin-top-md padding-left-md'>
+                    <Row gutter={[0, 20]} className="width-100">
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24} style={{padding:0}}>
+                                <p style={{marginBottom:0}}> Name </p>
+                        </Col>
+                     </Row>
+                </div>
+
+                <Input placeholder="Topic" className="margin-bottom-sm" />
+                <Input placeholder="Content (max 1000)" className="margin-bottom-sm" />
+
+                <Button style={{width:'100%'}}> Tag People </Button>
+
+                <Button style={{background:'#ffcc32'}}> Post </Button>
+
+            </Modal>
         </React.Fragment>
     );
 }
