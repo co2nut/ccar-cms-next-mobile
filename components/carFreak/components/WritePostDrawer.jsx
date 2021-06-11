@@ -261,6 +261,7 @@ const WritePostDrawer = (props) => {
                             }
                             if (props.onCreatePost) {
                                 res1.userId = res.user;
+                                console.log(res1);
                                 props.onCreatePost(res1);
                             }
                             setConfirmLoading(false)
@@ -389,7 +390,7 @@ const WritePostDrawer = (props) => {
                                                     <div className='containerCarAdsImgBackGround'>
                                                         <img alt="header" src={item.url} />
                                                     </div>
-                                                    <span className='flex-justify-center flex-items-align-center avatar background-black-opacity-50 padding-xs' style={{ position: 'absolute', top: -10, right: -15, zIndex: 2 }} onClick={() => { handleImageRemove(item) }} >
+                                                    <span className='flex-justify-center flex-items-align-center avatar background-black-opacity-50 padding-xs' style={{ position: 'absolute', top: -10, right: -15,}} onClick={() => { handleImageRemove(item) }} >
                                                         <Icon type="close" className="white" style={{ fontSize: 15 }} />
                                                     </span>
                                                     {
@@ -404,7 +405,7 @@ const WritePostDrawer = (props) => {
                                                     <div className='containerCarAdsImgBackGround'>
                                                         <img alt="header" src={item.ObjectUrl} />
                                                     </div>
-                                                    <span className='flex-justify-center flex-items-align-center avatar background-black-opacity-50 padding-xs' style={{ position: 'absolute', top: -10, right: -15, zIndex: 2 }} onClick={() => { handleImageRemove(item) }} >
+                                                    <span className='flex-justify-center flex-items-align-center avatar background-black-opacity-50 padding-xs' style={{ position: 'absolute', top: -10, right: -15, }} onClick={() => { handleImageRemove(item) }} >
                                                         <Icon type="close" className="white" style={{ fontSize: 15 }} />
                                                     </span>
                                                     <span className='seqCount'>{idx + 1}</span>

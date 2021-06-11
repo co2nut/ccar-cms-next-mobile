@@ -155,8 +155,8 @@ const FollowButton = (props) => {
                                 props.followingButton ?
                                     props.followingButton()
                                     :
-                                    <span>
-                                        <Icon type="check" style={{ color: '#F57F17' }} className="margin-right-xs" />
+                                    <span className="small-text">
+                                        <Icon type="check" style={{ color: '#F57F17' }} className="margin-right-xs " />
                                     Following
                                 </span>
                             }
@@ -167,7 +167,7 @@ const FollowButton = (props) => {
                                 props.followButton ?
                                     props.followButton()
                                     :
-                                    <Button>+ Follow</Button>
+                                    <Button size="small" className=" small-text">+ Follow</Button>
                             }
                         </a>
             }

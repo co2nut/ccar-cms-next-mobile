@@ -71,96 +71,98 @@ const SocialBoardCard = (props) => {
     return (
         notEmptyLength(objectRemoveEmptyValue(post)) ?
             <React.Fragment>
-                <div className={` thin-border box-shadow-heavy round-border background-white padding-md ${props.className ? props.className : ''}`} style={{ ...props.style, height: height }} onClick={(e) => {
-                    if(!document.getElementById(`like-${getObjectId(post)}`).contains(e.target)){
-                        redirectToPost(post)
-                    }
-                }}>
-                    <div className=" flex-items-align-center flex-justify-start ">
-                        <span className='d-inline-block margin-right-md' >
-                            <UserAvatar redirectProfile size={50} data={_.get(post, ['userId'])} />
-                        </span>
-                        <span className='d-inline-block width-70' >
-                            <div className="flex-justify-start flex-items-align-center caption text-truncate">
-                                <span className="black" >
-                                    {getUserName(_.get(post, ['userId']), 'freakId')}
-                                </span>
-                                {
-                                    _.get(post, ['location']) ?
-                                        <React.Fragment>
-                                            <span className="grey">
-                                                in
+                <div className="relative-wrapper">
+                    <div className={` thin-border box-shadow-heavy round-border background-white padding-md ${props.className ? props.className : ''}`} style={{ ...props.style, height: height }} onClick={(e) => {
+                        if (!document.getElementById(`like-${getObjectId(post)}`).contains(e.target)) {
+                            redirectToPost(post)
+                        }
+                    }}>
+                        <div className=" flex-items-align-center flex-justify-start ">
+                            <span className='d-inline-block margin-right-md' >
+                                <UserAvatar redirectProfile size={50} data={_.get(post, ['userId'])} />
+                            </span>
+                            <span className='d-inline-block width-70' >
+                                <div className="flex-justify-start flex-items-align-center caption text-truncate">
+                                    <span className="black" >
+                                        {getUserName(_.get(post, ['userId']), 'freakId')}
+                                    </span>
+                                    {
+                                        _.get(post, ['location']) ?
+                                            <React.Fragment>
+                                                <span className="grey">
+                                                    in
                                         </span>
-                                            <span className="black">
-                                                {`${_.get(post, ['location']) || ''}`}
-                                            </span>
-                                        </React.Fragment>
-                                        :
-                                        null
-                                }
-                            </div>
-                            <div className="flex-justify-space-between flex-items-align-center text-truncate">
-                                <span className='d-inline-block font-weight-thin small-text' >
-                                    {moment(_.get(post, ['createdAt']) || null).format('MMM Do')} | {moment(_.get(post, ['createdAt']) || null).fromNow()}
-                                </span>
-                            </div>
-                        </span>
-                    </div>
-                    <div className="margin-y-md">
-                        <ParseTag data={_.get(post, `title`)} className="font-weight-bold headline text-truncate-twoline" />
-                    </div>
-                    <div className="flex-justify-space-between flex-items-align-center">
-                        <span className='d-inline-block small-text font-weight-thin' >
-                            {getPlural('Comment', 'Comments', _.get(post, `totalReply`), true)}
-                        </span>
-                        <span className='d-inline-block ' id={`like-${getObjectId(post)}`} >
-                            <LikePostButton
-                                chatId={_.get(post, ['_id'])}
-                                likeOn="chat"
-                                postLike={postLike}
-                                onClick={(actived) => {
-                                    setTotalLike(actived ? parseInt(totalLike) + 1 : parseInt(totalLike) - 1);
-                                }}
-                                onSuccessUpdate={(liked, data) => {
-                                    if (props.onPostLikeChange) {
-                                        props.onPostLikeChange(liked, data);
+                                                <span className="black">
+                                                    {`${_.get(post, ['location']) || ''}`}
+                                                </span>
+                                            </React.Fragment>
+                                            :
+                                            null
                                     }
-                                    if (props.onUpdatePost) {
-                                        props.onUpdatePost({ ...post, totalLike: liked ? parseInt(post.totalLike) + 1 : parseInt(post.totalLike) - 1 });
+                                </div>
+                                <div className="flex-justify-space-between flex-items-align-center text-truncate">
+                                    <span className='d-inline-block font-weight-thin small-text' >
+                                        {moment(_.get(post, ['createdAt']) || null).format('MMM Do')} | {moment(_.get(post, ['createdAt']) || null).fromNow()}
+                                    </span>
+                                </div>
+                            </span>
+                        </div>
+                        <div className="margin-y-md">
+                            <ParseTag data={_.get(post, `title`)} className="font-weight-bold headline text-truncate-twoline" />
+                        </div>
+                        <div className="flex-justify-space-between flex-items-align-center">
+                            <span className='d-inline-block small-text font-weight-thin' >
+                                {getPlural('Comment', 'Comments', _.get(post, `totalReply`), true)}
+                            </span>
+                            <span className='d-inline-block ' id={`like-${getObjectId(post)}`} >
+                                <LikePostButton
+                                    chatId={_.get(post, ['_id'])}
+                                    likeOn="chat"
+                                    postLike={postLike}
+                                    onClick={(actived) => {
+                                        setTotalLike(actived ? parseInt(totalLike) + 1 : parseInt(totalLike) - 1);
+                                    }}
+                                    onSuccessUpdate={(liked, data) => {
+                                        if (props.onPostLikeChange) {
+                                            props.onPostLikeChange(liked, data);
+                                        }
+                                        if (props.onUpdatePost) {
+                                            props.onUpdatePost({ ...post, totalLike: liked ? parseInt(post.totalLike) + 1 : parseInt(post.totalLike) - 1 });
+                                        }
+                                    }}
+                                    activeButton={
+                                        <div className="flex-items-align-center caption font-weight-thin">
+                                            <img src={carFreakLikeIcon} style={{ width: 30, height: 20 }} className="margin-right-sm cursor-pointer" />
+                                            {getPlural('Like', 'Likes', totalLike || 0, true)}
+                                        </div>
                                     }
-                                }}
-                                activeButton={
+                                    className='d-inline-block margin-right-md'>
                                     <div className="flex-items-align-center caption font-weight-thin">
-                                        <img src={carFreakLikeIcon} style={{ width: 30, height: 20 }} className="margin-right-sm cursor-pointer" />
+                                        <img src={carFreakLikeGreyIcon} style={{ width: 30, height: 20 }} className="margin-right-sm cursor-pointer" />
                                         {getPlural('Like', 'Likes', totalLike || 0, true)}
                                     </div>
-                                }
-                                className='d-inline-block margin-right-md'>
-                                <div className="flex-items-align-center caption font-weight-thin">
-                                    <img src={carFreakLikeGreyIcon} style={{ width: 30, height: 20 }} className="margin-right-sm cursor-pointer" />
-                                    {getPlural('Like', 'Likes', totalLike || 0, true)}
-                                </div>
-                            </LikePostButton>
-                    
-                        </span>
+                                </LikePostButton>
+
+                            </span>
+                        </div>
                     </div>
+                    <span className='d-inline-block' style={{ position: 'absolute', top: 30, right: 20 }} >
+                        <PostMenuModal post={post}
+                            onEditPostClick={() => {
+                                if (props.onEditClick) {
+                                    props.onEditClick(post)
+                                }
+                            }}
+                            onRemovePostClick={() => {
+                                if (props.onRemoveClick) {
+                                    props.onRemoveClick(post);
+                                }
+                            }}
+                        >
+                            <Icon type="more" className="black" style={{ fontSize: 20 }} />
+                        </PostMenuModal>
+                    </span>
                 </div>
-                <span className='d-inline-block' style={{ position: 'absolute', top: 30, right: 20 }} >
-                    <PostMenuModal post={post}
-                        onEditPostClick={() => {
-                            if (props.onEditClick) {
-                                props.onEditClick(post)
-                            }
-                        }} 
-                        onRemovePostClick={() => {
-                            if (props.onRemoveClick) {
-                                props.onRemoveClick(post);
-                            }
-                        }}
-                    >
-                        <Icon type="more" className="black" style={{ fontSize: 20 }} />
-                    </PostMenuModal>
-                </span>
             </React.Fragment>
             :
             null

@@ -97,7 +97,7 @@ const ClubApprovalButton = (props) => {
                         props.approvedButton()
                         :
                         <span className="cursor-pointer cursor-pointer">
-                            <Icon type="check" style={{ color: '#F57F17' }} className="margin-right-xs" />
+                            <Icon type="check" style={{ color: '#F57F17' }} className="margin-right-xs small-text" />
                                     Approved
                                 </span>
                     :
@@ -107,7 +107,7 @@ const ClubApprovalButton = (props) => {
                                 props.pendingButton ?
                                     props.pendingButton()
                                     :
-                                    <Button className=" background-ccar-button-yellow border-ccar-button-yellow black">Approve</Button>
+                                    <Button size="small" className=" background-ccar-button-yellow border-ccar-button-yellow black small-text">Approve</Button>
                             }
                         </span>
                         :

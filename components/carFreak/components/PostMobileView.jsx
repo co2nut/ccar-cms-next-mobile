@@ -82,12 +82,12 @@ const PostMobileView = (props) => {
     return (
         notEmptyLength(objectRemoveEmptyValue(props.data)) ?
             <React.Fragment>
-                <div style={{ maxHeight: defaultHeight }}>
+                <div style={{ maxHeight: defaultHeight }} className={`${props.className || ''}`}>
                     <div className="flex-justify-space-between flex-items-align-center padding-y-sm" style={{ maxHeight: defaultHeight * 0.15 }}>
                         <span className='flex-items-align-center' >
                             <span className='d-inline-block margin-x-md' >
                                 {
-                                    _.get(post, ['parentType']) == 'club' || _.get(post, ['parentType']) == 'clubEvent' ?
+                                    (_.get(post, ['parentType']) == 'club' || _.get(post, ['parentType']) == 'clubEvent') && props.showClub ?
                                         <ClubAvatar redirectProfile
                                             data={_.get(post, ['clubId'])}
                                             size={40}
@@ -102,10 +102,15 @@ const PostMobileView = (props) => {
                             </span>
                             <span className='d-inline-block ' >
                                 <div className="caption font-weight-bold">
-                                    {getUserName(_.get(post, `userId`), 'freakId')}
+                                    {
+                                        (_.get(post, ['parentType']) == 'club' || _.get(post, ['parentType']) == 'clubEvent') && props.showClub ?
+                                            _.get(post, `clubId.clubName`) || 'CCAR Club'
+                                            :
+                                            getUserName(_.get(post, `userId`), 'freakId')
+                                    }
                                 </div>
                                 <div className="small-text grey">
-                                    {moment(_.get(post , `createdAt`)).fromNow()}
+                                    {moment(_.get(post, `createdAt`)).fromNow()}
                                 </div>
                             </span>
                         </span>
@@ -165,7 +170,7 @@ const PostMobileView = (props) => {
                     <div className="padding-sm" style={{ maxHeight: defaultHeight * 0.2 }} onClick={(e) => {
                         redirectToPost(post)
                     }} >
-                        <ParseTag data={`${_.get(post, ['title']) || ''}`} className="font-weight-bold headline width-100 pre-wrap text-truncate-twoline" expandable={false} />
+                        <ParseTag data={`${_.get(post, ['title']) || ''}`} className="font-weight-bold caption width-100 pre-wrap text-truncate-twoline" expandable={false} />
                     </div>
                     <div className="padding-sm flex-justify-space-between flex-items-align-center" style={{ maxHeight: defaultHeight * 0.1 }}>
                         <span className='flex-items-align-center' >
@@ -186,13 +191,13 @@ const PostMobileView = (props) => {
                                 }}
                                 activeButton={
                                     <div className="flex-items-align-center caption font-weight-thin">
-                                        <img src={carFreakLikeIcon} style={{ width: 30, height: 20 }} className="margin-right-sm cursor-pointer" />
+                                        <img src={carFreakLikeIcon} style={{ width: 30, height: 20 }} className="margin-right-sm cursor-pointer small-text" />
                                         {getPlural('Like', 'Likes', totalLike || 0, true)}
                                     </div>
                                 }
                                 className='d-inline-block margin-right-md'>
                                 <div className="flex-items-align-center caption font-weight-thin">
-                                    <img src={carFreakLikeGreyIcon} style={{ width: 30, height: 20 }} className="margin-right-sm cursor-pointer" />
+                                    <img src={carFreakLikeGreyIcon} style={{ width: 30, height: 20 }} className="margin-right-sm cursor-pointer small-text" />
                                     {getPlural('Like', 'Likes', totalLike || 0, true)}
                                 </div>
                             </LikePostButton>

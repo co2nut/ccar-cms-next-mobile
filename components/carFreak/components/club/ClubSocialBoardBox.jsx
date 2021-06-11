@@ -1,10 +1,10 @@
-import { Button, Col, Empty, Form, Icon, message, Row } from 'antd';
+import { Button, Col, Divider, Empty, Form, Icon, message, Row } from 'antd';
 import _ from 'lodash';
 import { withRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import client from '../../../../feathers';
-import { validateViewType } from '../../config';
+import { clubProfileViewTypes, isNotAllowedSocialInteraction, validateViewType } from '../../config';
 import EventPost from '../event-post';
 import PostCollapse from '../post-collapse';
 import WriteEventModal from '../write-event-modal';
@@ -12,8 +12,15 @@ import WritePostModal1 from '../write-post-modal-1';
 import ClubBackdrop from './club-backdrop';
 import { loading } from '../../../../redux/actions/app-actions';
 import WindowScrollLoadWrapper from '../../../general/WindowScrollLoadWrapper';
-import { arrayLengthCount } from '../../../../common-function';
+import { arrayLengthCount, getObjectId } from '../../../../common-function';
 import { useMediaQuery } from 'react-responsive';
+import ClubJoinModal from './ClubJoinModal';
+import UserAvatar from '../../../general/UserAvatar';
+import { eventIcon, tagPeopleIcon } from '../../../../icon';
+import SocialBoardCard from '../social-board-card';
+import WritePostDrawer from '../WritePostDrawer';
+import PostDrawer from '../PostDrawer';
+import { routePaths } from '../../../../route';
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 992 })
@@ -36,20 +43,21 @@ const Default = ({ children }) => {
 const PAGE_SIZE = 10;
 const BOX_HEIGHT = 300;
 
-const ClubDiscussionBox = (props) => {
+const ClubSocialBoardBox = (props) => {
 
     const [posts, setPosts] = useState([]);
     const [postTotal, setPostTotal] = useState(0);
     const [postPage, setPostPage] = useState(1);
 
-    const [clubId, setClubId] = useState('');
+    const [club, setClub] = useState({});
 
     const [isLoading, setIsLoading] = useState(false);
 
+    const [joinClubModalVisible, setJoinClubModalVisible] = useState(false);
 
-    const [writePostVisible, setWritePostVisible] = useState(false);
-    const [writePostEditMode, setWritePostEditMode] = useState(false);
     const [selectedPost, setSelectedPost] = useState({});
+    const [writePostChatType, setWritePostChatType] = useState('socialboard');
+    const [writeModalVisible, setWriteModalVisible] = useState(false);
 
     const [writeEventVisible, setWriteEventVisible] = useState(false);
     const [eventEditMode, setEventEditMode] = useState(false);
@@ -58,6 +66,9 @@ const ClubDiscussionBox = (props) => {
     const [viewType, setViewType] = useState('non-member');
 
     const [userChatLikes, setUserChatLikes] = useState([]);
+    const [chatInfo, setChatInfo] = useState({});
+    const [visible, setVisible] = useState(false);
+    const [editMode, setEditMode] = useState('');
 
     useEffect(() => {
         setViewType(validateViewType(props.viewType))
@@ -69,8 +80,8 @@ const ClubDiscussionBox = (props) => {
     }, [props.user.authenticated])
 
     useEffect(() => {
-        setClubId(props.clubId || '')
-    }, [props.clubId])
+        setClub(_.isPlainObject(props.club) && !_.isEmpty(props.club) ? props.club : {});
+    }, [props.club])
 
     useEffect(() => {
         setPosts([]);
@@ -80,7 +91,7 @@ const ClubDiscussionBox = (props) => {
         } else {
             setPostPage(1);
         }
-    }, [clubId])
+    }, [club])
 
     useEffect(() => {
         getPosts((postPage - 1) * PAGE_SIZE);
@@ -107,13 +118,13 @@ const ClubDiscussionBox = (props) => {
     function getPosts(skip) {
         skip = skip || 0
 
-        if (clubId) {
+        if (_.get(club, `_id`)) {
             let query = {
                 chatType: 'socialboard',
                 parentType: {
                     $in: ['club', 'clubEvent']
                 },
-                clubId: clubId,
+                clubId: _.get(club, `_id`),
                 $populate: [
                     {
                         path: 'userId',
@@ -182,31 +193,49 @@ const ClubDiscussionBox = (props) => {
         }
     }
 
-    function confirmDeleteEvent(v) {
-        if (v._id && _.get(v, ['eventId', '_id'])) {
-            client.service('events')
-                .remove(_.get(v, ['eventId', '_id'])).then((res) => {
-                    confirmDelete(v);
-                }).catch((err) => {
-                    console.log('Unable to delete Event.');
-                })
-        }
-    }
-
     return (
         <React.Fragment>
-
-            <Desktop>
-            <ClubBackdrop viewType={viewType}>
+            <ClubBackdrop viewType={viewType} club={club}>
                 <Row>
                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                        <div className="flex-justify-end flex-items-align-center">
-                            <span className='d-inline-block ' >
-                                <Button size="large" className="border-ccar-yellow" onClick={(e) => {
-                                    setWritePostEditMode(false);
-                                    setWritePostVisible(true);
-                                }}  ><Icon type="edit" /> Write a Post</Button>
-                            </span>
+                        <div className="thin-border relative-wrapper width-100 padding-md">
+                            <div style={{ display: 'inline-block' }} className='width-20 height-100'>
+                                <Row gutter={[0, 20]} className="width-100">
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <UserAvatar data={_.get(props.user, ['info', 'user'])} size={50} />
+                                    </Col>
+                                </Row>
+                            </div>
+                            <div style={{ display: 'inline-block', verticalAlign: 'top' }} className='width-70 height-100 margin-top-md padding-left-md' onClick={(e) => {
+                                if (isNotAllowedSocialInteraction(club, viewType)) {
+                                    setJoinClubModalVisible(true);
+                                } else if (viewType != clubProfileViewTypes[3] || viewType != clubProfileViewTypes[2]) {
+                                    setWritePostChatType('socialboard')
+                                    setEditMode(null);
+                                    setWriteModalVisible(true);
+                                    setSelectedPost(null);
+                                }
+                            }}  >
+                                <Row gutter={[0, 20]} className="width-100">
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24} style={{ padding: 0 }}>
+                                        <p style={{ marginBottom: 0 }}> What's on your mind? </p>
+                                    </Col>
+                                </Row>
+                            </div>
+                            <Divider style={{ margin: 0 }} />
+                            <div style={{ textAlign: 'center', marginTop: '5px' }}>
+                                <span style={{ marginRight: '10px' }}>
+                                    Tag People <img src={tagPeopleIcon} style={{ marginLeft: '5px' }} />
+                                </span>
+                                <Divider type="vertical" style={{ height: '18px' }} />
+                                <span style={{ marginLeft: '20px' }} onClick={(e) => {
+                                    setEventEditMode(false);
+                                    setWriteEventVisible(true);
+                                    setSelectedEvent({});
+                                }} >
+                                    Event <img src={eventIcon} style={{ marginLeft: '5px' }} />
+                                </span>
+                            </div>
                         </div>
                     </Col>
                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
@@ -220,22 +249,27 @@ const ClubDiscussionBox = (props) => {
                                     _.isArray(posts) && !_.isEmpty(posts) ?
                                         _.map(posts, function (post) {
                                             return (
-                                                <div className="margin-bottom-md">
-                                                    <PostCollapse
-                                                        data={post}
-                                                        postLike={_.find(userChatLikes, { chatId: post._id })}
-                                                        onEditClick={(data) => {
-                                                            if (_.isPlainObject(data) && !_.isEmpty(data)) {
-                                                                setWritePostEditMode(true);
-                                                                setSelectedPost(data);
-                                                                setWritePostVisible(true);
+                                                <div className="margin-bottom-md" key={`post-${getObjectId(post)}`}>
+                                                    <SocialBoardCard data={post}
+                                                        postLike={_.find(userChatLikes, { chatId: getObjectId(post) })}
+                                                        onRedirectToPost={(data) => {
+                                                            if (_.isPlainObject(data) && !_.isEmpty(data) && _.get(data, ['_id'])) {
+                                                                console.log('redirect');
+                                                                setChatInfo(data);
+                                                                setVisible(true);
+                                                                setEditMode('');
                                                             }
                                                         }}
-                                                        clubId={clubId}
+                                                        onEditClick={(data) => {
+                                                            setWriteModalVisible(true);
+                                                            setSelectedPost(data);
+                                                            setEditMode('edit');
+                                                        }}
+
                                                         onRemoveClick={(data) => {
                                                             confirmDelete(data)
                                                         }}
-                                                    ></PostCollapse>
+                                                    />
                                                 </div>
                                             )
                                         })
@@ -261,94 +295,46 @@ const ClubDiscussionBox = (props) => {
                     </Col>
                 </Row>
             </ClubBackdrop>
-            </Desktop>
 
-            <Tablet>
-            <ClubBackdrop viewType={viewType}>
-                <Row>
-                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                        <div className="flex-justify-end flex-items-align-center">
-                            <span className='d-inline-block ' >
-                                <Button size="medium" className="border-ccar-yellow" onClick={(e) => {
-                                    setWritePostEditMode(false);
-                                    setWritePostVisible(true);
-                                }}  ><Icon type="edit" /> Write a Post</Button>
-                            </span>
-                        </div>
-                    </Col>
-                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                        <WindowScrollLoadWrapper scrollRange={document.body.scrollHeight * 0.5} onScrolledBottom={() => {
-                            if (arrayLengthCount(posts) < postTotal) {
-                                setPostPage(postPage + 1);
-                            }
-                        }}>
-                            <div className="padding-md">
-                                {
-                                    _.isArray(posts) && !_.isEmpty(posts) ?
-                                        _.map(posts, function (post) {
-                                            return (
-                                                <div className="margin-bottom-md">
-                                                    <PostCollapse
-                                                        data={post}
-                                                        postLike={_.find(userChatLikes, { chatId: post._id })}
-                                                        onEditClick={(data) => {
-                                                            if (_.isPlainObject(data) && !_.isEmpty(data)) {
-                                                                setWritePostEditMode(true);
-                                                                setSelectedPost(data);
-                                                                setWritePostVisible(true);
-                                                            }
-                                                        }}
-                                                        clubId={clubId}
-                                                        onRemoveClick={(data) => {
-                                                            confirmDelete(data)
-                                                        }}
-                                                    ></PostCollapse>
-                                                </div>
-                                            )
-                                        })
-                                        :
-                                        <div className="padding-md flex-items-align-center flex-justify-center">
-                                            <Empty></Empty>
-                                        </div>
-                                }
-                            </div>
-                        </WindowScrollLoadWrapper>
-                    </Col>
-                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-
-                        <div className="flex-justify-center flex-items-align-center" style={{ height: 30 }}>
-                            {
-                                isLoading ?
-                                    <Icon type="loading" style={{ fontSize: 30 }} />
-                                    :
-                                    null
-                            }
-                        </div>
-
-                    </Col>
-
-
-                </Row>
-            </ClubBackdrop>
-            </Tablet>
-
-            <WritePostModal1
-                visible={writePostVisible}
-                editMode={writePostEditMode}
+            <PostDrawer
+                data={chatInfo}
+                visible={visible}
+                editMode={editMode}
+                postLike={_.find(userChatLikes, { chatId: _.get(chatInfo, ['_id']) })}
                 onCancel={() => {
-                    setWritePostVisible(false);
-                }}
-                parentType="club"
-                clubId={clubId}
-                data={selectedPost}
-                notify
-                onCreatePost={(post) => {
-                    if (_.isPlainObject(post) && !_.isEmpty(post)) {
-                        setPosts([post].concat(posts));
+                    setVisible(false);
+                    setChatInfo({});
+                }
+                }
+                onPostLikeChange={(liked, data) => {
+                    if (liked) {
+                        setUserChatLikes(_.concat(userChatLikes, [data]));
+                    } else {
+                        setUserChatLikes(_.filter(userChatLikes, function (like) {
+                            return _.get(like, ['chatId']) != _.get(data, ['chatId']);
+                        }))
                     }
                 }}
-                hideChatType
-                chatType="socialboard"
+                onEditClick={(post) => {
+                    setEditMode('edit');
+                    setWriteModalVisible(true);
+                    setSelectedPost(post);
+                }}
+
+                onRemoveClick={(post) => {
+                    confirmDelete(post)
+                    setVisible(false);
+                }}
+            />
+
+            <WritePostDrawer
+                data={selectedPost}
+                editMode={editMode}
+                chatType={writePostChatType || 'socialboard'}
+                visible={writeModalVisible}
+                parentType="club"
+                clubId={_.get(club, `_id`)}
+                notify
                 onUpdatePost={(data) => {
                     if (_.isPlainObject(data) && !_.isEmpty(data)) {
                         let newPosts = _.map(posts, function (item) {
@@ -357,9 +343,20 @@ const ClubDiscussionBox = (props) => {
                         setPosts(newPosts);
                     }
                 }}
-            >
-
-            </WritePostModal1>
+                onCreatePost={(data) => {
+                    if (_.get(data, `chatType`) == 'socialboard') {
+                        if (_.isPlainObject(data) && !_.isEmpty(data)) {
+                            setPosts([data].concat(posts));
+                        }
+                    }
+                    if (_.get(data, `chatType`) == 'carfreaks') {
+                        props.router.push(routePaths.carFreaks.as().pathname)
+                    }
+                }}
+                onClose={(v) => {
+                    setWriteModalVisible(false);
+                    setSelectedPost({});
+                }} />
 
             <WriteEventModal
                 visible={writeEventVisible}
@@ -371,23 +368,18 @@ const ClubDiscussionBox = (props) => {
                     setWriteEventVisible(false);
                 }}
                 type="club"
-                clubId={_.get(selectedPost, ['eventId', 'clubId', '_id'])}
-                creator={_.get(selectedPost, ['eventId', 'clubId'])}
+                clubId={eventEditMode ? _.get(selectedPost, ['eventId', 'clubId', '_id']) : getObjectId(club)}
+                creator={eventEditMode ? _.get(selectedPost, ['eventId', 'clubId']) : club}
                 notify
-                onUpdate={(event) => {
+                onCreate={(event) => {
                     if (_.isPlainObject(event) && !_.isEmpty(event)) {
-                        let newData = _.cloneDeep(selectedPost);
-                        newData.eventId = {
-                            ...event,
-                            clubId: _.get(newData, ['eventId', 'clubId']),
-                        }
-                        let newPosts = _.map(posts, function (item) {
-                            return item._id == _.get(newData, ['_id']) ? newData : item;
-                        });
-                        setPosts(newPosts);
+                        props.router.push(`${routePaths.socialClubDetails.to}?tab=events`, routePaths.socialClubDetails.as(club, {tab : 'events'}), {shallow : true})
                     }
                 }}
             ></WriteEventModal>
+
+
+            <ClubJoinModal visible={joinClubModalVisible} club={club} onCancel={() => { setJoinClubModalVisible(false) }} ></ClubJoinModal>
         </React.Fragment>
     );
 }
@@ -401,4 +393,4 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     loading: loading,
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(withRouter(ClubDiscussionBox)));
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(withRouter(ClubSocialBoardBox)));

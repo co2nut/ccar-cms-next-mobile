@@ -129,7 +129,7 @@ const InviteButton = (props) => {
                             cancelText="No"
                         >
                             <span className=" cursor-pointer">
-                                <Icon type="check" style={{ color: '#F57F17' }} className="margin-right-xs" />
+                                <Icon type="check" style={{ color: '#F57F17' }} className="margin-right-xs small-text" />
                                 Invited
                             </span>
                         </Popconfirm>
@@ -139,7 +139,7 @@ const InviteButton = (props) => {
                             props.inviteButton ?
                                 props.inviteButton()
                                 :
-                                <Button>+ Invite</Button>
+                                <Button className="small-text" size="small">+ Invite</Button>
                         }
                     </a>
             }

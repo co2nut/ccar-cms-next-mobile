@@ -463,3 +463,12 @@ video {
 .write-post .ant-modal-title{
     text-align: center;
 }
+
+@media (max-width: 480px) {
+    .ant-calendar-range {
+        width: 320px;
+    }
+    .ant-calendar-range-part {
+        width: 100%;
+    }
+}
