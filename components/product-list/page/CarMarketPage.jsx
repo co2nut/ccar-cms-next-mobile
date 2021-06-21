@@ -7,7 +7,7 @@ import Scrollbars from 'react-custom-scrollbars'
 import { connect } from 'react-redux'
 import brandFilterTotal from '../../../api/brandFilterTotal'
 import carAdsFilter from '../../../api/carAdsFilter'
-import { convertParameterToProductListUrl, convertProductRouteParamsToFilterObject, convertRangeFormatToText, formatNumber, notEmptyLength, objectRemoveEmptyValue } from '../../../common-function'
+import { convertParameterToProductListUrl, convertProductRouteParamsToFilterObject, convertRangeFormatToText, formatNumber, notEmptyLength, objectRemoveEmptyValue, getObjectId } from '../../../common-function'
 import LayoutV2 from '../../../components/general/LayoutV2'
 import ProductList from '../../../components/product-list/ProductList'
 import client from '../../../feathers'
@@ -53,6 +53,8 @@ const CarMarketPage = (props) => {
     const [productLoading, setProductLoading] = useState(true);
     const [origAvailableFilterOption, setOrigAvailableFilterOption] = useState({});
     const [expandKey, setExpandKey] = useState();
+    const [packages, setPackages] = useState([]);
+    const [bumpLogs, setBumpLogs] = useState([]);
 
     useEffect(() => {
         props.updateActiveMenu('2');
@@ -116,6 +118,30 @@ const CarMarketPage = (props) => {
             }
         },
             3000);
+
+            if (_.isArray(productList) && !_.isEmpty(productList)) {
+                let companyIds = _.map(productList, (item) => {
+                    return _.get(item, `companyId`)
+                });
+                let productIds = _.map(productList, (item) => {
+                    return _.get(item, `_id`)
+                });
+    
+                axios.post(`${client.io.io.uri}getPackageMaster`,
+                    {
+                        companyIds
+                    }).then((res) => {
+                        setPackages(_.get(res, `data`) || []);
+                    })
+    
+                axios.post(`${client.io.io.uri}getBumplogs`,
+                    {
+                        productAdsId: productIds
+                    }).then((res) => {
+                        setBumpLogs(_.get(res, `data`) || []);
+                    })
+    
+            }
 
     }, [productList])
 
@@ -260,6 +286,38 @@ const CarMarketPage = (props) => {
         }
     }
 
+    const _renderBumpStatus = (v) => {
+        if (_.isPlainObject(v) && !_.isEmpty(v)) {
+            let selectedPackage = _.find(packages, (p) => {
+                return getObjectId(_.get(p, `companyId`)) == getObjectId(_.get(v, `companyId`));
+            })
+
+            let isPaidPackage = _.get(selectedPackage, `packageId.packageName`) && _.get(selectedPackage, `packageId.packageName`) != 'No Subscribe';
+            let isBumped = !_.isEmpty(_.find(bumpLogs, function (bumpLog) {
+                return getObjectId(_.get(bumpLog, `productAdsId`)) == getObjectId(v);
+            }))
+
+            // console.log('isPaidPackage', isPaidPackage);
+            // console.log('isBumped', isBumped);
+            if (isPaidPackage && isBumped) {
+                return <span className="d-inline-block avatar background-blue readyStockDot"></span>
+            }
+            if (isPaidPackage && !isBumped) {
+                return <span className="d-inline-block avatar background-green readyStockDot"></span>
+            }
+            if (!isPaidPackage && isBumped) {
+                return <span className="d-inline-block avatar background-yellow readyStockDot"></span>
+            }
+            if (!isPaidPackage && !isBumped) {
+                return <span className="d-inline-block avatar background-red readyStockDot"></span>
+            }
+
+            return null;
+        } else {
+            return null;
+        }
+    }
+
     const _renderGridViewRes = (data) => {
 
         return (
@@ -269,7 +327,11 @@ const CarMarketPage = (props) => {
                 </div>
                 :
                 _.isArray(data) && !_.isEmpty(data) ?
-                    <ProductList data={data} />
+                    <ProductList data={data}
+                    renderBumpStatus={(item) => {
+                        return _renderBumpStatus(item)
+                        }} 
+                    />
                     :
                     <div style={{ height: '30em' }}>
                         <Empty
@@ -606,7 +668,7 @@ const CarMarketPage = (props) => {
                                 </Collapse>
 
                                 <Row style={{ marginBottom: '10px', marginTop: '10px' }} >
-                                    <Col xs={24} sm={24} md={24} lg={24} xl={24} className="background-white margin-bottom-xl">
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24} className="background-white margin-bottom-sm">
                                         <Row>
                                             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                                                 <div className="d-flex scroller-type"   >
@@ -615,8 +677,8 @@ const CarMarketPage = (props) => {
                                             </Col>
                                         </Row>
                                     </Col>
-                                    <Col style={{ textAlign: 'center' }} xs={24} sm={24} md={24} lg={24} xl={24}>
-                                        <Pagination defaultCurrent={1} current={mainConfig.page} pageSize={PAGESIZE} total={total} onChange={(page) => { pushParameterToUrl(currentFilterGroup, { ...mainConfig, page: page }) }} />
+                                    <Col style={{ textAlign: 'center', marginBottom:'10px' }} xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <Pagination current={parseInt(mainConfig.page)} pageSize={PAGESIZE} onChange={(page) => { pushParameterToUrl(currentFilterGroup, { ...mainConfig, page: page }) }} total={total} />
                                     </Col>
                                 </Row>
                             </Col>

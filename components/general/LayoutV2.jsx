@@ -801,9 +801,12 @@ class LayoutV2 extends React.Component {
 
                                                 <Drawer
                                                     className="login-drawer"
-                                                    title={null}
+                                                    title={
+                                                        <div className="flex-items-align-center padding-y-sm background-ccar-button-yellow">
+                                                            <Button type="link" className="black headline" onClick={this.onClose}><Icon type="left" /> Back </Button>
+                                                        </div>}
                                                     placement="right"
-                                                    closable={true}
+                                                    closable={null}
                                                     onClose={this.onClose}
                                                     visible={this.state.visible}
                                                     width={'100%'}
@@ -906,7 +909,7 @@ class LayoutV2 extends React.Component {
                                                         :
 
                                                         <div>
-                                                            <div className="margin-bottom-xs padding-sm" style={{ backgroundImage: `url("${menuLogin}")`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', height: '20vh', backgroundPosition: 'center', position: 'relative' }}>
+                                                            <div className="margin-bottom-xs padding-sm" style={{ backgroundImage: `url("${menuLogin}")`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', height: '25vh', backgroundPosition: 'center', position: 'relative' }}>
                                                                 <div>
                                                                     <span style={{ marginRight: '10px' }}>
                                                                         <img src="https://img.icons8.com/windows/32/ffffff/user-male-circle.png" />
@@ -914,15 +917,14 @@ class LayoutV2 extends React.Component {
                                                                     <span style={{ color: '#ffffff', fontWeight: '700' }}>Login to access more features now!</span>
                                                                 </div>
                                                                 {/* <div className="flex-justify-center">
-                                                        {this._renderUserRes(profileMenu)}
-                                                    </div> */}
+                                                                        {this._renderUserRes(profileMenu)}
+                                                                    </div> */}
 
                                                                 <div className="login-center">
                                                                     <Button style={{ borderRadius: '20px' }} className="background-ccar-button-yellow black border-ccar-button-yellow cursor-pointer padding-x-xl" onClick={() => { this.props.loginMode(true); this.onClose(); }}>
                                                                         Login
-                                                        </Button>
+                                                                    </Button>
                                                                 </div>
-
                                                             </div>
 
                                                             {/* <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '1' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/')}}> Home</div> */}
@@ -971,7 +973,6 @@ class LayoutV2 extends React.Component {
                                                                             <p style={{ marginBottom: '0px', color: '#000000' }}>Social News </p>
                                                                         </div>
                                                                     </Col>
-
                                                                 </Row>
 
                                                                 <Row className="margin-bottom-md">
@@ -1038,7 +1039,6 @@ class LayoutV2 extends React.Component {
                                     </Row>
                                 </div>
                             </Mobile>
-
                         </Col>
                     </Row>
 

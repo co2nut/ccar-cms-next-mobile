@@ -78,10 +78,10 @@ const Index = (props) => {
             <Element
               prefixCls="banner-user-elem"
               key="0"
-              onClick={(e) => {window.location='https://www.facebook.com/ccar.malaysia/shop/?referral_code=page_shop_tab&preview=1&ref=page_internal'}}
+              // onClick={(e) => {window.location='https://www.facebook.com/ccar.malaysia/shop/?referral_code=page_shop_tab&preview=1&ref=page_internal'}}
             >
               <div className="width-100 relative-wrapper" style={{height : 100}}>
-                <img src={'/banner/CCAR-Ramadan-Mobile-Banner-01.jpg'} className="absolute-center"/>
+                <img src={'/banner/Mobile-Banner-June-01.jpg'} className="absolute-center"/>
               </div>
             </Element>
 

@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import UserAvatar from '../general/UserAvatar';
 import { withRouter } from 'next/dist/client/router';
-
+import { getStateIcon } from '../../params/stateList';
 
 const SellerBusinessCard = (props) => {
 
@@ -13,6 +13,7 @@ const SellerBusinessCard = (props) => {
 
     let areaName =  !props.data || !props.data.area ? null : props.data.area
     let companyName = !props.data || !props.data.name ? null : props.data.name
+    let stateName = !props.data || !props.data.state ? null : props.data.state
 
     let userarea = !props.data1 || !props.data1.userarea ? null : props.data1.userarea
     if(_.isEmpty(userarea)===false){
@@ -29,9 +30,12 @@ const SellerBusinessCard = (props) => {
         companyName = usercompany
     }
 
+    let userstate = !props.data1 || !props.data1.userstate? null : props.data1.userstate
+    if(_.isEmpty(usercompany)===false){
+        stateName = userstate
+    }
+
     
-
-
     return (
         <div className={`thin-border ${props.className || ''} background-white round-border` }>
             <a href={props.readOnly ? null : !props.data1 || !props.data1._id ? null : '/dealer/' + (props.data1.companyurlId || '') + '/' + (props.data1.userurlId || '')} className="grey-darken-2 font-weight-normal">
@@ -58,7 +62,10 @@ const SellerBusinessCard = (props) => {
 
                         <Row>
                             <Col span={20}>
-                                <span className="caption text-overflow-break text-align-left">
+                                <span className="width-20 d-inline-block">
+                                    <img src={getStateIcon(stateName) || imageNotFoundIcon} className="fill-parent" style={{ marginTop: '0px', width:'100%' }} />
+                                </span>
+                                <span className="caption text-overflow-break width-80 d-inline-block padding-left-sm">
                                     <Icon type="double-right"/> {areaName}
                                 </span>
                             </Col>

@@ -519,7 +519,7 @@ _renderLayout = (v) => {
                   </div>
                   {
                     _.get(this.state.productDetails, ['readyStock']) == 'Yes'
-                    ? <span className="text-align-right avatar background-green readyStockDot"></span>
+                    ? <span className="text-align-right avatar background-green readyStockDotGrid"></span>
                     : null
                   }
                 </div>

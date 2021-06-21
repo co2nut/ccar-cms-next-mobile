@@ -601,11 +601,17 @@ const ProductList = (props) => {
                   </div>
                   <span className="text-align-right gridTopRight">
                     {props.topRight ? props.topRight(v) : null}</span>
-                  {
+                  {/* {
                     _.get(v, ['readyStock']) == 'Yes'
                       ? <span className="text-align-right avatar background-green readyStockDotList"></span>
                       : null
-                  }
+                  } */}
+                    {
+                      props.renderBumpStatus ?
+                        props.renderBumpStatus(v)
+                        :
+                        null
+                    }
                 </Col>
 
                 <Col span={14}>

@@ -45,7 +45,7 @@ export const ccarLogo2 = '/assets/Ccar-logo.png'
 export const ccarWebLogo2 = '/ccar-web-logo.png'
 
 //Login
-export const loginBackground = '/assets/login/ramadhan.png';
+export const loginBackground = '/assets/login/June-login-box.png';
 export const tbhCny = '/assets/login/tbh.png';
 export const tbh1Cny = '/assets/login/tbh-01.png';
 export const tbh2Cny = '/assets/login/tbh-02.png';

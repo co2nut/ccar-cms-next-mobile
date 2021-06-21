@@ -388,7 +388,7 @@ const GridProductList = (props) => {
                                                     {props.topRight ? props.topRight(v) : null}</span>
                                                 {
                                                     _.get(v, ['readyStock']) == 'Yes'
-                                                        ? <span className="text-align-right avatar background-green readyStockDot"></span>
+                                                        ? <span className="text-align-right avatar background-green readyStockDotGrid"></span>
                                                         : null
                                                 }
                                             </div>

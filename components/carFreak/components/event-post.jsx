@@ -325,7 +325,7 @@ const EventPost = (props) => {
                     </Col>
                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                         <div className="fill-parent flex-justify-start flex-items-align-center cursor-pointer">
-                            <LikePostButton
+                            <LikePostButton 
                                 postLike={props.postLike}
                                 chatId={_.get(post, ['_id'])}
                                 likeOn="chat"
