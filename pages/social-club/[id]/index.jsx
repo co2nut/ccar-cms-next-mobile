@@ -15,8 +15,8 @@ const Index = (props) => {
         <ReduxPersistWrapper cookie={props.cookie}>
             {
                 props.app.initedRedux ?
-                    // <SocialClubProfilePage /> 
-                    <SocialClubProfilePage1 />
+                    <SocialClubProfilePage /> 
+                    // <SocialClubProfilePage1 />
                     :
                     null
             }

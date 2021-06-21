@@ -159,7 +159,7 @@ const LikePostButton = (props) => {
                                 <img src={carFreakLikeGreyIcon} style={{ width: 35, height: 25 }} className="cursor-pointer" />
                                 {/* <Icon type="like" /> */}
                             </span>
-                            <span className='headline' >
+                            <span className='small-text' >
                                 {
                                     props.text ? props.text(false) || 'Like' : 'Like'
                                 }
@@ -174,7 +174,7 @@ const LikePostButton = (props) => {
                                 <img src={carFreakLikeIcon} style={{ width: 35, height: 25 }} className="cursor-pointer" />
                                 {/* <Icon type="like" theme="filled" className="blue" /> */}
                             </span>
-                            <span className='headline' >
+                            <span className='small-text' >
                                 {
                                     props.text ? props.text(true) || 'Liked' : 'Liked'
                                 }

@@ -146,7 +146,7 @@ const CarFreakPage = (props) => {
                     // ...title,
                     ...following,
                     chatType: {
-                        $in: ['carfreaks', 'event']
+                        $in: ['carfreaks']
                     },
                     parentType: {
                         $ne: 'club'
@@ -288,8 +288,9 @@ const CarFreakPage = (props) => {
                                             return (
                                                 <Col xs={24} sm={12} md={8} lg={6} xl={6} key={`post-${_.get(v, `_id`)}`}>
                                                     <PostMobileView data={v}
-                                                        className="background-white thin-border round-border box-shadow-strong"
+                                                        className="background-white"
                                                         postLike={_.find(userChatLikes, { chatId: v._id })}
+                                                        showClub
                                                         onRedirectToPost={(post) => {
                                                             if (_.get(post, ['chatType']) == 'event') {
 

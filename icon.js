@@ -23,6 +23,9 @@ export const createSocialBoardIcon = '/assets/car-freak/social-board.png';
 export const carFreakReplyIcon = '/assets/car-freak/reply.png';
 export const clubPrivateIcon = '/assets/car-freak/private@3x.png';
 export const clubPublicIcon = '/assets/car-freak/public@3x.png';
+export const tagPeopleIcon = 'https://img.icons8.com/material-sharp/20/ffcc32/conference-call.png';
+export const eventIcon = 'https://img.icons8.com/android/15/ffcc32/tear-off-calendar.png';
+
 
 //Car Market
 export const carspecNotFoundImage = '/coming-soon.png'

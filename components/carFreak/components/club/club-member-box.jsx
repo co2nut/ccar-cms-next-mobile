@@ -163,28 +163,28 @@ const ClubMemberBox = (props) => {
         if (_.isPlainObject(join) && !_.isEmpty(join)) {
             return (
                 <div className="flex-justify-space-between flex-items-align-center margin-bottom-md">
-                    <span className='flex-items-align-center' style={{ maxWidth: '80%' }} >
+                    <span className='flex-items-align-center' style={{ width: '70%' }} >
                         <span className='d-inline-block margin-right-md' >
                             <UserAvatar data={_.get(join, ['userId'])} redirectProfile size={50} />
                         </span>
                         <span className='d-inline-block' >
-                            <div className="font-weight-normal text-truncate">
+                            <div className="font-weight-normal text-truncate small-text">
                                 {getUserName(_.get(join, ['userId']), 'fullName')}
                             </div>
-                            <div className="text-truncate grey-darken-2 capitalize">
+                            <div className="text-truncate grey-darken-2 capitalize  small-text">
                                 {_.get(join, ['role']) || ''}
                             </div>
-                            <div className="text-truncate-twoline grey-darken-2">
+                            <div className="text-truncate-twoline grey-darken-2  small-text">
                                 Joined about {moment(_.get(join, ['joinedAt'])).fromNow()}
                             </div>
                         </span>
                     </span>
-                    <span className='d-inline-block' style={{textAlign:'right'}}>
+                    <span className='d-inline-block width-30' style={{textAlign:'right'}}>
                         <FollowButton type="user" userId={_.get(join, ['userId', '_id'])} followerId={_.get(props.user, ['info', 'user', '_id'])}></FollowButton>
                         {
                             _.get(props.user, ['info', 'user', '_id']) != _.get(join, ['userId', '_id']) && viewType == clubProfileViewTypes[0] ?
                                 _.get(join, ['status']) == 'removed' ?
-                                    <span className="d-inline-block red margin-top-sm" style={{ padding: '0px 15px' }} >
+                                    <span className="d-inline-block red margin-top-sm  small-text" style={{ padding: '0px 15px' }} >
                                         Removed
                                     </span>
                                     :
@@ -196,12 +196,12 @@ const ClubMemberBox = (props) => {
                                         okText="Yes"
                                         cancelText="No"
                                     >
-                                        <Button className="background-red border-red white margin-top-sm">Remove</Button>
+                                        <Button size="small" className="background-red border-red white margin-top-sm  small-text">Remove</Button>
                                     </Popconfirm>
                                 :
                                 _.get(props.user, ['info', 'user', '_id']) == _.get(join, ['userId', '_id']) && viewType != clubProfileViewTypes[0] ?
                                     _.get(join, ['status']) == 'removed' ?
-                                        <span className="d-inline-block red margin-top-sm" style={{ padding: '0px 15px' }} >
+                                        <span className="d-inline-block red margin-top-sm  small-text" style={{ padding: '0px 15px' }} >
                                             Left
                                         </span>
                                         :
@@ -213,7 +213,7 @@ const ClubMemberBox = (props) => {
                                             okText="Yes"
                                             cancelText="No"
                                         >
-                                            <Button className="background-red border-red white margin-right-md">Leave</Button>
+                                            <Button size="small" className="background-red border-red white margin-right-md  small-text">Leave</Button>
                                         </Popconfirm>
                                     :
                                     null
@@ -233,7 +233,7 @@ const ClubMemberBox = (props) => {
                 <div className={`thin-border round-border padding-sm ${props.className || ''}`} style={{ ...props.style }}>
                     <Row gutter={[10, 10]}>
                         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <div className="font-weight-bold subtitle1">
+                            <div className="font-weight-bold headline">
                                 Admin
                         </div>
                         </Col>
@@ -248,7 +248,7 @@ const ClubMemberBox = (props) => {
                         </Col>
                         <Divider  style={{margin:0}}/>
                         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <div className="font-weight-bold subtitle1">
+                            <div className="font-weight-bold headline">
                                 Members
                         </div>
                         </Col>

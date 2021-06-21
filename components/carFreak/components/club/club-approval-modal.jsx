@@ -161,13 +161,12 @@ const ClubApprovalModal = (props) => {
             footer={null}
             centered
             maskClosable={false}
-            width={window.innerWidth * 0.5}
             onCancel={() => { closeModal() }}
         >
             <Row className="padding-top-lg margin-top-md" gutter={[10, 10]}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                     <div className="flex-justify-space-between flex-items-align-center width-100">
-                        <span className='d-inline-block font-weight-black h6' >
+                        <span className='d-inline-block font-weight-black caption' >
                             Request to join club
                         </span>
                     </div>
@@ -186,34 +185,34 @@ const ClubApprovalModal = (props) => {
                                             _.map(clubJoins, function (clubJoin) {
                                                 return (
                                                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                                        <div className="flex-justify-space-between flex-items-align-center">
-                                                            <span className='flex-justify-start flex-items-align-center' style={{ maxWidth: '80%' }} >
+                                                        <div className="flex-justify-space-between flex-items-align-center w-100 ">
+                                                            <span className='flex-justify-start flex-items-align-center' style={{ width: '50%' }} >
                                                                 <UserAvatar
                                                                     data={_.get(clubJoin, ['userId'])}
-                                                                    size={70}
+                                                                    size={40}
                                                                     className="margin-right-md"
                                                                     redirectProfile
                                                                     onRedirect={() => { closeModal() }}
                                                                     avatarClassName='flex-items-no-shrink'
                                                                 />
                                                                 <span className='d-inline-block' >
-                                                                    <div className="font-weight-bold subtitle1 black">
+                                                                    <div className="font-weight-bold caption black">
                                                                         {getUserName(_.get(clubJoin, ['userId']), 'fullName') || ''}
                                                                     </div>
                                                                     {
                                                                         _.isArray(_.get(clubJoin, ['invitedBy'])) && !_.isEmpty(_.get(clubJoin, ['invitedBy'])) ?
-                                                                            <div className="caption grey-darken-2">
+                                                                            <div className="small-text grey-darken-2">
                                                                                 Invited by {convertNameString(_.get(clubJoin, ['invitedBy']))}
                                                                             </div>
                                                                             :
                                                                             null
                                                                     }
-                                                                    <div className="caption grey-darken-2">
-                                                                        Requested {moment(_.get(clubJoin, ['createdAt'])).fromNow()} ago
+                                                                    <div className="small-text grey-darken-2">
+                                                                        Requested {moment(_.get(clubJoin, ['createdAt'])).fromNow()}
                                                                          </div>
                                                                 </span>
                                                             </span>
-                                                            <span className='d-inline-block flex-items-no-shrink' style={{ maxWidth: '40%' }} >
+                                                            <span className='d-inline-block flex-items-no-shrink' style={{ width: '50%' }} >
                                                                 <div className="flex-items-align-center">
                                                                     <span className='d-inline-block margin-right-md' >
                                                                         <ClubApprovalButton notify data={clubJoin} onSuccess={(data) => {
@@ -227,9 +226,9 @@ const ClubApprovalModal = (props) => {
                                                                             null
                                                                             :
                                                                             _.get(clubJoin, ['status']) == 'rejected' ?
-                                                                                <span className="padding-x-md red cursor-not-allowed">Rejected</span>
+                                                                                <span className="padding-x-sm red cursor-not-allowed small-text">Rejected</span>
                                                                                 :
-                                                                                <Button className="padding-x-md border-red-lighten-1 background-white black" onClick={(e) => { handleReject(clubJoin) }}>Decline</Button>
+                                                                                <Button className="padding-x-sm border-red-lighten-1 background-white black small-text" size="small" onClick={(e) => { handleReject(clubJoin) }}>Decline</Button>
                                                                     }
                                                                 </div>
                                                             </span>

@@ -180,10 +180,10 @@ const ClubInviteModal = (props) => {
                                                             />
 
                                                             <span className='d-inline-block text-truncate' >
-                                                                <div>
+                                                                <div className="text-truncate small-text">
                                                                     {getUserName(user, ['freakId'])}
                                                                 </div>
-                                                                <div>
+                                                                <div className="text-truncate small-text">
                                                                     {`${getUserName(user, ['fullName'])} ${isDealer(user) && _.get(user, ['companys', 'name']) ? '|' : ''} ${isDealer(user) && _.get(user, ['companys', 'name']) ? _.get(user, ['companys', 'name']) : ''}`}
                                                                 </div>
                                                             </span>

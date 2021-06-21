@@ -1,5 +1,5 @@
 
-import { Col, Dropdown, Form, Icon, Menu, Popconfirm, Row } from 'antd';
+import { Col, Dropdown, Form, Icon, Menu, Popconfirm, Row, Collapse } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import { withRouter } from 'next/dist/client/router';
@@ -15,13 +15,14 @@ import client from '../../../../feathers';
 
 
 const defaultHeight = 200;
+const { Panel } = Collapse;
 
-const EventDetailsBox = (props) => {
+const EventDetailsBoxUi = (props) => {
 
     const [event, setEvent] = useState({})
     const [eventPost, setEventPost] = useState({})
     const [height, setHeight] = useState(defaultHeight)
-
+    const [expandReplyKey, setExpandReplyKey] = useState();
 
     useEffect(() => {
         setEvent(_.isPlainObject(props.data) && !_.isEmpty(props.data) ? props.data : {});
@@ -53,16 +54,26 @@ const EventDetailsBox = (props) => {
     }
 
     return (
-        <div className={`width-100  flex-justify-start flex-items-align-center relative-wrapper background-white padding-md ${props.className || ''}`}  >
+        <div className={`width-100 flex-justify-start flex-items-align-center relative-wrapper background-white ${props.className || ''}`} onClick={(e) => {
+            setExpandReplyKey(expandReplyKey ? null : '1')
+        }}  >
             <Row gutter={[10, 10]} className="width-100" align="middle">
-                <Col xs={6} sm={6} md={6} lg={6} xl={6}>
+                <Col span={24}>
+                    <span className='d-inline-block margin-right-sm width-20'  >
+                        <UserAvatar data={_.get(event, ['createdBy'])} />
+                    </span>
+                    <span className='d-inline-block grey-darken-2 text-truncate-twoline width-70'>
+                        Created By {`${getUserName(_.get(event, ['createdBy']))}`}
+                    </span>
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                     <div className="width-100 height-100 relative-wrapper" style={{ height: 170 }} onClick={() => {
                         redirectEvent(event);
                     }}>
                         <img src={_.get(event, ['coverPhoto'])} className=" fill-parent img-cover" />
                     </div>
                 </Col>
-                <Col xs={props.hideGuestList ? 18 : 10} sm={props.hideGuestList ? 18 : 10} md={props.hideGuestList ? 18 : 10} lg={props.hideGuestList ? 18 : 10} xl={props.hideGuestList ? 18 : 10}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                     <div className="flex-justify-start flex-items-align-center padding-y-xs" onClick={() => {
                         redirectEvent(event);
                     }}>
@@ -92,12 +103,6 @@ const EventDetailsBox = (props) => {
                     <div className=" flex-items-align-center flex-justify-start padding-y-xs" onClick={() => {
                         redirectEvent(event);
                     }}>
-                        <span className='d-inline-block margin-right-sm' >
-                            <UserAvatar data={_.get(event, ['createdBy'])} />
-                        </span>
-                        <span className='d-inline-block subtitle1 grey-darken-2 text-truncate-twoline'>
-                            Created By {`${getUserName(_.get(event, ['createdBy']))}`}
-                        </span>
                     </div>
                     <div className="flex-items-align-center flex-justify-start padding-y-xs">
                         {
@@ -112,42 +117,35 @@ const EventDetailsBox = (props) => {
                                     null
                         }
                     </div>
+
+                    <div className="width-100 margin-top-md">
+                        <Collapse className="collapse-no-header border-none collapse-body-no-padding collapse-body-overflow-visible" activeKey={expandReplyKey} >
+                            <Collapse.Panel key="1" showArrow={false}>
+                                <div className="width-100">
+                                    <div className="padding-left-sm">
+                                        <div className="subtitle1">
+                                            Description
+                                        </div>
+                                        {
+                                            !props.hideGuestList ?
+                                            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                            <div className="padding-right-lg">
+                                                <EventAttendanceBox data={event}/>
+                                            </div>
+                                            </Col>
+                                        :
+                                        null
+                                        }
+                                        </div>
+                                    </div>
+                                </Collapse.Panel>
+                            </Collapse>
+                        </div>
                 </Col>
-                {
-                    !props.hideGuestList ?
-                        <Col xs={8} sm={8} md={8} lg={8} xl={8}>
-                            <div className="padding-right-lg">
-                                <EventAttendanceBox data={event} />
-                            </div>
-                        </Col>
-                        :
-                        null
-                }
-                {
-                    !props.hideDescription ?
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <div className="subtitle1">
-                                Description
-                            </div>
-                            <div className="headline thin-border round-border padding-md margin-y-md">
-                                <ShowMoreText
-                                    lines={3}
-                                    more={<a className="small-text">Show More</a>}
-                                    less={<a className="small-text">Show Less</a>}
-                                    expanded={false}
-                                >
-                                    {_.get(event, ['description']) || ''}
-                                </ShowMoreText>
-                            </div>
-                        </Col>
-                        :
-                        null
-                }
             </Row>
 
             {
                 !props.hideAction ?
-
                     <span className='d-inline-block' style={{ position: 'absolute', top: 10, right: 10 }} >
                         <Dropdown overlay={
                             <Menu>
@@ -181,30 +179,6 @@ const EventDetailsBox = (props) => {
                                         :
                                         null
                                 }
-                                {/* {
-                _.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', '_id']) && _.get(props.user, ['info', 'user', '_id']) != _.get(event, ['createdBy', '_id']) ?
-                    [
-                        <Menu.Item>
-                            <ReportButton type="event"
-                                reporterId={_.get(props.user, ['info', 'user', '_id'])}
-                                eventId={_.get(event, ['_id'])}
-                                reportButton={() => {
-                                    return <span className="red">Report</span>
-                                }}
-                                cancelButton={() => {
-                                    return null;
-                                }}
-                                handleSuccess={(data) => {
-                                    message.success(data.type == 'cancel' ? 'Canceled' : 'Reported')
-                                }}
-                                handleError={(err) => {
-                                    message.error(err.message)
-                                }} />
-                        </Menu.Item>
-                    ]
-                    :
-                    null
-            } */}
                                 {
                                     _.get(event, 'scope') == 'public' ?
                                         <Menu.Item>
@@ -217,7 +191,7 @@ const EventDetailsBox = (props) => {
                                 }
                             </Menu>
                         }>
-                            <Icon type="more" className="black" style={{ fontSize: 20 }} />
+                            <Icon type="more" className="black" style={{ fontSize: 20}} />
                         </Dropdown>
 
                     </span>
@@ -239,4 +213,4 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(withRouter(EventDetailsBox)));
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(withRouter(EventDetailsBoxUi)));

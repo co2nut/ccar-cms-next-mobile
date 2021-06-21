@@ -1,4 +1,4 @@
-import { Button, Col, DatePicker, Divider, Form, Input, message, Modal, Radio, Row, Upload } from 'antd';
+import { Button, Col, DatePicker, Divider, Drawer, Form, Icon, Input, message, Modal, Radio, Row, Upload } from 'antd';
 import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
@@ -238,16 +238,26 @@ const WriteEventModal = (props) => {
     }
     return (
         <React.Fragment>
-            <Modal
+            <Drawer
+                className="header-no-padding"
+                title={
+                    <div className="flex-justify-space-between flex-items-align-center padding-y-sm background-ccar-button-yellow">
+                        <Button type="link" className="black headline" onClick={(e) => { closeModal() }}><Icon type="left" /> Back</Button>
+                        <Button type="link" className="black headline" onClick={() => { handleSubmit() }}>
+                            {
+                                props.editMode ?
+                                    'Done'
+                                    :
+                                    'Post'
+                            }
+                        </Button>
+                    </div>}
                 visible={visible}
-                footer={null}
-                centered
+                onClose={(e) => { closeModal() }}
                 maskClosable={false}
-                onCancel={() => {
-                    closeModal();
-                }}
-                width={500}
-                bodyStyle={{ backgroundColor: 'white' }}
+                mask
+                width="100%"
+                closable={false}
             >
                 <Form layout="vertical">
 
@@ -320,7 +330,7 @@ const WriteEventModal = (props) => {
                                 {getFieldDecorator('dateRange', {
                                     initialValue: props.editMode ? [moment(_.get(props.data, ['startAt'])), moment(_.get(props.data, ['endAt']))] : [],
                                     rules: [{ required: true, message: 'Please input.' }],
-                                })(<DatePicker.RangePicker disabledDate={(current) => {
+                                })(<DatePicker.RangePicker size="small" disabledDate={(current) => {
                                     return current < moment();
                                 }} showTime style={{ width: '100%' }} />)}
                             </Form.Item>
@@ -378,13 +388,6 @@ const WriteEventModal = (props) => {
                         </Col>
 
 
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <div className="width-100">
-                                <Button block disabled={isLoading} className=" background-ccar-button-yellow" onClick={(e) => { handleSubmit() }}>Submit</Button>
-                            </div>
-                        </Col>
-
-
                         {/* <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                             <div className="headline margin-bottom-sm">
                                 Description
@@ -398,7 +401,7 @@ const WriteEventModal = (props) => {
 
                     </Row>
                 </Form>
-            </Modal>
+            </Drawer>
 
 
         </React.Fragment>
