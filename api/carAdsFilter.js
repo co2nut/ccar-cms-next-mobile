@@ -93,8 +93,8 @@ export default async function (data, limit) {
       params: {
         match,
         sorting: data.config.sorting,
-        limit: limit,
         skip: (data.config.page - 1) * limit,
+        limit: limit,
       }
     }
   ).then((res) => {

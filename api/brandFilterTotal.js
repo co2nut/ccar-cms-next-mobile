@@ -23,9 +23,6 @@ export default async function (modal, data) {
     if (_.isArray(modal) && !_.isEmpty(modal)) {
 
         if (!_.has(data, ['filterGroup'])) {
-            if (!_.isPlainObject(data)) {
-                data = {}
-            }
             data.filterGroup = {};
         } else {
             data.filterGroup = _.cloneDeep(data.filterGroup)

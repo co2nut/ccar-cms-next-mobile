@@ -21,11 +21,12 @@ const Index = (props) => {
             {
                 props.app.initedRedux ?
                     <CarMarketPage
-                        productList={props.productList || {}}
-                        config={props.config || {}}
-                        availableOptions={props.availableOptions || {}}
-                        productListTotal={props.productListTotal || 0}
-                        filterGroup={props.filterGroup || {}} />
+                        onChangeSeoData={(seoData) => {
+                            if (props.onChangeSeoData) {
+                                props.onChangeSeoData(seoData);
+                            }
+                        }}
+                    />
                     :
                     null}
         </ReduxPersistWrapper>
@@ -46,20 +47,24 @@ export async function getStaticPaths() {
     groupedRes = groupArrayItems(groupedRes, 'make');
     let paths = [];
     _.forIn(groupedRes, (value, key) => {
+        if (key) {
         paths = _.union(paths, [{
             params: {
                 parameter1: _.toLower(key),
                 parameter2: `malaysia`,
             }
         }])
+        }
         _.forEach(value, function (item, index) {
+            if (key && _.get(item, `state`)) {
             paths = _.union(paths, [{
                 params: {
                     parameter1: _.toLower(key),
                     parameter2: `malaysia_${_.toLower(item.state)}`,
                 }
             }])
-            if (_.get(item, `area`)) {
+            }
+            if (key && _.get(item, `state`) && _.get(item, `area`)) {
                 paths = _.union(paths, [{
                     params: {
                         parameter1: _.toLower(key),
@@ -90,7 +95,7 @@ export async function getStaticProps(context) {
     let [carAdsRes] = await Promise.all(promises)
 
     let seoData = getCarMarketSeoData(_.get(filterObj, 'filterGroup') || {}, _.get(carAdsRes, 'total') || 0);
-
+ 
     return {
         props: {
             cookie: _.get(context, ['req', 'headers', 'cookie']) || null,
@@ -98,7 +103,7 @@ export async function getStaticProps(context) {
                 ...seoData
             }
         },
-        unstable_revalidate: carMarketRevalidateTime
+        //usntable_revalidate: carMarketRevalidateTime
     }
 }
 

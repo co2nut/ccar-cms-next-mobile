@@ -98,7 +98,7 @@ export async function getStaticProps(context) {
     let [carAdsRes] = await Promise.all(promises)
 
     let seoData = getCarMarketSeoData(_.get(filterObj, 'filterGroup') || {}, _.get(carAdsRes, 'total') || 0);
-
+ 
     return {
         props: {
             cookie: _.get(context, ['req', 'headers', 'cookie']) || null,
@@ -106,7 +106,7 @@ export async function getStaticProps(context) {
                 ...seoData
             }
         },
-        unstable_revalidate: carMarketRevalidateTime
+        //usntable_revalidate: carMarketRevalidateTime
     }
 }
 

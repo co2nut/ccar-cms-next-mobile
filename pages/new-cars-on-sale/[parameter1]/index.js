@@ -7,7 +7,7 @@ import { convertProductRouteParamsToFilterObject, getCarMarketSeoData } from '..
 import CarMarketPage from '../../../components/product-list/page/CarMarketPage'
 import { loading } from '../../../redux/actions/app-actions'
 import ReduxPersistWrapper from '../../../components/general/ReduxPersistWrapper'
-import { carMarketRevalidateTime } from '../../../config'
+import { carMarketRevalidateTime, groupArrayItems } from '../../../config'
 import groupCarAds from '../../../api/groupCarAds'
 
 
@@ -22,11 +22,12 @@ const Index = (props) => {
             {
                 props.app.initedRedux ?
                     <CarMarketPage
-                        productList={props.productList || {}}
-                        config={props.config || {}}
-                        availableOptions={props.availableOptions || {}}
-                        productListTotal={props.productListTotal || 0}
-                        filterGroup={props.filterGroup || {}} />
+                        onChangeSeoData={(seoData) => {
+                            if (props.onChangeSeoData) {
+                                props.onChangeSeoData(seoData);
+                            }
+                        }}
+                    />
                     :
                     null
             }
@@ -40,38 +41,36 @@ export async function getStaticPaths() {
         area: '$company.area',
     };
     let match = {
-        condition : 'new'
+        condition: 'new'
     };
-    let groupedStateAreas = await groupCarAds(group, match);
-    groupedStateAreas = _.map(groupedStateAreas.data || [], '_id');
-    groupedStateAreas = _.groupBy(groupedStateAreas, 'state');
-    groupedStateAreas = _.mapValues(groupedStateAreas, function (value) {
-        value = _.map(value, function (item) {
-            delete item.state
-            return item;
-        });
-        return value;
-    });
+    let groupedRes = await groupCarAds(group, match);
+    groupedRes = _.map(groupedRes.data || [], '_id');
+    groupedRes = groupArrayItems(groupedRes, 'state');
+    let paths = [];
+    _.forIn(groupedRes, (value, key) => {
 
-    let statepaths = [];
-    _.forIn(groupedStateAreas, (value, key) => {
-        statepaths.push({
+        if(key){
+            paths = _.union(paths, [{
             params: {
-                parameter1: `malaysia_${_.toLower(key)}`
+                    parameter1: `malaysia_${_.toLower(key)}`,
             }
-        });
-        _.forEach(value, function (item) {
-            if (_.get(item, `area`)) {
-                statepaths.push({
+            }])
+        }
+
+        
+        _.forEach(value, function (item, index) {
+            if (key && _.get(item, `area`)) {
+                paths = _.union(paths, [{
                     params: {
-                        parameter1: `malaysia_${_.toLower(key)}_${_.toLower(item.area)}`
+                        parameter1: `malaysia_${_.toLower(key)}_${_.toLower(item.area)}`,
                     }
-                });
+                }])
             }
         })
     })
+
     return {
-        paths: statepaths,
+        paths: paths,
         fallback: true
     }
 }
@@ -97,7 +96,7 @@ export async function getStaticProps(context) {
                 ...seoData
             }
         },
-        unstable_revalidate : carMarketRevalidateTime
+        unstable_revalidate: carMarketRevalidateTime
     }
 }
 

@@ -21,11 +21,12 @@ const Index = (props) => {
             {
                 props.app.initedRedux ?
                     <CarMarketPage
-                        productList={props.productList || {}}
-                        config={props.config || {}}
-                        availableOptions={props.availableOptions || {}}
-                        productListTotal={props.productListTotal || 0}
-                        filterGroup={props.filterGroup || {}} />
+                        onChangeSeoData={(seoData) => {
+                            if (props.onChangeSeoData) {
+                                props.onChangeSeoData(seoData);
+                            }
+                        }}
+                    />
                     :
                     null
             }
@@ -50,6 +51,8 @@ export async function getStaticPaths() {
     let paths = [];
     _.forIn(groupedRes, (value, key) => {
         _.forEach(value, function (item, index) {
+
+            if(key && _.get(item , `model`)){
             paths = _.union(paths, [{
                 params: {
                     parameter1: _.toLower(key),
@@ -57,6 +60,9 @@ export async function getStaticPaths() {
                     parameter3: `malaysia`,
                 }
             }])
+            }
+
+            if(key && _.get(item , `model`) && _.get(item , `state`)){
             paths = _.union(paths, [{
                 params: {
                     parameter1: _.toLower(key),
@@ -64,7 +70,8 @@ export async function getStaticPaths() {
                     parameter3: `malaysia_${_.toLower(item.state)}`,
                 }
             }])
-            if (_.get(item, `area`)) {
+            }
+            if (key && _.get(item , `model`) && _.get(item , `state`) && _.get(item, `area`)) {
                 paths = _.union(paths, [{
                     params: {
                         parameter1: _.toLower(key),
@@ -75,6 +82,7 @@ export async function getStaticPaths() {
             }
         })
     })
+
     return {
         paths: paths,
         fallback: true
@@ -104,7 +112,7 @@ export async function getStaticProps(context) {
                 ...seoData
             }
         },
-        unstable_revalidate: carMarketRevalidateTime
+        //usntable_revalidate: carMarketRevalidateTime
     }
 }
 
