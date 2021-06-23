@@ -21,25 +21,6 @@ import ProductList from '../product-list/ProductList';
 import { fetchProductsList, updateActiveIdProductList  } from '../../redux/actions/productsList-actions';
 import { withRouter } from 'next/router';
 
-
-
-const Desktop = ({ children }) => {
-    const isDesktop = useMediaQuery({ minWidth: 992 })
-    return isDesktop ? children : null
-}
-const Tablet = ({ children }) => {
-    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
-    return isTablet ? children : null
-}
-const Mobile = ({ children }) => {
-    const isMobile = useMediaQuery({ maxWidth: 767 })
-    return isMobile ? children : null
-}
-const Default = ({ children }) => {
-    const isNotMobile = useMediaQuery({ minWidth: 768 })
-    return isNotMobile ? children : null
-}
-
 const PAGESIZE = 30;
 const adsverImg = '/buy-car-ads.png'
 
@@ -227,7 +208,7 @@ const UserCarOnSale = (props) => {
                             360&deg; View:
                         </span>
                         <span className="d-inline-block margin-left-xs">
-                            <Switch checked={_.get(filterGroup, ['car360View'])} onChange={(checked) => { scrollToCarOnSale(); setFilterGroup({ ...filterGroup, car360View: checked }) }} />
+                            <Switch checked={filterGroup.car360View} onChange={(checked) => { scrollToCarOnSale(); setFilterGroup({ ...filterGroup, car360View: checked }) }} />
                         </span>
                     </span>
 
@@ -245,7 +226,7 @@ const UserCarOnSale = (props) => {
                             Reg Card:
                         </span>
                         <span className="margin-left-xs"> 
-                            <Switch checked={_.get(filterGroup, ['registrationUrl'])} onChange={(checked) => { scrollToCarOnSale(); setFilterGroup({ ...filterGroup, registrationUrl: checked }) }} />
+                            <Switch checked={filterGroup.registrationUrl} onChange={(checked) => { scrollToCarOnSale(); setFilterGroup({ ...filterGroup, registrationUrl: checked }) }} />
                         </span>
                     </span>
                 </span>
@@ -311,12 +292,12 @@ const UserCarOnSale = (props) => {
                                         ''}
                             >
                                 <Select.Option value="">Best Value</Select.Option>
-                                <Select.Option value="price:1">Price (Low to High)</Select.Option>
-                                <Select.Option value="price:-1">Price (High to Low)</Select.Option>
+                                <Select.Option value="searchPrice:1">Price (Low to High)</Select.Option>
+                                <Select.Option value="searchPrice:-1">Price (High to Low)</Select.Option>
                                 <Select.Option value="carspec.year:-1">Year (New to Old)</Select.Option>
                                 <Select.Option value="carspec.year:1">Year (Old to New)</Select.Option>
-                                <Select.Option value="mileage:1">Mileage (Low to High)</Select.Option>
-                                <Select.Option value="mileage:-1">Mileage (High to Low)</Select.Option>
+                                <Select.Option value="mileageFilter:1">Mileage (Low to High)</Select.Option>
+                                <Select.Option value="mileageFilter:-1">Mileage (High to Low)</Select.Option>
                             </Select>
                     </span>
                 </span>

@@ -1,4 +1,4 @@
-import { Col, Empty, Form, Icon, message, Row } from 'antd';
+import { Col, Empty, Form, Icon, message, Row, Button, Avatar } from 'antd';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
@@ -198,21 +198,34 @@ const UserReceivedReview = (props) => {
                                 USER REVIEWS
                             </span>
                         </div>
-                    </Col>
-                    <Col span={12}>
-                        <div className=" text-align-right">
+                    </Col> */}
+                    <Col span={24}>
+                        <div className="text-align-center">
                             {
                                 !_.get(profile, ['_id']) || notEmptyLength(ownRating) || _.get(profile, ['_id']) == _.get(props.user, ['info', 'user', '_id']) ?
                                     null
                                     :
-                                    <WriteReviewButton
+                                    <WriteReviewButton 
                                         data={{ type: 'user', userId: profile ? profile._id : null, reviewerId: props.user.info.user ? props.user.info.user._id : null }}
                                         mode="add"
                                         handleSuccess={(v) => { init() }}
-                                        handleError={(e) => { message.error(e.message) }} />
+                                        handleError={(e) => { message.error(e.message) }} 
+                                        button={() => {
+                                            return (
+                                                <Button style={{ color: '#F57F17', width:'100%', fontSize:'16px' }}><Avatar src={'/assets/add-post/create-post.png'} shape="square" size="small" className="margin-right-md" /> Write a Review</Button>
+                                                )
+                                            }}
+                                            onCreate={(data) => {
+                                                if (_.isPlainObject(data) && !_.isEmpty(data)) {
+                                                    data.carspecId = ratingCarspec;
+                                                    setRatings(_.compact(_.concat([data], ratings || [])))
+                                                    getRatingCarspec();
+                                                }
+                                            }}
+                                    />
                             }
                         </div>
-                    </Col> */}
+                    </Col>
                     <Col span={24}>
                         {
                             notEmptyLength(ratings) || notEmptyLength(ownRating) ?
