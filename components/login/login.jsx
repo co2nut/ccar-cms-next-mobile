@@ -122,9 +122,9 @@ class LoginModal extends React.Component {
         bodyStyle={{ padding: 0 }}
         className="modal-body-background-transparent relative-wrapper"
         centered
-        width={300}
+        width={400}
       >
-        <div className="padding-sm round-border relative-wrapper" style={{
+        <div className="padding-lg round-border relative-wrapper" style={{
           backgroundImage: `url(${loginBackground})`,
           backgroundRepeat: 'no-repeat',
           backgroundSize: '100% 100%',

@@ -1006,9 +1006,9 @@ export function convertRangeFormatToText(formatedRange, valueFormat) {
         let parameter2 = formatedRange[1];
         let text = '';
 
-        if (parameter2 == '>=' || parameter2 == '>' || (!parameter2 && parameter1)) {
+        if (parameter2 == defaultRangeBigger) {
             text = `above ${convertValue(parameter1, valueFormat)}`
-        } else if (parameter2 == '<=' || parameter2 == '<') {
+        } else if (parameter2 == defaultRangeSmaller) {
             text = `below ${convertValue(parameter1, valueFormat)}`
         } else {
             text = `between ${convertValue(parameter1, valueFormat)} and ${convertValue(parameter2, valueFormat)}`
@@ -1548,7 +1548,7 @@ export function getCarMarketSeoData(filterGroup, total) {
 
 
     let canonical = convertParameterToProductListSeoUrl(filterGroup);
-
+    canonical = canonical.replace(' ', '_');
     return {
         title,
         description,
@@ -1583,7 +1583,7 @@ export function getProfileSeoData(profile) {
 
     let canonical = `${checkEnvReturnCmsUrl(client.io.io.uri)}/profile/${profile.userurlId}`;
     let images = [{
-        url: profile.avatar || '',
+        url: profile.avatar,
         alt: 'CCAR User Profile Image'
     }];
 

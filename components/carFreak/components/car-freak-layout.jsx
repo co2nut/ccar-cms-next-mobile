@@ -111,18 +111,14 @@ const CarFreakLayout = (props) => {
                                                                 props.onScopeChange('public')
                                                             }
                                                         }}>
-                                                            <Tooltip title="Public" placement="top">
                                                                 <img src={earthGreyIcon} style={{ height: 20, width: 20 }}></img>
-                                                            </Tooltip>
                                                         </Radio.Button>
                                                         <Radio.Button className="round-border-left" value="following" onClick={(e) => {
                                                             if (props.onScopeChange) {
                                                                 props.onScopeChange('following')
                                                             }
                                                         }}>
-                                                            <Tooltip title="Following" placement="top">
                                                                 <img src={followingGreyIcon} style={{ height: 20, width: 20 }}></img>
-                                                            </Tooltip>
                                                         </Radio.Button>
                                                     </RadioGroup>
                                                 </span>

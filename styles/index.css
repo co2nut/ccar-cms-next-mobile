@@ -1849,6 +1849,18 @@ code {
   left: 0;
   z-index: 3;
   color: '#F9A825';
+  margin-left: 0px;
+  margin-bottom:10px;
+}
+
+.readyStockDotGrid{
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  color: '#F9A825';
   margin-left: 10px;
   margin-bottom:10px;
 }

@@ -10,6 +10,9 @@ const Index = (props) => {
 
 
     return (
+        props.router.isFallback ?
+            null
+            :
         <ReduxPersistWrapper cookie={props.cookie}>
             {
                 props.app.initedRedux ?
@@ -21,8 +24,15 @@ const Index = (props) => {
     )
 }
 
+export async function getStaticPaths() {
+    return {
+        paths: [],
+        fallback: true
+    }
+}
 
-export async function getServerSideProps(context) {
+
+export async function getStaticProps(context) {
 
 
     return {

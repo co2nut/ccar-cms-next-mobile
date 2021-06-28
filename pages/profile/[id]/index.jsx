@@ -40,7 +40,7 @@ export async function getServerSideProps(context) {
     if (_.isPlainObject(profile) && !_.isEmpty(profile)) {
         seoData = getProfileSeoData(profile);
     }
-    console.log(seoData);
+   
     return {
         props: {
             cookie: _.get(context, ['req', 'headers', 'cookie']) || null,

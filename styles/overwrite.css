@@ -319,6 +319,10 @@ video {
     border-color: #FFCC32;
 }
 
+/* .ant-pagination-item:focus a, .ant-pagination-item:hover a {
+    color: #FFCC32;
+} */
+
 .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
     color: #fff;
     background: #FFCC32;
@@ -438,8 +442,12 @@ video {
     padding: 0px;
 }
 
-.login-drawer .ant-drawer-close .anticon svg {
+/* .login-drawer .ant-drawer-close .anticon svg {
     color: #ffffff;
+} */
+
+.login-drawer .ant-drawer-header{
+    padding:0;
 }
 
 .header-no-padding .ant-drawer-header{

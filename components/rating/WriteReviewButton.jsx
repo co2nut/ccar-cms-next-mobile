@@ -703,16 +703,16 @@ const WriteReviewButton = (props) => {
 
                 <Form onSubmit={handleSubmit} >
 
-                    <div style={{ height: FORM_CONTAINER_SIZE * 0.15 + 'px' }} className="scroll-y-wrapper padding-x-sm ">
+                    <div className="scroll-y-wrapper padding-x-sm ">
                         <Form.Item style={{ margin: 0 }}>
-                            <Row type="flex" align="top">
-                                <Col span={12}>
+                            {/* <Row type="flex" align="top">
+                                <Col span={24}>
                                     <div className='flex-items-align-start'>
                                         <span className='d-inline-block margin-right-sm' >
                                             <Avatar size={50} src={writer.avatar ? writer.avatar : null} icon={writer.avatar ? null : 'user'} ></Avatar>
                                         </span>
                                         <span className='d-inline-block flex-items-align-center' >
-                                            <span className='d-inline-block'>{writer.firstName ? writer.firstName : null} {writer.lastName ? writer.lastName : null}</span>
+                                            <span className="width-100">{writer.firstName ? writer.firstName : null} {writer.lastName ? writer.lastName : null}</span>
                                             {
                                                 reviewForm.state ?
                                                     <span className='blue d-inline-block margin-right-sm flex-items-align-center padding-left-xs'> {reviewForm.state}</span>
@@ -727,10 +727,45 @@ const WriteReviewButton = (props) => {
                                         <p>{reviewForm.createdAt ? moment(reviewForm.createdAt).format('D MMMM Y') : moment().format('D MMMM Y')}</p>
                                     </div>
                                 </Col>
+                            </Row> */}
+                            <Row>
+                                <Col span={24}>
+                                    <div className='d-inline-block margin-right-md' style={{verticalAlign:'top'}}>
+                                        <Avatar size={50} src={writer.avatar ? writer.avatar : null} icon={writer.avatar ? null : 'user'} ></Avatar>
+                                    </div>
+                                    <div className='d-inline-block' style={{verticalAlign:'top'}}>
+                                       <span> {writer.firstName ? writer.firstName : null} {writer.lastName ? writer.lastName : null} </span> 
+                                    <div style={{marginTop:'-10px'}}>
+                                    <Upload
+                                        accept="image/*"
+                                        onChange={({ fileList }) => {
+                                            onChangeImage(fileList)
+                                        }}
+                                        multiple={true}
+                                        fileList={reviewForm.images}
+                                        showUploadList={false}
+                                        beforeUpload={file => false}
+                                        disabled={notEmptyLength(reviewForm.images) ? reviewForm.images.length >= IMAGELIMIT : false}
+                                    >
+                                    {/* <Tooltip placement="top" title={`Maximum ${IMAGELIMIT} images upload`}>
+                                        <img src="/assets/add-post/image.png" style={{ width: '25px', height: '25px' }} className={`margin-x-sm margin-bottom-sm ${reviewForm.images.length >= IMAGELIMIT ? 'cursor-not-allowed' : 'cursor-pointer'}`} />
+                                    </Tooltip> */}
+                                    <Button style={{background:'#FFCC32', color:'#ffffff'}}> Upload Photo </Button>
+                                    </Upload>
+                                    </div>
+                                    </div>
+
+                                    <Form.Item style={{ margin: 0 }} >
+                                        <ScrollContainer style={{ height: '70px', width: "100%" }} className="d-flex margin-y-sm" vertical={false}>
+                                            {_renderVideoCard(reviewForm.videos)}
+                                            {_renderImageCard(reviewForm.images)}
+                                        </ScrollContainer>
+                                    </Form.Item>
+                                </Col>
                             </Row>
                         </Form.Item>
                     </div>
-                    <div style={{ height: FORM_CONTAINER_SIZE * 0.75 + 'px' }} className="scroll-y-wrapper padding-x-sm">
+                    <div className="scroll-y-wrapper padding-x-sm">
 
                         {
                             notEmptyLength(props.selection) ?
@@ -781,17 +816,7 @@ const WriteReviewButton = (props) => {
                             )}
                         </Form.Item>
 
-
-                        <Form.Item style={{ margin: 0 }} >
-
-                            <ScrollContainer style={{ height: '70px', width: "100%" }} className="d-flex margin-y-sm" vertical={false}>
-                                {_renderVideoCard(reviewForm.videos)}
-                                {_renderImageCard(reviewForm.images)}
-
-                            </ScrollContainer>
-                        </Form.Item>
-
-                        <div className="margin-y-sm">
+                        {/* <div className="margin-y-sm">
                             <Form.Item style={{ margin: 0 }}>
                                 <Row className="thin-border round-border padding-sm" gutter={[10, 20]}>
                                     <Col xs={24} sm={24} md={12} lg={12} xl={12}>
@@ -815,35 +840,13 @@ const WriteReviewButton = (props) => {
                                                     <img src="/assets/add-post/image.png" style={{ width: '25px', height: '25px' }} className={`margin-x-sm margin-bottom-sm ${reviewForm.images.length >= IMAGELIMIT ? 'cursor-not-allowed' : 'cursor-pointer'}`} />
                                                 </Tooltip>
                                             </Upload>
-                                            {/* <a onClick={(e) => { setView('state') }}>
-                                                <img src="/assets/add-post/location.png" style={{ width: '25px', height: '25px' }} className="margin-x-sm margin-bottom-sm" />
-                                            </a> */}
-                                            {/* <a>
-                                                <img src="/assets/add-post/add-people.png" style={{ width: '25px', height: '25px' }} className="margin-x-sm margin-bottom-sm" />
-                                            </a> */}
-                                            {/* <a>
-                                                <Upload
-                                                    accept="video/*"
-                                                    onChange={({ fileList }) => {
-                                                        onChangeVideo(fileList)
-                                                    }}
-                                                    fileList={reviewForm.videos}
-                                                    showUploadList={false}
-                                                    beforeUpload={file => false}
-                                                    disabled={notEmptyLength(reviewForm.videos) ? reviewForm.videos.length >= VIDEOLIMIT : false}
-                                                >
-                                                    <Tooltip placement="top" title={`Maximum ${VIDEOLIMIT} videos upload`}>
-                                                        <img src="/assets/add-post/Video.png" style={{ width: '25px', height: '25px' }} className="margin-x-sm margin-bottom-sm" />
-                                                    </Tooltip>
-                                                </Upload>
-                                            </a> */}
                                         </div>
                                     </Col>
                                 </Row>
                             </Form.Item>
-                        </div>
+                        </div> */}
                     </div>
-                    <div style={{ height: FORM_CONTAINER_SIZE * 0.1 + 'px' }} className="flex-items-align-center">
+                    <div className="flex-items-align-center">
                         <Button htmlType="submit" loading={buttonLoading} type="primary" style={{ color: 'white', width: '100%' }}>
                             {mode == 'add' ? "Add Post" : "Edit Post"}
                         </Button>
@@ -910,7 +913,8 @@ const WriteReviewButton = (props) => {
         <span className={props.className ? props.className : null} style={props.style ? props.style : null}>
             <Modal
                 visible={visible}
-                title={props.title && (view == 'add' || view == 'edit') ? props.title : title}
+                // title={props.title && (view == 'add' || view == 'edit') ? props.title : title}
+                title={null}
                 maskClosable={true}
                 centered={true}
                 closable={true}
@@ -920,7 +924,7 @@ const WriteReviewButton = (props) => {
                     reset();
                 }}
             >
-                <div style={{ height: FORM_CONTAINER_SIZE + 'px' }} className="scroll-y-wrapper" >
+                <div className="scroll-y-wrapper" >
                     <QueueAnim type="bottom">
                         {
                             view == 'add' || view == 'edit' ?

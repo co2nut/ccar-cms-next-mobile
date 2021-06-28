@@ -268,11 +268,11 @@ const ReviewList = (props) => {
                                 {
                                     item.title && item.comment ?
                                         [
-                                            <div className="subtitle1 margin-y-sm">
+                                            <div className="subtitle1 margin-y-sm text-truncate">
                                                 {item.title}
                                             </div>,
-                                            <div style={{ overflowX: "hidden", maxWidth: '97%' }} ref={containerRef}>
-                                                <span ref={item.textRef} className={item.showText ? "headline text-overflow-break d-inline-block" : "headline   text-truncate d-inline-block font-weight-thin "}>
+                                            <div style={{ overflowX: "hidden", maxWidth: '98%' }} ref={containerRef}>
+                                                <span ref={item.textRef} className={item.showText ? "headline text-overflow-break d-inline-block" : "headline text-truncate d-inline-block font-weight-thin "}>
                                                     {item.comment}
                                                 </span>
                                             </div>,
