@@ -43,7 +43,6 @@ const ProductList = (props) => {
     let currentDateTime = moment().format()
     if (notEmptyLength(props.data)) {
       if (props.data != productList) {
-        setProductList([]);
         let inputDataList = _.cloneDeep(props.data)
 
         inputDataList.map(function (v) {
@@ -118,6 +117,8 @@ const ProductList = (props) => {
         })
         setProductList(inputDataList);
       }
+    } else {
+      setProductList([]);
     }
 
   }
@@ -260,7 +261,7 @@ const ProductList = (props) => {
   }
 
   const _renderCondition = (v) => {
-    
+
     let value = v.condition.toUpperCase()
     if (v.condition == 'new') {
       return (
@@ -620,7 +621,7 @@ const ProductList = (props) => {
                             :
                             null
                       }
-                      <div className="wrap-product-ads-title-horizontal relative-wrapper" style={{marginTop:'6px'}}>
+                      <div className="wrap-product-ads-title-horizontal relative-wrapper" style={{ marginTop: '6px' }}>
                         <Link href={routePaths.viewCarDetails.to || '/'} as={typeof (routePaths.viewCarDetails.as) == 'function' ? routePaths.viewCarDetails.as(v) : '/'} >
                           <a target="_blank">
                             <div className="text-truncate-twoline small-text" style={{ lineHeight: 1.2 }}>
@@ -631,7 +632,7 @@ const ProductList = (props) => {
                           </a>
                         </Link>
                         <div className="relative-wrapper">
-                          <p style={{ marginBottom: '0px', fontSize:'10px' }} className="small-text">
+                          <p style={{ marginBottom: '0px', fontSize: '10px' }} className="small-text">
                             {v.carspecsAll ?
                               v.carspecsAll.transmission + ' | ' +
                               renderMileageRange(v.mileage, v.mileage2) + ' | ' +
@@ -672,7 +673,7 @@ const ProductList = (props) => {
                           } registrationUrl={v.registrationUrl} />
                           :
                           <div className="width-100">
-                            <Button type="normal" className="width-100 ads-purchase-button cursor-not-allowed" style={{ padding: 0, background: 'rgb(237, 236, 234)', borderColor: 'rgb(237, 236, 234)' }}><img src="/assets/CarListingIconMobile/registration-card.png"/></Button>
+                            <Button type="normal" className="width-100 ads-purchase-button cursor-not-allowed" style={{ padding: 0, background: 'rgb(237, 236, 234)', borderColor: 'rgb(237, 236, 234)' }}><img src="/assets/CarListingIconMobile/registration-card.png" /></Button>
                           </div>
                       }
                     </Col>
@@ -691,7 +692,7 @@ const ProductList = (props) => {
 
                   <Row gutter={[5, 0]} className="padding-sm">
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
-                      <WhatsAppButton mobileNumber={v ? v : null} 
+                      <WhatsAppButton mobileNumber={v ? v : null}
                       // button={() => {
                       //   return (<div
                       //     className="w-100 ccar-product-btn-car padding-xs cursor-pointer flex-items-align-center flex-justify-center"
@@ -704,7 +705,7 @@ const ProductList = (props) => {
                       </WhatsAppButton>
                     </Col>
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
-                      <ContactList companys={v.companys ? v.companys : null} contactPerson={notEmptyLength(v.createdBy) ? v.createdBy : null} 
+                      <ContactList companys={v.companys ? v.companys : null} contactPerson={notEmptyLength(v.createdBy) ? v.createdBy : null}
                       // button={() => {
                       //   return (
                       //     <div
@@ -718,7 +719,7 @@ const ProductList = (props) => {
                       />
                     </Col>
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
-                      <AddCompareProductButton data={v} 
+                      <AddCompareProductButton data={v}
                       // savedButton={() => {
                       //   return (
                       //     <div
@@ -741,13 +742,13 @@ const ProductList = (props) => {
                       //   )
                       // }
                       // }
-                      
+
                       />
                     </Col>
                     <Col xs={6} sm={6} md={6} lg={6} xl={6}>
                       <Car360ViewButton id={v.xmlUrl ? v._id : null}>
                         <Button type="normal" className={`w-100 ads-purchase-button ${v.xmlUrl ? 'cursor-pointer' : 'cursor-not-allowed '}`} style={{ padding: 0, background: v.xmlUrl ? 'rgb(85,204,212)' : 'rgb(237, 236, 234)', borderColor: v.xmlUrl ? 'rgb(85,204,212)' : 'rgb(237, 236, 234)' }}><img src="/assets/profile/icon-list/Ccar-360_1.gif" /></Button>
-                          {/* <div
+                        {/* <div
                             className={`padding-xs flex-items-align-center flex-justify-center ${v.xmlUrl ? 'cursor-pointer' : 'cursor-not-allowed '}`}
                             style={{  background: v.xmlUrl ? 'rgb(85,204,212)' : 'rgb(237, 236, 234)', borderColor: v.xmlUrl ? 'rgb(85,204,212)' : 'rgb(237, 236, 234)', borderRadius: '5px' }}
                           >

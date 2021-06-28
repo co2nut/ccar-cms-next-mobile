@@ -180,6 +180,7 @@ const SocialInput = (props) => {
         setSuggestList({});
         if (prefix == tagPrefix) {
             setIsLoading(true);
+            console.log(props.clubId);
             axios.get(`${client.io.io.uri}getRelatedUser`, {
                 params: {
                     match: {
@@ -191,7 +192,7 @@ const SocialInput = (props) => {
                     skip: skip || 0,
                 }
             }).then(res => {
-
+                console.log(res);
                 setIsLoading(false);
                 let temp = _.cloneDeep(suggestList);
                 temp[prefix] = suggestListPage > 1 ?

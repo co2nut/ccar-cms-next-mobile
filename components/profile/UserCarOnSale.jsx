@@ -71,6 +71,9 @@ const UserCarOnSale = (props) => {
         }
     }, [props.data])
 
+    useEffect(() => { 
+    console.log(productList);
+    } , [productList])
 
     useEffect(() => {
 
@@ -150,6 +153,8 @@ const UserCarOnSale = (props) => {
             }
             props.loading(true);
             let match = { $match: { ...objectRemoveEmptyValue(filterGroup), 'createdBy': _.get(profile, ['_id']) } }
+            console.log(match);
+            console.log(sorting);
             axios.get(`${client.io.io.uri}carAdsFilterV3`,
                 {
                     params: {
@@ -160,6 +165,7 @@ const UserCarOnSale = (props) => {
                     }
                 }
             ).then((res) => {
+                console.log(res);
                 props.loading(false);
                 if (notEmptyLength(res.data.data)) {
                     setProductList(res.data.data)
@@ -311,12 +317,12 @@ const UserCarOnSale = (props) => {
                                         ''}
                             >
                                 <Select.Option value="">Best Value</Select.Option>
-                                <Select.Option value="price:1">Price (Low to High)</Select.Option>
-                                <Select.Option value="price:-1">Price (High to Low)</Select.Option>
+                                <Select.Option value="searchPrice:1">Price (Low to High)</Select.Option>
+                                <Select.Option value="searchPrice:-1">Price (High to Low)</Select.Option>
                                 <Select.Option value="carspec.year:-1">Year (New to Old)</Select.Option>
                                 <Select.Option value="carspec.year:1">Year (Old to New)</Select.Option>
-                                <Select.Option value="mileage:1">Mileage (Low to High)</Select.Option>
-                                <Select.Option value="mileage:-1">Mileage (High to Low)</Select.Option>
+                                <Select.Option value="mileageFilter:1">Mileage (Low to High)</Select.Option>
+                                <Select.Option value="mileageFilter:-1">Mileage (High to Low)</Select.Option>
                             </Select>
                     </span>
                 </span>

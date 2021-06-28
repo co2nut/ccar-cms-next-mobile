@@ -130,7 +130,10 @@ const MyClubModal = (props) => {
                                             <div className="flex-justify-center flex-items-align-center">
                                                 <Link shallow={false} href={routePaths.socialClubDetails.to || '/'} as={typeof (routePaths.socialClubDetails.as) == 'function' ? routePaths.socialClubDetails.as(club) : '/'}>
                                                     <a>
-                                                        <img src={club.clubAvatar || imageNotFound} style={{ width: '80px', height: '80px', borderRadius: '50px' }} className="img-cover" />
+                                                        <img src={club.clubAvatar || imageNotFound} style={{ width: '80px', height: '80px', borderRadius: '50px' }} className="img-cover relative-wrapper" />
+                                                        <span className='d-inline-block absolute-center background-black-opacity-50 small-text white flex-justify-center flex-items-align-center text-align-center' style={{ width: '80px', height: '80px', borderRadius: '50px' }} >
+                                                          {_.get(club , `clubName`)}
+                                                        </span>
                                                     </a>
                                                 </Link>
                                             </div>
@@ -150,7 +153,10 @@ const MyClubModal = (props) => {
                                             <div className="flex-justify-center flex-items-align-center">
                                                 <Link shallow={false} href={routePaths.socialClubDetails.to || '/'} as={typeof (routePaths.socialClubDetails.as) == 'function' ? routePaths.socialClubDetails.as(club) : '/'}>
                                                     <a>
-                                                        <img src={club.clubAvatar || imageNotFound} style={{ width: '80px', height: '80px', borderRadius: '50px' }} className="img-cover" />
+                                                        <img src={club.clubAvatar || imageNotFound} style={{ width: '80px', height: '80px', borderRadius: '50px' }} className="img-cover relative-wrapper" />
+                                                        <span className='d-inline-block absolute-center background-black-opacity-50 small-text white flex-justify-center flex-items-align-center text-align-center' style={{ width: '80px', height: '80px', borderRadius: '50px' }} >
+                                                          {_.get(club , `clubName`)}
+                                                        </span>
                                                     </a>
                                                 </Link>
                                             </div>

@@ -37,6 +37,9 @@ const AllClubBox = (props) => {
                                                     <a>
                                                         <div className="width-100 relative-wrapper cursor-pointer" style={{ height: 200 }}>
                                                             <img src={_.get(v, ['clubAvatar']) || imageNotFound} className="fill-parent absolute-center img-cover" ></img>
+                                                            <div className="fill-parent background-black-opacity-50 absolute-center subtitle1 flex-items-align-center flex-justify-center white">
+                                                              {_.get(v , `clubName`)}
+                                                            </div>
                                                         </div>
                                                     </a>
                                                 </Link>
@@ -49,6 +52,9 @@ const AllClubBox = (props) => {
                                                 <a>
                                                     <div className="width-100 relative-wrapper cursor-pointer" style={{ height: 200 }}>
                                                         <img src={_.get(v, ['clubAvatar']) || imageNotFound} className="fill-parent absolute-center img-cover" ></img>
+                                                            <div className="fill-parent background-black-opacity-50 absolute-center subtitle1 flex-items-align-center flex-justify-center white">
+                                                              {_.get(v , `clubName`)}
+                                                            </div>
                                                     </div>
                                                 </a>
                                             </Link>

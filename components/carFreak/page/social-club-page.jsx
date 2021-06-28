@@ -140,6 +140,7 @@ const SocialClubPage = (props) => {
                                 if (_.isPlainObject(club) && !_.isEmpty(club)) {
                                     setClubs(_.concat([club], clubs))
                                     setClubTotal(clubTotal + 1)
+                                    props.router.push(`/social-club/${club._id}?invite=1`)
                                 }
                             }}
                         >

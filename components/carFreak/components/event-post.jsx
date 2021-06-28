@@ -17,6 +17,7 @@ import UserAvatar from '../../general/UserAvatar';
 import { loading, loginMode } from '../../../redux/actions/app-actions';
 import { formatNumber, getObjectId, getPlural, getUserName, notEmptyLength, objectRemoveEmptyValue } from '../../../common-function';
 import EmojiPickerButton from '../../general/EmojiPickerButton';
+import SocialInput from './social-input';
 
 
 
@@ -386,34 +387,19 @@ const EventPost = (props) => {
                                             }
                                         </div>
                                     </div>
-                                    <div className="no-border-input thin-border round-border-big background-white padding-sm margin-top-xs" id="post-post-input">
-                                        <Input
-                                            placeholder="What's on your mind?"
-                                            maxLength={1000}
-                                            ref={commentInputRef}
-                                            size="small"
-                                            onPressEnter={(e) => {
-                                                handleSubmit(text);
-                                            }}
-                                            autoFocus={true}
-                                            value={text}
-                                            onChange={(e) => {
-                                                setText(e.target.value)
-                                            }}
-                                            suffix={
-                                                <EmojiPickerButton
-                                                    className="emoji-mart-small"
-                                                    onSelect={(emoji) => {
-                                                        let originalMsg = text || ''
-                                                        originalMsg = text + emoji.native
-                                                        setText(originalMsg)
-                                                    }}
-                                                    position={{ bottom: 0, right: 33 }}
-                                                >
-                                                    <Icon type="smile" className='cursor-pointer grey margin-right-sm margin-top-xs' style={{ fontSize: '17px' }} />
-                                                </EmojiPickerButton>
-                                            } />
-                                    </div>
+                                    <SocialInput
+                                        placeholder="What's on your mind?"
+                                        maxLength={1000}
+                                        inputRef={commentInputRef}
+                                        clubId={getObjectId(_.get(post, ['eventId', 'clubId']))}
+                                        size="small"
+                                        excludeEnter
+                                        emojiPosition={{ bottom: 0, right: 33 }}
+                                        onSubmit={(finalText) => {
+                                            handleSubmit(finalText);
+                                        }}
+                                        autoFocus={true}
+                                    />
                                 </Collapse.Panel>
                             </Collapse>
                         </div>

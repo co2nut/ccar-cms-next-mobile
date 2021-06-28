@@ -1,14 +1,17 @@
 
 import moment from 'moment'
-import { SET_POST_MODAL_LIKE_REFRESH_ID, FETCH_CAR_FREAK_POSTS, FETCH_EDITED_POST } from '../actions/carfreak.action';
 import localStorage from 'local-storage';
 import { checkIsNeedPersist, checkNeedPersist, getPersistObj, persistRedux } from '../config';
 import _ from 'lodash';
+import { SET_POST_MODAL_LIKE_REFRESH_ID, FETCH_CAR_FREAK_POSTS, FETCH_EDITED_POST, FETCH_USER_POST_LIKE_IDS, FETCH_SELECTED_POST  } from '../actions/carfreak.action';
+
 
 const INITIAL_STATE = {
     postModalLikeRefreshId: '',
     carFreakPosts: [],
+    selectedPost: {},
     editedPost: {},
+    userPostLikeIds: [],
 }
 
 export default function (state = INITIAL_STATE, action) {
@@ -20,8 +23,8 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         ...persistStates
     }
-    if(!_.isEqual(state, newState)){
-      state = newState;
+    if (!_.isEqual(state, newState)) {
+        state = newState;
     }
     switch (action.type) {
         case SET_POST_MODAL_LIKE_REFRESH_ID:
@@ -40,6 +43,19 @@ export default function (state = INITIAL_STATE, action) {
             state = {
                 ...state,
                 editedPost: action.payload,
+            };
+            break;
+        case FETCH_SELECTED_POST:
+            state = {
+                ...state,
+                selectedPost: action.payload,
+            };
+            break;
+        case FETCH_USER_POST_LIKE_IDS:
+            console.log(action.payload);
+            state = {
+                ...state,
+                userPostLikeIds: action.payload,
             };
             break;
         default:

@@ -96,6 +96,17 @@ const SocialClubProfilePage1 = (props) => {
         props.updateActiveMenu('6');
     }, [])
 
+
+    useEffect(() => {
+        let query = props.router.query;
+        if (!query) {
+            query = {};
+        }
+        if (query.invite == '1') {
+            setInviteVisible(true)
+        }
+    }, [props.router.query])
+
     useEffect(() => {
         let query = props.router.query;
         if (!query) {

@@ -47,7 +47,6 @@ const PostDrawer = (props) => {
 
     const [visible, setVisible] = useState(false);
     const [post, setPost] = useState({});
-    const [postLike, setPostLike] = useState({});
     const [totalLike, setTotalLike] = useState(0);
     const [messageTotal, setMessageTotal] = useState(0);
     const [messages, setMessages] = useState([]);
@@ -68,15 +67,6 @@ const PostDrawer = (props) => {
 
     }, [props.data])
 
-    useEffect(() => {
-
-        if (_.isPlainObject(props.postLike) && !_.isEmpty(props.postLike)) {
-            setPostLike(props.postLike);
-        } else {
-            setPostLike({});
-        }
-
-    }, [props.postLike])
 
     useEffect(() => {
 
@@ -252,7 +242,7 @@ const PostDrawer = (props) => {
                                 followingButton={() => {
                                     return <span className='d-inline-block round-border background-white padding-y-sm padding-x-md caption black' style={{ border: 'solid 1px', borderColor: '#FFCC32' }} >
                                         Following
-                                  </span>
+                                    </span>
                                 }}
                                 handleSuccess={(data) => {
                                     message.success(data.type == 'remove' ? 'Unfollowed' : 'Followed')
@@ -279,7 +269,7 @@ const PostDrawer = (props) => {
                         </span>
                     </div>
                     {
-                        _.get(post, `chatType` ) == 'carfreaks'?
+                        _.get(post, `chatType`) == 'carfreaks' ?
                             <div className="margin-bottom-sm">
                                 <LightBoxCarousel height={IMAGE_HEIGHT} images={_.compact(_.map(_.get(post, ['mediaList']), function (v) {
                                     return _.get(v, ['url']) || null;
@@ -303,7 +293,6 @@ const PostDrawer = (props) => {
                     <div className="width-100 flex-justify-start flex-items-align-center padding-x-md padding-y-sm" >
                         <LikePostButton className='d-inline-block margin-right-md'
                             chatId={post._id}
-                            postLike={postLike}
                             likeOn="chat"
                             onClick={(liked) => { setTotalLike(liked ? parseInt(totalLike) + 1 : parseInt(totalLike) - 1) }}
                             onSuccessUpdate={(liked, data) => {
@@ -377,6 +366,7 @@ const PostDrawer = (props) => {
                     <div className="flex-justify-space-around flex-items-align-center padding-bottom-sm">
                         <span className='d-inline-block width-80' >
                             <SocialInput
+                                clubId={getObjectId(_.get(post , `clubId`))}
                                 placeholder="What's on your mind?"
                                 maxLength={1000}
                                 inputRef={postCommentRef}

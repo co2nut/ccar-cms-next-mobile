@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import client from '../../../feathers';
 import { carFreakLikeGreyIcon, carFreakLikeIcon } from '../../../icon';
 import { loading, loginMode } from '../../../redux/actions/app-actions';
+import { fetchUserPostLikeIds } from '../../../redux/actions/carfreak.action';
 
 
 
@@ -15,7 +16,6 @@ const TIME_OUT = 1000;
 const LikePostButton = (props) => {
 
     const [likeOn, setLikeOn] = useState('chat')
-    const [postLike, setPostLike] = useState({})
     const [isActived, setIsActived] = useState(false)
     const [timeoutFunc, setTimeoutFunc] = useState();
 
@@ -23,51 +23,30 @@ const LikePostButton = (props) => {
         setLikeOn(props.likeOn || 'chat');
     }, [props.likeOn])
 
-    useEffect(() => {
-        if (_.isPlainObject(props.postLike) && !_.isEmpty(props.postLike)) {
-            setPostLike(props.postLike);
-        } else {
-            setPostLike({});
-        }
-    }, [props.postLike])
-
-    useEffect(() => {
-        if (_.isPlainObject(postLike) && !_.isEmpty(postLike)) {
-            setIsActived(true);
-        } else {
-            setIsActived(false);
-        }
-    }, [postLike])
 
     useEffect(() => {
     }, [isActived])
 
     useEffect(() => {
-        if (props.autoHandle && likeOn) {
-            getPostLike()
-        }
-    }, [props.autoHandle, likeOn])
+        setIsActived(_.indexOf(props.carfreak.userPostLikeIds, props[`${props.likeOn}Id`]) != -1)
+    }, [props.carfreak.userPostLikeIds, props[`${props.likeOn}Id`]])
 
 
-    function getPostLike() {
-        if (props[`${likeOn}Id`] && _.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', '_id']) ) {
-            let query = {};
-            query.likeOn = likeOn
-            query[`${likeOn}Id`] = props[`${likeOn}Id`]
-            query.userId = _.get(props.user, ['info', 'user', '_id'])
-            client.service('chatlikes').find({
-            query: {
-                ...query
+    function patchUserPostLikeIds(ids = [], addMode = true) {
+
+        let newPostLikes = props.carfreak.userPostLikeIds || [];
+
+        if (_.isArray(ids) && !_.isEmpty(ids)) {
+            if (addMode) {
+                newPostLikes = _.union(newPostLikes, ids || []);
+            } else {
+                newPostLikes = _.pullAll(newPostLikes, ids || []);
             }
-            }).then(res => {
-                setPostLike(_.get(res, ['data', 0]) || {})
-            }).catch(err => {
-                console.log(err);
-            });
+            console.log(newPostLikes);
+            props.fetchUserPostLikeIds(newPostLikes);
         }
+
     }
-
-
 
     function onClickLike() {
 
@@ -104,6 +83,8 @@ const LikePostButton = (props) => {
                 }
 
 
+                patchUserPostLikeIds([props[`${likeOn}Id`]], actived);
+
                 setTimeoutFunc(setTimeout(() => {
                     //Only run if the like status no same
                     let query =
@@ -120,13 +101,9 @@ const LikePostButton = (props) => {
                         , {
                             headers: { 'Authorization': client.settings.storage.storage.storage['feathers-jwt'] },
                         }).then((res) => {
+                            console.log(res);
                             if (props.onSuccessUpdate) {
                                 props.onSuccessUpdate(actived, _.get(res, ['data']));
-                            }
-                            if (_.get(res.data, ['type']) == 'add') {
-                                setPostLike(res.data)
-                            } else {
-                                setPostLike({});
                             }
                             setTimeoutFunc();
                         }).catch((err) => {
@@ -139,15 +116,17 @@ const LikePostButton = (props) => {
                 message.error('Post Not Found')
             }
 
+        } else {
+            if (props.onClick) {
+                props.onClick(isActived)
+            }
         }
     }
 
     return (
 
         <span className={`${props.className ? props.className : ''}`} onClick={(e) => {
-            if (!props.readOnly) {
-                onClickLike()
-            }
+            onClickLike()
         }}>
             {
                 !isActived ?
@@ -189,10 +168,12 @@ const LikePostButton = (props) => {
 const mapStateToProps = state => ({
     app: state.app,
     user: state.user,
+    carfreak: state.carfreak,
 });
 
 const mapDispatchToProps = {
     loading: loading,
     loginMode,
+    fetchUserPostLikeIds: fetchUserPostLikeIds,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(withRouter(LikePostButton)));

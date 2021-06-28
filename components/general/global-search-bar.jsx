@@ -38,10 +38,10 @@ const WORD_LENGTH_TO_START_SEARCH = 2;
 const searchBarRef = React.createRef();
 
 const SEARCH_SECTIONS = [
-    // {
-    //     value: 'carFreak',
-    //     text: 'CarFreaks'
-    // },
+    {
+        value: 'carFreak',
+        text: 'CarFreaks'
+    },
     {
         value: 'socialBoard',
         text: 'Social Board'
@@ -176,38 +176,38 @@ const GlobalSearchBar = (props) => {
         if (notEmptyLength(data)) {
             let list = data.map(group => {
                 switch (_.get(group, ['value'])) {
-                    // case 'carFreak':
-                    //     return (
-                    //         <OptGroup key={group.title} label={renderTitle(group.title, group.total)}>
-                    //             {
-                    //                 _.isArray(_.get(group, ['children'])) && !_.isEmpty(_.get(group, ['children'])) ?
-                    //                     group.children.map((opt, index) => (
-                    //                         <Option key={`${group.title}-${index}`} value={parseTagStringToPlainString(`${opt.title || ''} | ${opt.content || ''}`)} onClick={() => {
-                    //                             if (_.isPlainObject(opt)) {
-                    //                                 if (opt._id) {
-                    //                                     props.router.push('/car-freaks/' + opt._id);
-                    //                                 }
-                    //                             }
-                    //                         }}>
-                    //                             <Highlighter
-                    //                                 style={{ padding: '0px 10px' }}
-                    //                                 highlightStyle={{ color: '#ffc069', padding: 0 }}
-                    //                                 textToHighlight={parseTagStringToPlainString(`${opt.title || ''} | ${opt.content || ''}`)}
-                    //                                 autoEscape={true}
-                    //                                 className="overline"
-                    //                                 searchWords={searchWords} />
-                    //                         </Option>
-                    //                     ))
-                    //                     :
-                    //                     <Option key={`${group.title}NotFound`} value={`${group.title}NotFound`} disabled>
-                    //                         <span className='d-inline-block overline' style={{ padding: '0px 10px' }} >
-                    //                             {group.title} Not Found
-                    //                         </span>
-                    //                     </Option>
-                    //             }
-                    //         </OptGroup>
-                    //     )
-                    //     break;
+                    case 'carFreak':
+                        return (
+                            <OptGroup key={group.title} label={renderTitle(group.title, group.total)}>
+                                {
+                                    _.isArray(_.get(group, ['children'])) && !_.isEmpty(_.get(group, ['children'])) ?
+                                        group.children.map((opt, index) => (
+                                            <Option key={`${group.title}-${index}`} value={parseTagStringToPlainString(`${opt.title || ''} | ${opt.content || ''}`)} onClick={() => {
+                                                if (_.isPlainObject(opt)) {
+                                                    if (opt._id) {
+                                                        props.router.push('/car-freaks/' + opt._id);
+                                                    }
+                                                }
+                                            }}>
+                                                <Highlighter
+                                                    style={{ padding: '0px 10px' }}
+                                                    highlightStyle={{ color: '#ffc069', padding: 0 }}
+                                                    textToHighlight={parseTagStringToPlainString(`${opt.title || ''} | ${opt.content || ''}`)}
+                                                    autoEscape={true}
+                                                    className="overline"
+                                                    searchWords={searchWords} />
+                                            </Option>
+                                        ))
+                                        :
+                                        <Option key={`${group.title}NotFound`} value={`${group.title}NotFound`} disabled>
+                                            <span className='d-inline-block overline' style={{ padding: '0px 10px' }} >
+                                                {group.title} Not Found
+                                            </span>
+                                        </Option>
+                                }
+                            </OptGroup>
+                        )
+                        break;
                     case 'socialBoard':
                         return (
                             <OptGroup key={group.title} label={renderTitle(group.title, group.total)}>
