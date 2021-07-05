@@ -251,9 +251,9 @@ const ReviewList = (props) => {
 
                         <span className='d-inline-block ' style={{ position: 'absolute', top: 10, right: 10 }} >
                             <Dropdown overlay={menu(item)} placement="bottomRight">
-                                <a className="ant-dropdown-link " onClick={e => e.preventDefault()}>
+                                <span className="ant-dropdown-link ">
                                     <img src="https://img.icons8.com/material-rounded/24/000000/menu-2.png" />
-                                </a>
+                                </span>
                             </Dropdown>
                         </span>
 

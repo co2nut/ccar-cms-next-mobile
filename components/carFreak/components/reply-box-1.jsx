@@ -12,6 +12,7 @@ import UserAvatar from '../../general/UserAvatar';
 import { formatNumber, getObjectId, getPlural, getUserName, notEmptyLength, objectRemoveEmptyValue } from '../../../common-function';
 import { loading, loginMode } from '../../../redux/actions/app-actions';
 import ParseTag from '../../general/ParseTag';
+import LightBoxGallery from '../../general/LightBoxGallery';
 
 
 
@@ -141,11 +142,23 @@ const ReplyBox1 = (props) => {
                                     </span>
                                     <span className='d-inline-block cursor-pointer blue caption font-weight-bold' onClick={(e) => { handleSubmit(typeMessage) }} >
                                         Save
-                            </span>
+                                    </span>
                                 </div>
                                 :
-                                <ParseTag data={_.get(comment, ['message']) || ''} className="width-100" />
+                                _.get(comment, `message`) ?
+                                    <ParseTag data={_.get(comment, ['message']) || ''} className="width-100 text-overflow-break" />
+                                    :
+                                    null
                         }
+                        {
+                            _.isArray(_.get(comment, `mediaList`)) && !_.isEmpty(_.get(comment, `mediaList`)) && !editMode ?
+                                <div className="">
+                                    <LightBoxGallery images={_.map(_.get(comment, `mediaList`), 'url')}></LightBoxGallery>
+                                </div>
+                                :
+                                null
+                        }
+
                         <div className="width-100 flex-justify-start flex-items-align-center" style={{ padding: 0 }}>
                             <span className="small-text margin-right-md grey font-weight-light" >{formatNumber(totalLike, 'auto', true, 0, false) || 0} Likes</span>
                             {/* <span className="small-text margin-right-md grey font-weight-light" >{getPlural('Reply', 'Replies', messageTotal, true)}</span> */}

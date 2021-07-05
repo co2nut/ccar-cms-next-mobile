@@ -14,8 +14,11 @@ import { loading, loginMode } from '../../../redux/actions/app-actions';
 import { getObjectId, getPlural, getUserName, notEmptyLength, objectRemoveEmptyValue } from '../../../common-function';
 import UserAvatar from '../../general/UserAvatar';
 import ParseTag from '../../general/ParseTag';
-import { carFreakLikeGreyIcon, carFreakLikeIcon, carFreakReplyIcon } from '../../../icon';
+import { carFreakLikeGreyIcon, carFreakLikeIcon, carFreakReplyIcon, pinIcon } from '../../../icon';
 import ScrollLoadWrapper from '../../general/ScrollLoadWrapper';
+import PinCommentButton from './pin-comment-button';
+import LightBoxGallery from '../../general/LightBoxGallery';
+import uploadImages from '../../../api/uploadImages';
 
 
 
@@ -49,8 +52,12 @@ const CommentBox1 = (props) => {
 
     const [typeMessage, setTypeMessage] = useState('')
     const [replyTypeMessage, setReplyTypeMessage] = useState('')
+    const [replyImages, setReplyImages] = useState([]);
 
+    const [commentImages, setCommentImages] = useState([]);
 
+    const [commentMenu, setCommentMenu] = useState([]);
+    const [pinnedComments, setPinnedComments] = useState([]);
 
     useEffect(() => {
 
@@ -75,14 +82,84 @@ const CommentBox1 = (props) => {
 
     }, [comment])
 
-    // useEffect(() => {
-    //     if (!props.style || !isValidNumber(props.style.height) || !(parseFloat(props.style.height) >= defaultHeight)) {
-    //         setHeight(defaultHeight);
-    //     } else {
-    //         setHeight(props.style.height);
-    //     }
+    useEffect(() => {
 
-    // }, [props.style])
+        if (_.isArray(props.pinnedComments) && !_.isEmpty(props.pinnedComments)) {
+            setPinnedComments(props.pinnedComments);
+        } else {
+            setPinnedComments([]);
+        }
+
+    }, [props.pinnedComments])
+
+    useEffect(() => {
+
+        let newMenu = [];
+        if (props.pinnable || isPinned(pinnedComments, comment)) {
+            newMenu = _.concat(newMenu, [
+                <Menu.Item>
+                    <PinCommentButton
+                        comment={comment}
+                        pinnedComments={pinnedComments}
+                        pinButton={() => {
+                            return (
+                                <span >Pin Comment</span>
+                            )
+                        }}
+                        unpinButton={() => {
+                            return (
+                                <span >Unpin Comment</span>
+                            )
+                        }}
+                        onUpdatePinComments={(data) => {
+                            if (props.onUpdatePinComments) {
+                                props.onUpdatePinComments(data);
+                            }
+                        }} />
+                </Menu.Item>
+            ])
+        }
+
+        if (props.user.authenticated && _.get(props.user, ['info', 'user', '_id']) == _.get(comment, ['userId', '_id'])) {
+            newMenu = _.concat(newMenu, [
+                <Menu.Item onClick={(e) => {
+                    if (props.onEditClick) {
+                        props.onEditClick(comment)
+                    } else {
+                        setEditMode(true)
+                    }
+                }}><span >Edit</span>
+                </Menu.Item>,
+                <Menu.Item>
+                    <Popconfirm
+                        title="Are you sure to delete this comment?"
+                        onConfirm={(e) => {
+                            if (props.onRemoveClick) {
+                                props.onRemoveClick(comment);
+                            } else {
+                                handleRemove(comment);
+                            }
+                        }}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <span>Delete</span>
+                    </Popconfirm>
+                </Menu.Item>
+            ])
+        }
+
+        setCommentMenu(newMenu)
+
+    }, [props.user.authenticated, props.pinnable, comment, pinnedComments])
+
+    function isPinned(pinnedComments, comment) {
+
+        if (_.isArray(pinnedComments) && !_.isEmpty(pinnedComments) && _.isPlainObject(comment) && !_.isEmpty(comment)) {
+            return _.some(pinnedComments, ['_id', comment._id]);
+        }
+        return false;
+    }
 
     function getData() {
 
@@ -118,20 +195,27 @@ const CommentBox1 = (props) => {
         }
     }
 
-    function handleSubmit(text) {
+    function handleSubmit(text, images) {
 
         setEditMode(false)
         if (props.onChange) {
-            props.onChange({ ...comment, message: text })
+            props.onChange({ ...comment, message: text, mediaList : images })
         }
 
         if (_.isPlainObject(comment) && !_.isEmpty(comment) && _.get(comment, ['_id']) && editMode) {
-            client.authenticate().then(res => {
+            client.authenticate().then( async res => {
+                if(_.isArray(images) && !_.isEmpty(images)){
+                    console.log(images);
+                    images = await uploadImages(images);
+                    console.log(images);
+                }
                 client.service('chatmessages')
                     .patch(comment._id, {
                         message: text,
+                        mediaList : images,
                     })
                     .then((res1) => {
+                        
                         if (props.onUpdate) {
                             res1.userId = res.user;
                             props.onUpdate(res1);
@@ -163,7 +247,7 @@ const CommentBox1 = (props) => {
         }
     }
 
-    function handleReplySubmit(text) {
+    function handleReplySubmit(text, images) {
 
         if (!_.get(props.user, ['authenticated']) || !_.get(props.user, ['info', 'user', '_id'])) {
             message.error('Please Login First!');
@@ -177,11 +261,17 @@ const CommentBox1 = (props) => {
         }
 
         if (canSendMessage) {
-            client.authenticate().then(res => {
+            client.authenticate().then(async res => {
+                if(_.isArray(images) && !_.isEmpty(images)){
+                    console.log(images);
+                    images = await uploadImages(images);
+                    console.log(images);
+                }
                 client.service('chatmessagereplies').create({
                     messageId: comment._id,
                     userId: res.user._id,
                     message: text,
+                    mediaList : images,
                 }).then(res1 => {
                     setText('');
                     setCanSendMessage(false);
@@ -243,14 +333,20 @@ const CommentBox1 = (props) => {
     return (
         notEmptyLength(objectRemoveEmptyValue(comment)) ?
             <React.Fragment>
-                <div className={`flex-justify-space-between flex-items-align-start ${props.className ? props.className : ''}`} style={{ ...props.style }}>
+                <div className={`flex-justify-space-between flex-items-align-start relative-wrapper ${props.theme == 'pin' ? 'background-yellow-lighten-4' : ''} ${props.className ? props.className : ''}`} style={props.theme == 'pin' ? { border: '3px solid #FFCC32' } : { ...props.style }} key={props.key}>
+                    {
+                        props.theme == 'pin' ?
+                            <img src={pinIcon} style={{ position: 'absolute', right: -15, top: -10, width: 35, height: 35 }} />
+                            :
+                            null
+                    }
                     <span className='d-inline-block' style={{ width: 50 }} >
                         <UserAvatar redirectProfile data={_.get(comment, ['userId'])} size={30} />
                     </span>
                     <span className='d-inline-block headline width-80' >
-                        <span className='headline font-weight-black padding-right-sm black' >
+                        <div className='headline font-weight-black padding-right-sm black' >
                             {getUserName(_.get(comment, ['userId']), 'freakId')}
-                        </span>
+                        </div>
                         {
                             editMode ?
                                 <div className="width-100 background-white">
@@ -259,6 +355,7 @@ const CommentBox1 = (props) => {
                                             <SocialInput
                                                 placeholder="What's on your mind?"
                                                 text={`${_.get(comment, ['message']) || ''}`}
+                                                images={_.get(comment, `mediaList`)}
                                                 editMode
                                                 clickOutsideSubmit
                                                 maxLength={1000}
@@ -266,23 +363,40 @@ const CommentBox1 = (props) => {
                                                 onChange={(v, finalText) => {
                                                     setTypeMessage(finalText)
                                                 }}
+                                                onImageChange={(images) => {
+                                                    console.log(images);
+                                                    setCommentImages(images);
+                                                }}
                                                 clubId={props.clubId}
                                                 hideEmojiPicker
+                                                imageUpload={props.imageUpload || false}
+                                                imageUploadMultiple={props.imageUploadMultiple || false}
                                                 autoFocus={true}
                                                 excludeEnter
-                                                onSubmit={(text) => {
-                                                    handleSubmit(text);
+                                                onSubmit={(text, images) => {
+                                                    handleSubmit(text, images);
                                                     setEditMode(false);
                                                 }}
                                             />
                                         </span>
-                                        <span className='d-inline-block cursor-pointer blue caption font-weight-bold' onClick={(e) => { handleSubmit(typeMessage) }} >
+                                        <span className='d-inline-block cursor-pointer blue caption font-weight-bold' onClick={(e) => { handleSubmit(typeMessage, commentImages) }} >
                                             Save
                                         </span>
                                     </div>
                                 </div>
                                 :
-                                <ParseTag data={_.get(comment, ['message']) || ''} className="width-100 text-overflow-break" />
+                                _.get(comment, `message`) ?
+                                    <ParseTag data={_.get(comment, ['message']) || ''} className="width-100 text-overflow-break" />
+                                    :
+                                    null
+                        }
+                        {
+                            _.isArray(_.get(comment, `mediaList`)) && !_.isEmpty(_.get(comment, `mediaList`)) && !editMode ?
+                                <div className="">
+                                    <LightBoxGallery images={_.map(_.get(comment, `mediaList`), 'url')}></LightBoxGallery>
+                                </div>
+                                :
+                                null
                         }
 
                         <div className="width-100 flex-items-align-center padding-y-xs">
@@ -320,29 +434,29 @@ const CommentBox1 = (props) => {
                                     <div className="width-100">
                                         <div className="padding-left-xl margin-y-sm">
                                             <ScrollLoadWrapper autoHeight autoHeightMax={200}>
-                                            {
-                                                _.map(messages, function (v) {
-                                                    return (
-                                                        <div>
-                                                            <ReplyBox1 data={v}
-                                                                clubId={props.clubId}
-                                                                onChange={(data) => {
-                                                                    handleReplyChange(data);
-                                                                }}
-                                                                onRemove={(data) => {
-                                                                    handleReplyRemove(data);
-                                                                }}
-                                                                handleReply={(name, id) => {
-                                                                    if (name && id) {
-                                                                        setExpandReplyKey('1');
-                                                                        addAlias(name || '', getObjectId(id) || '')
-                                                                    }
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    )
-                                                })
-                                            }
+                                                {
+                                                    _.map(messages, function (v) {
+                                                        return (
+                                                            <div key={`reply-${getObjectId(v)}`}>
+                                                                <ReplyBox1 data={v}
+                                                                    clubId={props.clubId}
+                                                                    onChange={(data) => {
+                                                                        handleReplyChange(data);
+                                                                    }}
+                                                                    onRemove={(data) => {
+                                                                        handleReplyRemove(data);
+                                                                    }}
+                                                                    handleReply={(name, id) => {
+                                                                        if (name && id) {
+                                                                            setExpandReplyKey('1');
+                                                                            addAlias(name || '', getObjectId(id) || '')
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
                                             </ScrollLoadWrapper>
                                         </div>
                                     </div>
@@ -361,6 +475,9 @@ const CommentBox1 = (props) => {
                                                     onChange={(text, finalText) => {
                                                         setReplyTypeMessage(finalText)
                                                     }}
+                                                    onImageChange={(images) => {
+                                                        setReplyImages(images)
+                                                    }}
                                                     clubId={props.clubId}
                                                     hideEmojiPicker
                                                     autoFocus={true}
@@ -369,9 +486,9 @@ const CommentBox1 = (props) => {
                                                     resetIndicator={resetIndicator}
                                                 />
                                             </span>
-                                            <span className='d-inline-block cursor-pointer ccar-button-yellow caption font-weight-bold' onClick={(e) => { handleReplySubmit(replyTypeMessage) }} >
+                                            <span className='d-inline-block cursor-pointer ccar-button-yellow caption font-weight-bold' onClick={(e) => { handleReplySubmit(replyTypeMessage, replyImages) }} >
                                                 Send
-                                        </span>
+                                            </span>
                                         </div>
                                     </div>
                                 </Collapse.Panel>
@@ -379,31 +496,18 @@ const CommentBox1 = (props) => {
                         </div>
                     </span>
                     <span className='d-inline-block' style={{ width: 30 }} >
+
                         {
-                            _.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', '_id']) && _.get(props.user, ['info', 'user', '_id']) == _.get(comment, ['userId', '_id']) ?
-                                <span className='d-inline-block' id={`comment-menu-${uid}`} >
-                                    <Dropdown getPopupContainer={() => document.getElementById(`comment-menu-${uid}`)}
-                                        overlay={
-                                            <Menu>
-                                                <Menu.Item onClick={(e) => {
-                                                    setEditMode(true)
-                                                }}><span >Edit</span></Menu.Item>
-                                                <Menu.Item>
-                                                    <Popconfirm
-                                                        title="Are you sure to delete this comment?"
-                                                        onConfirm={(e) => {
-                                                            handleRemove(comment);
-                                                        }}
-                                                        okText="Yes"
-                                                        cancelText="No"
-                                                    >
-                                                        <span>Delete</span>
-                                                    </Popconfirm>
-                                                </Menu.Item>
-                                            </Menu>
-                                        }>
+                            _.isArray(commentMenu) && !_.isEmpty(commentMenu) ?
+                                <span className='d-inline-block' style={{ position: 'absolute', top: 30, right: 20 }} >
+                                    <Dropdown overlay={
+                                        <Menu>
+                                            {commentMenu}
+                                        </Menu>
+                                    }>
                                         <Icon type="more" className="commentMore" style={{ fontSize: 20 }} />
                                     </Dropdown>
+
                                 </span>
                                 :
                                 null

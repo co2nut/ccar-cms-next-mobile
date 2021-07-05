@@ -32,7 +32,6 @@ const PostMobileView = (props) => {
 
     const [post, setPost] = useState({});
     const [chatType, setChatType] = useState('carfreaks');
-    const [totalLike, setTotalLike] = useState(0);
     const [height, setHeight] = useState(defaultHeight);
     const [imageIndex, setImageIndex] = useState(0);
 
@@ -49,7 +48,6 @@ const PostMobileView = (props) => {
 
 
     useEffect(() => {
-        setTotalLike(!_.isNaN(parseInt(_.get(post, ['totalLike']))) ? formatNumber(_.get(post, ['totalLike']), null, true, 0, 0) : 0);
         setChatType(_.get(post, ['chatType']))
     }, [post])
 
@@ -106,7 +104,8 @@ const PostMobileView = (props) => {
                         </span>
 
                         <span className='d-inline-block ' >
-                            <FollowButton type="user" followerId={_.get(props.user, ['info', 'user', '_id'])} userId={getObjectId(_.get(post, `userId`))}
+                            <FollowButton
+                                readOnly={props.readOnly} type="user" followerId={_.get(props.user, ['info', 'user', '_id'])} userId={getObjectId(_.get(post, `userId`))}
                                 followButton={() => {
                                     return <span className='d-inline-block round-border background-ccar-button-yellow padding-y-sm padding-x-md caption black' >
                                         Follow
@@ -166,46 +165,47 @@ const PostMobileView = (props) => {
                                     <div className="red font-weight-bold caption">
                                         {`${moment(_.get(post, ['eventId', 'startAt'])).format('dddd, YYYY-MM-DD, hh:mm')}`}
                                     </div>
-                                    <div style={{fontWeight: 500 }} className="text-truncate-twoline pre-wrap caption">{_.get(post, `eventId.name`)}</div>
-                                    <div style={{fontWeight: 500 }} className="text-truncate-twoline pre-wrap caption">{_.get(post, `eventId.location`)}</div>
+                                    <div style={{ fontWeight: 500 }} className="text-truncate-twoline pre-wrap caption">{_.get(post, `eventId.name`)}</div>
+                                    <div style={{ fontWeight: 500 }} className="text-truncate-twoline pre-wrap caption">{_.get(post, `eventId.location`)}</div>
                                 </React.Fragment>
                                 :
                                 <React.Fragment>
                                     <ParseTag data={`${_.get(post, ['title']) || ''}`} className="font-weight-bold caption width-100 pre-wrap text-truncate-twoline" expandable={false} />
                                 </React.Fragment>
                         }
-                        <ParseTag data={`${_.get(post, ['title']) || ''}`} className="font-weight-bold caption width-100 pre-wrap text-truncate-twoline" expandable={false} />
                     </div>
                     <div className="padding-sm flex-justify-space-between flex-items-align-center" style={{ maxHeight: defaultHeight * 0.1 }}>
                         <span className='flex-items-align-center' >
                             <LikePostButton
+                                readOnly={props.readOnly}
                                 chatId={_.get(post, ['_id'])}
                                 likeOn="chat"
                                 onClick={(actived) => {
-                                    setTotalLike(actived ? parseInt(totalLike) + 1 : parseInt(totalLike) - 1);
-                                }}
-                                onSuccessUpdate={(liked, data) => {
-                                    if (props.onPostLikeChange) {
-                                        props.onPostLikeChange(liked, data);
+                                    if (props.onUpdatePost && !props.readOnly) {
+                                        props.onUpdatePost({ ...post, totalLike: actived ? parseInt(post.totalLike) + 1 : parseInt(post.totalLike) - 1 });
                                     }
-                                    if (props.onUpdatePost) {
-                                        props.onUpdatePost({ ...post, totalLike: liked ? parseInt(post.totalLike) + 1 : parseInt(post.totalLike) - 1 });
+                                    if (props.onLikeClick) {
+                                        props.onLikeClick(actived);
                                     }
                                 }}
                                 activeButton={
                                     <div className="flex-items-align-center caption font-weight-thin">
                                         <img src={carFreakLikeIcon} style={{ width: 30, height: 20 }} className="margin-right-sm cursor-pointer small-text" />
-                                        {getPlural('Like', 'Likes', totalLike || 0, true)}
+                                        {getPlural('Like', 'Likes', _.get(post , `totalLike`) || 0, true)}
                                     </div>
                                 }
                                 className='d-inline-block margin-right-md'>
                                 <div className="flex-items-align-center caption font-weight-thin">
                                     <img src={carFreakLikeGreyIcon} style={{ width: 30, height: 20 }} className="margin-right-sm cursor-pointer small-text" />
-                                    {getPlural('Like', 'Likes', totalLike || 0, true)}
+                                    {getPlural('Like', 'Likes', _.get(post , `totalLike`) || 0, true)}
                                 </div>
                             </LikePostButton>
                             <span className='flex-items-align-center cursor-pointer' onClick={(e) => {
                                 redirectToPost(post)
+
+                                if (props.onReplyClick) {
+                                    props.onReplyClick();
+                                }
                             }}  >
                                 <span className='margin-right-sm' >
                                     <img src={commentIcon} style={{ width: 17, height: 17 }} />

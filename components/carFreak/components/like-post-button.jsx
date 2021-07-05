@@ -42,7 +42,6 @@ const LikePostButton = (props) => {
             } else {
                 newPostLikes = _.pullAll(newPostLikes, ids || []);
             }
-            console.log(newPostLikes);
             props.fetchUserPostLikeIds(newPostLikes);
         }
 
@@ -101,7 +100,6 @@ const LikePostButton = (props) => {
                         , {
                             headers: { 'Authorization': client.settings.storage.storage.storage['feathers-jwt'] },
                         }).then((res) => {
-                            console.log(res);
                             if (props.onSuccessUpdate) {
                                 props.onSuccessUpdate(actived, _.get(res, ['data']));
                             }

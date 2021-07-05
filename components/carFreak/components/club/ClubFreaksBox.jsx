@@ -4,7 +4,7 @@ import { withRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import client from '../../../../feathers';
-import { clubProfileViewTypes, isNotAllowedSocialInteraction, validateViewType } from '../../config';
+import { clubProfileViewTypes, isNotAllowedSocialInteraction, patchReduxPosts, validateViewType } from '../../config';
 import EventPost from '../event-post';
 import PostCollapse from '../post-collapse';
 import WriteEventModal from '../write-event-modal';
@@ -20,6 +20,7 @@ import { eventIcon, tagPeopleIcon } from '../../../../icon';
 import PostMobileView from '../PostMobileView';
 import PostDrawer from '../PostDrawer';
 import WritePostDrawer from '../WritePostDrawer';
+import { fetchCarFreakPosts, fetchUserPostLikeIds } from '../../../../redux/actions/carfreak.action';
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 992 })
@@ -44,7 +45,6 @@ const BOX_HEIGHT = 300;
 
 const ClubDiscussionBox = (props) => {
 
-    const [posts, setPosts] = useState([]);
     const [postTotal, setPostTotal] = useState(0);
     const [postPage, setPostPage] = useState(1);
 
@@ -76,7 +76,25 @@ const ClubDiscussionBox = (props) => {
 
 
     useEffect(() => {
-        getUserChatLikes(_.map(posts, '_id'))
+
+        if (_.isPlainObject(chatInfo) && !_.isEmpty(chatInfo)) {
+            let newChatInfo = _.find(_.get(props.carfreak, 'carFreakPosts') || [], function (chat) {
+                return chat._id == chatInfo._id;
+            })
+            setChatInfo(newChatInfo || {})
+        }
+
+    }, [props.carfreak.carFreakPosts])
+    
+    useEffect(() => {
+        if (props.user.authenticated) {
+            getUserChatLikes(_.map(_.get(props.carfreak, 'carFreakPosts') || [], '_id')).then(userLikes => {
+                props.fetchUserPostLikeIds(_.map(_.get(userLikes, ['data']) || [], 'chatId'))
+            })
+        } else {
+            props.fetchUserPostLikeIds([])
+        }
+
     }, [props.user.authenticated])
 
     useEffect(() => {
@@ -84,7 +102,7 @@ const ClubDiscussionBox = (props) => {
     }, [props.club])
 
     useEffect(() => {
-        setPosts([]);
+        fetchCarFreakPosts([]);
         setUserChatLikes([]);
         if (postPage == 1) {
             getPosts(0);
@@ -97,10 +115,10 @@ const ClubDiscussionBox = (props) => {
         getPosts((postPage - 1) * PAGE_SIZE);
     }, [postPage])
 
-    function getUserChatLikes(ids, concat) {
+    function getUserChatLikes(ids = []) {
 
         if (_.isArray(ids) && !_.isEmpty(ids) && _.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', '_id'])) {
-            client.service('chatlikes')
+            return client.service('chatlikes')
                 .find({
                     query: {
                         chatId: {
@@ -109,9 +127,35 @@ const ClubDiscussionBox = (props) => {
                         userId: _.get(props.user, ['info', 'user', '_id'])
                     }
                 })
-                .then((res) => {
-                    setUserChatLikes(concat ? _.concat(userChatLikes, res.data) : res.data)
-                })
+        } else {
+            return {
+                then: () => {
+                }
+            }
+        }
+    }
+
+    function patchUserCarFreakPosts(posts = [], mode = 'init') {
+
+        let data = patchReduxPosts(_.get(props.carfreak, `carFreakPosts`), posts, mode);
+        if (!_.isEqual(data, _.get(props.carfreak, `carFreakPosts`))) {
+            props.fetchCarFreakPosts(data);
+        }
+    }
+
+    function patchUserPostLikeIds(ids = [], addMode = true) {
+
+        let newPostLikes = props.carfreak.userPostLikeIds || [];
+
+        if (_.isArray(ids) && !_.isEmpty(ids)) {
+            if (addMode) {
+                newPostLikes = _.union(newPostLikes, ids || []);
+            } else {
+                newPostLikes = _.pullAll(newPostLikes, ids || []);
+            }
+            if (!_.isEqual(newPostLikes, props.carfreak.userPostLikeIds)) {
+                props.fetchUserPostLikeIds(newPostLikes);
+            }
         }
     }
 
@@ -166,17 +210,12 @@ const ClubDiscussionBox = (props) => {
                 })
                 .then((res) => {
 
-                    let newData = [];
-                    newData = _.cloneDeep(posts)
-                    if (postPage > 1) {
-                        newData = newData.concat(res.data)
-                    } else {
-                        newData = res.data;
-                    }
-                    setPosts(newData);
-                    setPostTotal(res.total);
-                    setIsLoading(false);
-                    getUserChatLikes(_.map(_.get(res, ['data']), '_id'), true)
+                    patchUserCarFreakPosts(res.data, postPage == 1 ? 'init' : 'concat');
+                    setPostTotal(res.total)
+                    getUserChatLikes(_.map(_.get(res, ['data']), '_id')).then(userLikes => {
+                        patchUserPostLikeIds(_.map(_.get(userLikes, ['data']) || [], 'chatId'));
+                        setIsLoading(false)
+                    })
 
                 })
         }
@@ -187,12 +226,7 @@ const ClubDiscussionBox = (props) => {
             client.service('chats')
                 .remove(v._id).then((res) => {
                     message.success('Record Deleted')
-
-                    let newPosts = _.filter(_.cloneDeep(posts), function (item) {
-                        return item._id != _.get(res, ['_id']);
-                    });
-
-                    setPosts(newPosts || []);
+                    patchUserCarFreakPosts([v], 'delete');
                 }).catch((err) => {
                     console.log('Unable to delete Chat.');
                 })
@@ -258,20 +292,20 @@ const ClubDiscussionBox = (props) => {
                     </Col>
                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                         <WindowScrollLoadWrapper scrollRange={document.body.scrollHeight * 0.5} onScrolledBottom={() => {
-                            if (arrayLengthCount(posts) < postTotal) {
+                            if (arrayLengthCount(_.get(props.carfreak, `carFreakPosts`)) < postTotal) {
                                 setPostPage(postPage + 1);
                             }
                         }}>
                             <div className="padding-md">
                                 {
-                                    _.isArray(posts) && !_.isEmpty(posts) ?
-                                        _.map(posts, function (post) {
+                                    _.isArray(_.get(props.carfreak, `carFreakPosts`)) && !_.isEmpty(_.get(props.carfreak, `carFreakPosts`)) ?
+                                        _.map(_.get(props.carfreak, `carFreakPosts`), function (post) {
                                             return (
                                                 <div className="margin-bottom-md">
                                                     {
                                                         _.get(post, ['chatType']) == 'event' ?
                                                             <EventPost manualControl data={post}
-                                                                readOnly={isNotAllowedSocialInteraction(club, viewType) && _.get(post, `eventId.scope`) == 'private'}
+                                                                readOnly={isNotAllowedSocialInteraction(club, viewType)}
                                                                 postLike={_.find(userChatLikes, { chatId: post._id })}
                                                                 onEditClick={(data) => {
                                                                     if (_.isPlainObject(data) && !_.isEmpty(data)) {
@@ -288,6 +322,9 @@ const ClubDiscussionBox = (props) => {
                                                                         setJoinClubModalVisible(true)
                                                                     }
                                                                 }}
+                                                                onUpdatePost={(data) => {
+                                                                    patchUserCarFreakPosts(_.compact([data]), 'update');
+                                                                }}
                                                                 onReplyClick={() => {
                                                                     if (isNotAllowedSocialInteraction(club, viewType)) {
                                                                         setJoinClubModalVisible(true)
@@ -301,43 +338,49 @@ const ClubDiscussionBox = (props) => {
 
                                                             />
                                                             :
-                                                            <PostMobileView data={post}
+                                                            <PostMobileView
+                                                                readOnly={isNotAllowedSocialInteraction(club, viewType)}
+                                                                data={post}
                                                                 className="background-white thin-border round-border"
                                                                 postLike={_.find(userChatLikes, { chatId: post._id })}
                                                                 onRedirectToPost={(data) => {
-                                                                    if (_.get(data, ['chatType']) == 'event') {
-
-                                                                        // const win = htmlWindow.open(`/event-post/${_.get(post, ['_id'])}`, '_blank');
-                                                                        // if (win != null) {
-                                                                        //     win.focus();
-                                                                        // }
+                                                                    if (isNotAllowedSocialInteraction(club, viewType)) {
+                                                                        setJoinClubModalVisible(true);
                                                                     } else {
-                                                                        console.log('redirect');
                                                                         setChatInfo(data);
                                                                         setVisible(true);
                                                                         setEditMode('');
                                                                     }
                                                                 }}
                                                                 onEditClick={(data) => {
-                                                                    setEditMode('edit');
-                                                                    setWriteModalVisible(true);
-                                                                    setWritePostChatType('carfreaks')
-                                                                    setSelectedPost(data);
+                                                                    if (isNotAllowedSocialInteraction(club, viewType)) {
+                                                                        setJoinClubModalVisible(true);
+                                                                    } else {
+                                                                        setEditMode('edit');
+                                                                        setWriteModalVisible(true);
+                                                                        setWritePostChatType('carfreaks')
+                                                                        setSelectedPost(data);
+                                                                    }
                                                                 }}
 
+                                                                onLikeClick={() => {
+                                                                    if (isNotAllowedSocialInteraction(club, viewType)) {
+                                                                        setJoinClubModalVisible(true)
+                                                                    }
+                                                                }}
+                                                                onReplyClick={() => {
+                                                                    if (isNotAllowedSocialInteraction(club, viewType)) {
+                                                                        setJoinClubModalVisible(true)
+                                                                    }
+                                                                }}
                                                                 onUpdatePost={(data) => {
-                                                                    handlePostChange(data);
+                                                                    patchUserCarFreakPosts(_.compact([data]), 'update');
                                                                 }}
                                                                 onRemoveClick={(data) => {
-                                                                    confirmDelete(data)
-                                                                }}
-                                                                onPostLikeChange={(liked, data) => {
-                                                                    if (liked) {
-                                                                        setUserChatLikes(_.concat(userChatLikes, [data]));
+                                                                    if (isNotAllowedSocialInteraction(club, viewType)) {
+                                                                        setJoinClubModalVisible(true);
                                                                     } else {
-                                                                        setUserChatLikes(_.filter(userChatLikes, function (like) {
-                                                                            return _.get(like, ['chatId']) != _.get(data, ['chatId']);
-                                                                        }))
+                                                                        confirmDelete(data)
                                                                     }
                                                                 }}
                                                             />
@@ -377,21 +420,10 @@ const ClubDiscussionBox = (props) => {
                 parentType="club"
                 clubId={_.get(club, `_id`)}
                 onUpdatePost={(data) => {
-                    if (_.isPlainObject(data) && !_.isEmpty(data)) {
-                        let newPosts = _.map(posts, function (item) {
-                            return item._id == _.get(data, ['_id']) ? data : item;
-                        });
-                        setPosts(newPosts);
-                    }
+                    patchUserCarFreakPosts(_.compact([data]), 'update');
                 }}
                 onCreatePost={(data) => {
-
-                    if (_.get(data, `chatType`) == 'carfreaks') {
-                        setPosts([data].concat(posts));
-                    }
-                    if (_.get(data, `chatType`) == 'socialboard') {
-                        props.router.push(routePaths.socialBoard.as().pathname)
-                    }
+                    patchUserCarFreakPosts(_.compact([data]), 'append');
                 }}
                 onClose={(v) => {
                     setWriteModalVisible(false);
@@ -446,7 +478,7 @@ const ClubDiscussionBox = (props) => {
                             }
                         }).then(res => {
                             if (_.isArray(res.data) && !_.isEmpty(res.data)) {
-                                setPosts(_.concat(_.get(res , `data[0]`) || [], posts));
+                                patchUserCarFreakPosts(_.compact([_.get(res, `data[0]`)]), 'append');
                             }
                         }).catch(err => {
                             message.error(err.message)
@@ -460,35 +492,27 @@ const ClubDiscussionBox = (props) => {
                             ...event,
                             clubId: _.get(newData, ['eventId', 'clubId']),
                         }
-                        let newPosts = _.map(posts, function (item) {
-                            return item._id == _.get(newData, ['_id']) ? newData : item;
-                        });
-                        setPosts(newPosts);
+                        patchUserCarFreakPosts(_.compact([newData]), 'update');
                     }
                 }}
             ></WriteEventModal>
 
-            <ClubJoinModal visible={joinClubModalVisible} club={club} onCancel={() => { setJoinClubModalVisible(false) }} ></ClubJoinModal>
+            <ClubJoinModal 
+                onChange={(res) => {
+                    if (_.get(res, ['type']) == 'approved') {
+                        window.location.reload();
+                    }
+                }} visible={joinClubModalVisible} club={club} onCancel={() => { setJoinClubModalVisible(false) }} ></ClubJoinModal>
 
             <PostDrawer
                 data={chatInfo}
                 visible={visible}
                 editMode={editMode}
-                postLike={_.find(userChatLikes, { chatId: _.get(chatInfo, ['_id']) })}
                 onCancel={() => {
                     setVisible(false);
                     setChatInfo({});
                 }
                 }
-                onPostLikeChange={(liked, data) => {
-                    if (liked) {
-                        setUserChatLikes(_.concat(userChatLikes, [data]));
-                    } else {
-                        setUserChatLikes(_.filter(userChatLikes, function (like) {
-                            return _.get(like, ['chatId']) != _.get(data, ['chatId']);
-                        }))
-                    }
-                }}
                 onEditClick={(post) => {
                     setEditMode('edit');
                     setWriteModalVisible(true);
@@ -502,7 +526,7 @@ const ClubDiscussionBox = (props) => {
                 }}
 
                 onUpdatePost={(data) => {
-                    handlePostChange(data);
+                    patchUserCarFreakPosts(_.compact([data]), 'update');
                 }}
             />
         </React.Fragment>
@@ -513,9 +537,12 @@ const ClubDiscussionBox = (props) => {
 const mapStateToProps = state => ({
     app: state.app,
     user: state.user,
+    carfreak: state.carfreak,
 });
 
 const mapDispatchToProps = {
     loading: loading,
+    fetchCarFreakPosts,
+    fetchUserPostLikeIds
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(withRouter(ClubDiscussionBox)));

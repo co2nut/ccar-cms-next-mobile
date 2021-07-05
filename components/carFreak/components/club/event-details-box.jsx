@@ -32,7 +32,9 @@ const EventDetailsBoxUi = (props) => {
         getEventPost()
     }, [event])
 
+
     function redirectEvent(data) {
+        setExpandReplyKey(expandReplyKey ? null : '1')
         // if(_.isPlainObject(data) && !_.isEmpty(data) && _.get(data , ['_id'])){
         //     props.router.push(`/event/${_.get(data, ['_id'])}`)
         // }
@@ -54,9 +56,7 @@ const EventDetailsBoxUi = (props) => {
     }
 
     return (
-        <div className={`width-100 flex-justify-start flex-items-align-center relative-wrapper background-white ${props.className || ''}`} onClick={(e) => {
-            setExpandReplyKey(expandReplyKey ? null : '1')
-        }}  >
+        <div className={`width-100 flex-justify-start flex-items-align-center relative-wrapper background-white ${props.className || ''}`}  >
             <Row gutter={[10, 10]} className="width-100" align="middle">
                 <Col span={24}>
                     <span className='d-inline-block margin-right-sm width-20'  >
@@ -107,7 +107,17 @@ const EventDetailsBoxUi = (props) => {
                     <div className="flex-items-align-center flex-justify-start padding-y-xs">
                         {
                             _.get(event, ['status']) == 'ongoing' ?
-                                <EventJoinActionButtons notify eventId={_.get(event, ['_id'])} userId={_.get(props.user, ['info', 'user', '_id'])} />
+                                <EventJoinActionButtons readOnly={props.readOnly} notify eventId={_.get(event, ['_id'])} userId={_.get(props.user, ['info', 'user', '_id'])}
+                                    onClick={(e) => {
+                                        if (props.onEventJoinActionClick) {
+                                            props.onEventJoinActionClick(e);
+                                        }
+                                    }}
+                                    onChange={(e) => {
+                                        if (props.onEventJoinActionChange) {
+                                            props.onEventJoinActionChange(e);
+                                        }
+                                    }} />
                                 :
                                 _.get(event, ['status']) == 'expired' ?
                                     <span className='d-inline-block border-red-lighten-4 red subtitle1 padding-x-lg round-border' >
@@ -128,19 +138,19 @@ const EventDetailsBoxUi = (props) => {
                                         </div>
                                         {
                                             !props.hideGuestList ?
-                                            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                                            <div className="padding-right-lg">
-                                                <EventAttendanceBox data={event}/>
-                                            </div>
-                                            </Col>
-                                        :
-                                        null
+                                                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                                    <div className="padding-right-lg">
+                                                        <EventAttendanceBox data={event} />
+                                                    </div>
+                                                </Col>
+                                                :
+                                                null
                                         }
-                                        </div>
                                     </div>
-                                </Collapse.Panel>
-                            </Collapse>
-                        </div>
+                                </div>
+                            </Collapse.Panel>
+                        </Collapse>
+                    </div>
                 </Col>
             </Row>
 
@@ -191,7 +201,7 @@ const EventDetailsBoxUi = (props) => {
                                 }
                             </Menu>
                         }>
-                            <Icon type="more" className="black" style={{ fontSize: 20}} />
+                            <Icon type="more" className="black" style={{ fontSize: 20 }} />
                         </Dropdown>
 
                     </span>

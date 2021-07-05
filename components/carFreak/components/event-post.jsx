@@ -322,23 +322,25 @@ const EventPost = (props) => {
                         </div>
                     </Col>
                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                        <EventDetailsBox data={_.get(post, ['eventId'])} hideAction hideDescription={props.hideDescription === true ? true : false} hideGuestList={props.hideGuestList === true ? true : false} />
+                        <EventDetailsBox readOnly={props.readOnly} data={_.get(post, ['eventId'])} hideAction hideDescription={props.hideDescription === true ? true : false} hideGuestList={props.hideGuestList === true ? true : false} 
+                        onEventJoinActionClick={(e) => {
+                                if (props.onEventJoinActionClick) {
+                                    props.onEventJoinActionClick(e);
+                                }
+                            }} />
                     </Col>
                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                         <div className="fill-parent flex-justify-start flex-items-align-center cursor-pointer">
                             <LikePostButton 
-                                postLike={props.postLike}
                                 chatId={_.get(post, ['_id'])}
                                 likeOn="chat"
+                                readOnly={props.readOnly}
                                 onClick={(actived) => {
-                                    setTotalLike(actived ? parseInt(totalLike) + 1 : parseInt(totalLike) - 1);
-                                }}
-                                onSuccessUpdate={(liked, data) => {
-                                    if (props.onPostLikeChange) {
-                                        props.onPostLikeChange(liked, data);
+                                    if (props.onUpdatePost && !props.readOnly) {
+                                        props.onUpdatePost({ ...post, totalLike: actived ? parseInt(post.totalLike) + 1 : parseInt(post.totalLike) - 1 });
                                     }
-                                    if (props.onUpdatePost) {
-                                        props.onUpdatePost({ ...post, totalLike: liked ? parseInt(post.totalLike) + 1 : parseInt(post.totalLike) - 1 });
+                                    if (props.onLikeClick) {
+                                        props.onLikeClick();
                                     }
                                 }}
                                 activeButton={
@@ -354,7 +356,9 @@ const EventPost = (props) => {
                                 </div>
                             </LikePostButton>
                             <span className='flex-items-align-center cursor-pointer' onClick={(e) => {
-                                setExpandReplyKey(expandReplyKey ? null : '1')
+                                if(!props.readOnly){
+                                    setExpandReplyKey(expandReplyKey ? null : '1')
+                                }
                             }}  >
                                 <span className='margin-right-sm' >
                                     {formatNumber(messageTotal, 'auto', true, 0, true)}

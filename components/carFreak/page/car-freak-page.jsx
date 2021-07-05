@@ -4,7 +4,7 @@ import { withRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
-import { arrayLengthCount, notEmptyLength } from '../../../common-function';
+import { arrayLengthCount, getObjectId, notEmptyLength } from '../../../common-function';
 import client from '../../../feathers';
 import {
     updateActiveMenu
@@ -14,10 +14,14 @@ import { routePaths } from '../../../route';
 import InfiniteScrollWrapper from '../../general/InfiniteScrollWrapper';
 import LayoutV2 from '../../general/LayoutV2';
 import CarFreakLayout from '../components/car-freak-layout';
+import ClubJoinModal from '../components/club/ClubJoinModal';
+import EventPost from '../components/event-post';
 import PostDrawer from '../components/PostDrawer';
 import PostMobileView from '../components/PostMobileView';
+import WriteEventModal from '../components/write-event-modal';
 import WritePostDrawer from '../components/WritePostDrawer';
-import { carFreakGlobalSearch, patchReduxPosts } from '../config';
+import { carFreakGlobalSearch, getViewType, isNotAllowedSocialInteraction, patchReduxPosts } from '../config';
+
 
 
 const Desktop = ({ children }) => {
@@ -61,13 +65,17 @@ const CarFreakPage = (props) => {
     const [htmlWindow, setHtmlWindow] = useState({});
     const [htmlDocument, setHtmlDocument] = useState({});
 
+    const [writeEventVisible, setWriteEventVisible] = useState(false);
+    const [eventEditMode, setEventEditMode] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState({});
+
+
+    const [joinClubModalVisible, setJoinClubModalVisible] = useState(false);
+
     useEffect(() => {
         props.updateActiveMenu('6');
     }, [])
 
-    useEffect(() => { 
-        console.log(props.carfreak.userPostLikeIds);
-    } , [props.carfreak.userPostLikeIds])
     useEffect(() => {
         if (window) {
             setHtmlWindow(window);
@@ -192,7 +200,8 @@ const CarFreakPage = (props) => {
                     $skip: skip,
                 }
             })
-            .then((res) => {
+            .then(async (res) => {
+                res.data = await processEventPost(res.data);
                 patchUserCarFreakPosts(res.data, chatPage == 1 ? 'init' : 'concat');
                 setTotalChat(res.total)
                 getUserChatLikes(_.map(_.get(res, ['data']), '_id')).then(userLikes => {
@@ -202,6 +211,32 @@ const CarFreakPage = (props) => {
             }).catch(err => {
                 console.log(err);
             });
+    }
+
+    async function processEventPost(posts = []) {
+
+        if (_.isArray(posts) && !_.isEmpty(posts)) {
+            let eventPosts = [];
+            eventPosts = _.filter(posts, (post) => {
+                return _.get(post, `chatType`) == 'event';
+            })
+            return getClubJoins(_.uniq(_.compact(_.map(eventPosts, 'eventId.clubId._id')))).then(res => {
+                eventPosts = _.map(eventPosts, (eventPost) => {
+                    eventPost.clubJoin = _.find(_.get(res, `data`) || [], ['clubId', _.get(eventPost, `eventId.clubId._id`)]) || {};
+                    eventPost.viewType = getViewType(eventPost.clubJoin);
+                    eventPost.isNotAllowedSocialInteraction = isNotAllowedSocialInteraction(_.get(eventPost, `eventId.clubId`, eventPost.viewType));
+                    return eventPost;
+                })
+
+                posts = _.map(posts, (post) => {
+                    return _.find(eventPosts, ['_id', getObjectId(post)]) || post;
+                })
+                return posts;
+            })
+        } else {
+            return posts;
+        }
+
     }
 
     function patchUserPostLikeIds(ids = [], addMode = true) {
@@ -223,7 +258,6 @@ const CarFreakPage = (props) => {
     function getUserChatLikes(ids = []) {
 
         if (_.isArray(ids) && !_.isEmpty(ids) && _.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', '_id'])) {
-            console.log('get');
             return client.service('chatlikes')
                 .find({
                     query: {
@@ -262,6 +296,36 @@ const CarFreakPage = (props) => {
 
 
 
+    function confirmDeleteEvent(v) {
+        if (v._id && _.get(v, ['eventId', '_id'])) {
+            client.service('events')
+                .remove(_.get(v, ['eventId', '_id'])).then((res) => {
+                    confirmDelete(v);
+                }).catch((err) => {
+                    console.log('Unable to delete Event.');
+                })
+        }
+    }
+
+    function getClubJoins(ids = []) {
+
+        if (_.isArray(ids) && !_.isEmpty(ids) && _.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', '_id'])) {
+            return client.service('clubjoin').find({
+                query: {
+                    clubId: {
+                        $in: ids || [],
+                    },
+                    userId: _.get(props.user, ['info', 'user', '_id']),
+                }
+            })
+        } else {
+            return {
+                then: () => {
+                }
+            }
+        }
+    }
+
     return (
         <React.Fragment>
             <LayoutV2 searchTypes={carFreakGlobalSearch} enterSearchCarFreaks hideOpenApp showCompareCarButton={false} >
@@ -291,37 +355,67 @@ const CarFreakPage = (props) => {
                                         _.map(_.get(props.carfreak, `carFreakPosts`) || [], function (v, i) {
                                             return (
                                                 <Col xs={24} sm={12} md={8} lg={6} xl={6} key={`post-${_.get(v, `_id`)}`}>
-                                                    <PostMobileView data={v}
-                                                        className="background-white"
-                                                        showClub
-                                                        onRedirectToPost={(post) => {
-                                                            if (_.get(post, ['chatType']) == 'event') {
+                                                    {
+                                                        _.get(v, ['chatType']) == 'event' ?
+                                                            <EventPost manualControl data={v}
+                                                                readOnly={isNotAllowedSocialInteraction(_.get(v, `eventId.clubId`), _.get(v, `viewType`))}
+                                                                onEditClick={(data) => {
+                                                                    if (_.isPlainObject(data) && !_.isEmpty(data)) {
+                                                                        setSelectedPost(data);
+                                                                        setEventEditMode(true);
+                                                                        setWriteEventVisible(true);
+                                                                    }
+                                                                }}
+                                                                onRemoveClick={(data) => {
+                                                                    confirmDeleteEvent(data)
+                                                                }}
+                                                                onLikeClick={() => {
+                                                                    if (isNotAllowedSocialInteraction(_.get(v, `eventId.clubId`), _.get(v, `viewType`))) {
+                                                                        setJoinClubModalVisible(true)
+                                                                        setSelectedPost(v);
+                                                                    }
+                                                                }}
+                                                                onUpdatePost={(data) => {
+                                                                    patchUserCarFreakPosts(_.compact([data]), 'update');
+                                                                }}
+                                                                onReplyClick={() => {
+                                                                    if (isNotAllowedSocialInteraction(_.get(v, `eventId.clubId`), _.get(v, `viewType`))) {
+                                                                        setJoinClubModalVisible(true)
+                                                                        setSelectedPost(v);
+                                                                    }
+                                                                }}
+                                                                onEventJoinActionClick={(e) => {
+                                                                    if (isNotAllowedSocialInteraction(_.get(v, `eventId.clubId`), _.get(v, `viewType`))) {
+                                                                        setJoinClubModalVisible(true)
+                                                                        setSelectedPost(v);
+                                                                    }
+                                                                }}
 
-                                                                // const win = htmlWindow.open(`/event-post/${_.get(post, ['_id'])}`, '_blank');
-                                                                // if (win != null) {
-                                                                //     win.focus();
-                                                                // }
-                                                            } else {
-                                                                console.log('redirect');
-                                                                setChatInfo(post);
-                                                                setVisible(true);
-                                                                setEditMode('');
-                                                            }
-                                                        }}
-                                                        onEditClick={(post) => {
-                                                            setEditMode('edit');
-                                                            setWriteModalVisible(true);
-                                                            setWritePostChatType('carfreaks')
-                                                            setSelectedPost(post);
-                                                        }}
+                                                            />
+                                                            :
+                                                            <PostMobileView data={v}
+                                                                className="background-white"
+                                                                showClub
+                                                                onRedirectToPost={(post) => {
+                                                                    setChatInfo(post);
+                                                                    setVisible(true);
+                                                                    setEditMode('');
+                                                                }}
+                                                                onEditClick={(post) => {
+                                                                    setEditMode('edit');
+                                                                    setWriteModalVisible(true);
+                                                                    setWritePostChatType('carfreaks')
+                                                                    setSelectedPost(post);
+                                                                }}
 
-                                                        onUpdatePost={(data) => {
-                                                            patchUserCarFreakPosts(_.compact([data]), 'update');
-                                                        }}
-                                                        onRemoveClick={(post) => {
-                                                            confirmDelete(post)
-                                                        }}
-                                                    />
+                                                                onUpdatePost={(data) => {
+                                                                    patchUserCarFreakPosts(_.compact([data]), 'update');
+                                                                }}
+                                                                onRemoveClick={(post) => {
+                                                                    confirmDelete(post)
+                                                                }}
+                                                            />
+                                                    }
                                                 </Col>
                                             )
                                         })
@@ -378,7 +472,90 @@ const CarFreakPage = (props) => {
                     setSelectedPost({});
                 }} />
 
-        </React.Fragment>
+            <WriteEventModal
+                visible={writeEventVisible}
+                editMode={eventEditMode}
+                data={_.get(selectedPost, ['eventId']) || {}}
+                onCancel={() => {
+                    setSelectedPost({});
+                    setEventEditMode(false);
+                    setWriteEventVisible(false);
+                }}
+                type="club"
+                notify
+                onCreate={(event) => {
+                    if (_.isPlainObject(event) && !_.isEmpty(event)) {
+                        client.service('chats').find({
+                            query: {
+                                eventId: _.get(event, `_id`),
+                                $limit: 1,
+                                $populate: [
+                                    {
+                                        path: 'userId',
+                                        ref: 'users'
+                                    },
+                                    {
+                                        path: 'eventId',
+                                        ref: 'events',
+                                        populate: [
+                                            {
+                                                path: 'createdBy',
+                                                ref: 'users'
+                                            },
+                                            {
+                                                path: 'clubId',
+                                                ref: 'clubs'
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        path: 'clubId',
+                                        ref: 'clubs'
+                                    }
+                                ],
+                            }
+                        }).then(res => {
+                            if (_.isArray(res.data) && !_.isEmpty(res.data)) {
+                                setPosts(_.concat(_.get(res, `data[0]`) || [], posts));
+                            }
+                        }).catch(err => {
+                            message.error(err.message)
+                        });
+                    }
+                }}
+                onUpdate={(event) => {
+                    if (_.isPlainObject(event) && !_.isEmpty(event)) {
+                        let newData = _.cloneDeep(selectedPost);
+                        newData.eventId = {
+                            ...event,
+                            clubId: _.get(newData, ['eventId', 'clubId']),
+                        }
+                        let newPosts = _.map(posts, function (item) {
+                            return item._id == _.get(newData, ['_id']) ? newData : item;
+                        });
+                        setPosts(newPosts);
+                    }
+                }}
+            ></WriteEventModal>
+
+            <ClubJoinModal
+                visible={joinClubModalVisible}
+                club={_.get(selectedPost, `eventId.clubId`)}
+                onCancel={() => {
+                    setJoinClubModalVisible(false)
+                }}
+                onChange={(res) => {
+                    if (_.get(res, ['type']) == 'approved') {
+                        let effectedPosts = _.filter(_.get(props.carfreak, `carFreakPosts`), (post) => {
+                            return _.get(post, `chatType`) == 'event' && getObjectId(_.get(post, `eventId.clubId`)) == getObjectId(_.get(res, `data.clubId`))
+                        })
+                        effectedPosts = processEventPost(effectedPosts || []);
+                        patchUserCarFreakPosts(effectedPosts, 'update')
+                    }
+                }}
+            ></ClubJoinModal>
+
+        </React.Fragment >
     )
 
 }

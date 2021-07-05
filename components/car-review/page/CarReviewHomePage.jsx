@@ -57,6 +57,7 @@ const CarReviewHomePage = (props) => {
 
     useEffect(() => {
         getBrands()
+        props.updateActiveMenu('11')
     }, [])
 
     useEffect(() => {

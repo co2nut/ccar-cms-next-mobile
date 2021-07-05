@@ -26,6 +26,7 @@ const PinCommentButton = (props) => {
     useEffect(() => {
 
         if (_.isArray(props.pinnedComments) && !_.isEmpty(props.pinnedComments)) {
+            console.log(props.pinnedComments);
             setPinnedComments(props.pinnedComments);
         } else {
             setPinnedComments({});
