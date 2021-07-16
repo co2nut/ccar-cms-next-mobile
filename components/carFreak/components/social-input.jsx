@@ -1,4 +1,4 @@
-import { Empty, Form, Icon, message } from 'antd';
+import { Empty, Form, Icon, message, Upload } from 'antd';
 import axios from 'axios';
 import _ from 'lodash';
 import { withRouter } from 'next/dist/client/router';
@@ -11,8 +11,9 @@ import ClickOutsideDetectWrapper from '../../general/ClickOutsideDetectWrapper';
 import EmojiPickerButton from '../../general/EmojiPickerButton';
 import ScrollLoadWrapper from '../../general/ScrollLoadWrapper';
 import { getAliasCodeFromText, hashTagPrefix, hashTagPrefixHashValue, hashTagSuffixHashValue, parseTagStringToPlainString, parseToTagString, seperatorHashValue, tagPrefix, tagPrefixHashValue, tagSuffixHashValue } from '../config';
-import { arrayLengthCount, getUserName, isValidNumber } from '../../../common-function';
+import { arrayLengthCount, getObjectId, getUserName, isValidNumber } from '../../../common-function';
 import UserAvatar from '../../general/UserAvatar';
+import Scrollbars from 'react-custom-scrollbars';
 
 
 
@@ -24,6 +25,8 @@ let checkSearchTimeout;
 let checkHashTagTimeout;
 const PAGE_SIZE = 20;
 let ReactQuill;
+
+const IMAGELIMIT = 10;
 const SocialInput = (props) => {
 
     const [text, setText] = useState('');
@@ -41,6 +44,9 @@ const SocialInput = (props) => {
     const [aliasCode, setAliasCode] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const [startWatching, setStartWatching] = useState(false);
+
+
+    const [images, setImages] = useState([]);
 
     useEffect(() => {
         if (document) {
@@ -90,6 +96,12 @@ const SocialInput = (props) => {
         }
     }, [editMode, props.text, ReactQuill])
 
+    useEffect(() => {
+        setImages(_.map(props.images || [], (image) => {
+            image.uid = getObjectId(image) || v4();
+            return image;
+        }))
+    }, [editMode, props.images])
 
     useEffect(() => {
 
@@ -128,6 +140,19 @@ const SocialInput = (props) => {
         setStartWatching(true);
     }, [text, aliasCode])
 
+    function handleImageChange(e) {
+        e.fileList = e.fileList.slice(-IMAGELIMIT);
+
+        e.fileList.map(function (v) {
+            if (v.url) { return }
+            v.url = URL.createObjectURL(v.originFileObj)
+        });
+
+        setImages(e.fileList)
+        if (props.onImageChange) {
+            props.onImageChange(e.fileList);
+        }
+    }
 
     function reset() {
 
@@ -139,6 +164,7 @@ const SocialInput = (props) => {
                     editor.setText("");
                 }
                 setText('');
+                setImages([]);
                 setAliasCode([]);
                 setSuggestList([]);
             }
@@ -170,7 +196,7 @@ const SocialInput = (props) => {
         }
         if (props.onSubmit && finalText) {
             finalText = parseToTagString(finalText, aliasCode)
-            props.onSubmit(finalText);
+            props.onSubmit(finalText, images);
             reset();
             focus();
         }
@@ -180,6 +206,7 @@ const SocialInput = (props) => {
         setSuggestList({});
         if (prefix == tagPrefix) {
             setIsLoading(true);
+            console.log(props.clubId);
             axios.get(`${client.io.io.uri}getRelatedUser`, {
                 params: {
                     match: {
@@ -191,7 +218,7 @@ const SocialInput = (props) => {
                     skip: skip || 0,
                 }
             }).then(res => {
-
+                console.log(res);
                 setIsLoading(false);
                 let temp = _.cloneDeep(suggestList);
                 temp[prefix] = suggestListPage > 1 ?
@@ -480,6 +507,35 @@ const SocialInput = (props) => {
         }
     }
 
+    const _renderImageCard = (image) => {
+        let index = _.findIndex(images, ['uid', getObjectId(image, 'uid')]);
+        return <span
+            className={`d-inline-block margin-x-md margin-bottom-xs background-white flex-items-no-shrink `}
+            style={{ width: props.imageCardSize || '70px', height: props.imageCardSize || '70px' }}
+        >
+            <div className="relative-wrapper fill-parent">
+                <div className=" absolute-center-img-no-stretch" onClick={(e) => {
+                }}  >
+                    <img src={_.get(image, ['url'])} className="fill-parent cursor-pointer" ></img>
+                </div>
+                <span className='d-inline-block ' style={{ position: 'absolute', top: -15, right: -15 }} >
+                    <Icon type="close-circle" className="black cursor-pointer" style={{ fontSize: 15 }} onClick={(e) => {
+                        let filteredImages = _.filter(images, (i) => {
+                            return i.uid != image.uid;
+                        })
+
+                        if (!_.isEqual(images, filteredImages)) {
+                            setImages(filteredImages);
+                            if (props.onImageChange) {
+                                props.onImageChange(filteredImages);
+                            }
+                        }
+                    }} />
+                </span>
+            </div>
+        </span>
+    }
+
     if (ReactQuill) {
         return (
             <React.Fragment>
@@ -489,37 +545,72 @@ const SocialInput = (props) => {
                             handleSubmit();
                         }
                     }}
-                    className={`no-border-input thin-border round-border-big background-transparent padding-sm flex-justify-start relative-wrapper flex-items-align-center ${props.className || ''}`}
                     style={{ ...props.style }}
+                    className={`${props.className || ''}`}
                     id={uid}
                 >
-                    <ReactQuill
-                        theme={null}
-                        placeholder={props.placeholder || "What's on your mind?"}
-                        className="width-90 grey-darken-3"
-                        style={{ height: props.height || 30 }}
-                        ref={props.inputRef || ref[uid]}
-                        onChange={(content, delta, source, editor) => { handleChange(content, delta, source, editor) }}
-                        onChangeSelection={(range, source, editor) => {
-                            checkCanSearch(range, editor);
-                            // checkHashTag(range, editor);
-                        }}
-                        onKeyUp={(e) => {
-
-                            //Enter Hit
-                            if (e.key === 'Enter') {
-                                e.preventDefault();
-                                handleSubmit();
-                            }
-
-                        }}
-                    >
-                    </ReactQuill>
                     {
-                        props.hideEmojiPicker == true ?
-                            null
+                        _.isArray(images) && !_.isEmpty(images) ?
+                            <Scrollbars autoHeight autoHide >
+                                <div className="flex-items-align-center padding-top-md ">
+                                    {
+                                        _.map(images, (image) => {
+                                            return (
+                                                _renderImageCard(image)
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </Scrollbars>
                             :
                             null
+                    }
+                    <div className={`no-border-input thin-border round-border-big background-transparent padding-sm flex-justify-start relative-wrapper flex-items-align-center`}>
+                        <ReactQuill
+                            theme={null}
+                            placeholder={props.placeholder || "What's on your mind?"}
+                            className="width-90 grey-darken-3"
+                            style={{ height: props.height || 30 }}
+                            ref={props.inputRef || ref[uid]}
+                            onChange={(content, delta, source, editor) => { handleChange(content, delta, source, editor) }}
+                            onChangeSelection={(range, source, editor) => {
+                                checkCanSearch(range, editor);
+                                // checkHashTag(range, editor);
+                            }}
+                            onKeyUp={(e) => {
+
+                                //Enter Hit
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleSubmit();
+                                }
+
+                            }}
+                        >
+                        </ReactQuill>
+                        {
+                            props.imageUpload == true ?
+                                <Upload
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        handleImageChange(e)
+                                    }}
+                                    multiple={props.imageUploadMultiple || false}
+                                    fileList={images}
+                                    showUploadList={false}
+                                    beforeUpload={file => false}
+                                    disabled={arrayLengthCount(images) >= IMAGELIMIT}
+                                >
+                                    <Icon type="file-image" />
+                                </Upload>
+                                :
+                                null
+                        }
+                        {
+                            props.hideEmojiPicker == true ?
+                                null
+                                :
+                                null
                             // <EmojiPickerButton
                             //     onSelect={(emoji) => {
                             //         handleAddText(emoji.native)
@@ -528,64 +619,65 @@ const SocialInput = (props) => {
                             // >
                             //     <Icon type="smile" className='cursor-pointer grey margin-right-sm margin-top-xs flex-items-no-shrink' style={{ fontSize: '17px' }} />
                             // </EmojiPickerButton>
-                    }
-                    {
-                        // searchMode && _.isArray(_.get(suggestList, [prefix])) && !_.isEmpty(_.get(suggestList, [prefix])) ?
-                        searchMode ?
-                            <div className="round-border thin-border background-white " style={props.placement == 'bottom' ? { position: 'absolute', bottom: -210, right: 0, left: 0, zIndex: 99999, margin: 'auto' } : { position: 'absolute', top: -210, right: 0, left: 0, zIndex: 99999, margin: 'auto' }}>
-                                <ScrollLoadWrapper autoHeight autoHeightMax={200} autoHeightMin={200} style={{ width: '100%' }} >
-                                    {
-                                        _.isArray(_.get(suggestList, [prefix])) && !_.isEmpty(_.get(suggestList, [prefix])) ?
-                                            (suggestList[prefix] || []).map(value => (
-                                                <div className="padding-sm flex-justify-start flex-items-align-center cursor-pointer hover-background-yellow-accent-1"
-                                                    onClick={(e) => {
-                                                        if (prefix == tagPrefix) {
-                                                            setSearchMode(false);
-                                                            handleAddTag(getUserName(value, 'freakId') || '', activeTriggerPosition, searchWord);
-                                                            handleAddAliasCode(getUserName(value, 'freakId'), value._id, prefix, activeTriggerPosition)
-                                                        } else if (prefix == hashTagPrefix) {
-                                                            setHashTagValue('');
-                                                            setHashTagActived(false);
-                                                            setHashTagActiveTriggerPosition(null);
-                                                            handleAddTag(_.get(value, ['tag']) || '', hashTagActiveTriggerPosition, `#${hashTagValue}`);
-                                                            handleAddAliasCode(_.get(value, ['tag']), '$_id', prefix, hashTagActiveTriggerPosition)
-                                                        }
-                                                    }}>
-                                                    {
-                                                        prefix == tagPrefix ?
-                                                            <React.Fragment>
-                                                                <UserAvatar data={value} size={50} className="margin-right-md" />
-                                                                <span className='d-inline-block' >
-                                                                    <div className="headline font-weight-black text-truncate">
-                                                                        {getUserName(value, 'freakId') || ''}
-                                                                    </div>
-                                                                    <div className="headline text-truncate">
-                                                                        {getUserName(value, 'fullName') || ''}
-                                                                    </div>
-                                                                </span>
-                                                            </React.Fragment>
-                                                            :
-                                                            prefix == hashTagPrefix ?
-                                                                <div className='headline font-weight-black text-truncate' >
-                                                                    {
-                                                                        _.get(value, ['tag'])
-                                                                    }
-                                                                </div>
+                        }
+                        {
+                            // searchMode && _.isArray(_.get(suggestList, [prefix])) && !_.isEmpty(_.get(suggestList, [prefix])) ?
+                            searchMode ?
+                                <div className="round-border thin-border background-white " style={props.placement == 'bottom' ? { position: 'absolute', bottom: -210, right: 0, left: 0, zIndex: 99999, margin: 'auto' } : { position: 'absolute', top: -210, right: 0, left: 0, zIndex: 99999, margin: 'auto' }}>
+                                    <ScrollLoadWrapper autoHeight autoHeightMax={200} autoHeightMin={200} style={{ width: '100%' }} >
+                                        {
+                                            _.isArray(_.get(suggestList, [prefix])) && !_.isEmpty(_.get(suggestList, [prefix])) ?
+                                                (suggestList[prefix] || []).map(value => (
+                                                    <div className="padding-sm flex-justify-start flex-items-align-center cursor-pointer hover-background-yellow-accent-1"
+                                                        onClick={(e) => {
+                                                            if (prefix == tagPrefix) {
+                                                                setSearchMode(false);
+                                                                handleAddTag(getUserName(value, 'freakId') || '', activeTriggerPosition, searchWord);
+                                                                handleAddAliasCode(getUserName(value, 'freakId'), value._id, prefix, activeTriggerPosition)
+                                                            } else if (prefix == hashTagPrefix) {
+                                                                setHashTagValue('');
+                                                                setHashTagActived(false);
+                                                                setHashTagActiveTriggerPosition(null);
+                                                                handleAddTag(_.get(value, ['tag']) || '', hashTagActiveTriggerPosition, `#${hashTagValue}`);
+                                                                handleAddAliasCode(_.get(value, ['tag']), '$_id', prefix, hashTagActiveTriggerPosition)
+                                                            }
+                                                        }}>
+                                                        {
+                                                            prefix == tagPrefix ?
+                                                                <React.Fragment>
+                                                                    <UserAvatar data={value} size={50} className="margin-right-md" />
+                                                                    <span className='d-inline-block' >
+                                                                        <div className="headline font-weight-black text-truncate">
+                                                                            {getUserName(value, 'freakId') || ''}
+                                                                        </div>
+                                                                        <div className="headline text-truncate">
+                                                                            {getUserName(value, 'fullName') || ''}
+                                                                        </div>
+                                                                    </span>
+                                                                </React.Fragment>
                                                                 :
-                                                                null
-                                                    }
+                                                                prefix == hashTagPrefix ?
+                                                                    <div className='headline font-weight-black text-truncate' >
+                                                                        {
+                                                                            _.get(value, ['tag'])
+                                                                        }
+                                                                    </div>
+                                                                    :
+                                                                    null
+                                                        }
+                                                    </div>
+                                                ))
+                                                :
+                                                <div className="flex-justify-center flex-items-align-center padding-md">
+                                                    <Empty description={isLoading ? 'Getting data...' : 'No Result'}></Empty>
                                                 </div>
-                                            ))
-                                            :
-                                            <div className="flex-justify-center flex-items-align-center padding-md">
-                                                <Empty description={isLoading ? 'Getting data...' : 'No Result'}></Empty>
-                                            </div>
-                                    }
-                                </ScrollLoadWrapper>
-                            </div>
-                            :
-                            null
-                    }
+                                        }
+                                    </ScrollLoadWrapper>
+                                </div>
+                                :
+                                null
+                        }
+                    </div>
                 </ClickOutsideDetectWrapper>
             </React.Fragment>
         );

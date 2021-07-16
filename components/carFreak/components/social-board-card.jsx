@@ -21,9 +21,6 @@ const SocialBoardCard = (props) => {
 
     const [post, setPost] = useState({});
     const [height, setHeight] = useState(defaultHeight);
-    const [postLike, setPostLike] = useState({});
-    const [totalLike, setTotalLike] = useState(0);
-
 
     useEffect(() => {
 
@@ -35,19 +32,6 @@ const SocialBoardCard = (props) => {
 
     }, [props.data])
 
-    useEffect(() => {
-
-        if (_.isPlainObject(props.postLike) && !_.isEmpty(props.postLike)) {
-            setPostLike(props.postLike);
-        } else {
-            setPostLike({});
-        }
-
-    }, [props.postLike])
-
-    useEffect(() => {
-        setTotalLike(!_.isNaN(parseInt(_.get(post, ['totalLike']))) ? formatNumber(_.get(post, ['totalLike']), null, true, 0, 0) : 0);
-    }, [post])
 
     useEffect(() => {
         if (!props.style || !isValidNumber(props.style.height) || !(parseFloat(props.style.height) >= defaultHeight)) {
@@ -118,28 +102,25 @@ const SocialBoardCard = (props) => {
                                 <LikePostButton
                                     chatId={_.get(post, ['_id'])}
                                     likeOn="chat"
-                                    postLike={postLike}
+                                    readOnly={props.readOnly}
                                     onClick={(actived) => {
-                                        setTotalLike(actived ? parseInt(totalLike) + 1 : parseInt(totalLike) - 1);
-                                    }}
-                                    onSuccessUpdate={(liked, data) => {
-                                        if (props.onPostLikeChange) {
-                                            props.onPostLikeChange(liked, data);
+                                        if (props.onUpdatePost && !props.readOnly) {
+                                            props.onUpdatePost({ ...post, totalLike: actived ? parseInt(post.totalLike) + 1 : parseInt(post.totalLike) - 1 });
                                         }
-                                        if (props.onUpdatePost) {
-                                            props.onUpdatePost({ ...post, totalLike: liked ? parseInt(post.totalLike) + 1 : parseInt(post.totalLike) - 1 });
+                                        if(props.onLikeClick){
+                                            props.onLikeClick(actived)
                                         }
                                     }}
                                     activeButton={
                                         <div className="flex-items-align-center caption font-weight-thin">
                                             <img src={carFreakLikeIcon} style={{ width: 30, height: 20 }} className="margin-right-sm cursor-pointer" />
-                                            {getPlural('Like', 'Likes', totalLike || 0, true)}
+                                            {getPlural('Like', 'Likes', _.get(post , `totalLike`) || 0 || 0, true)}
                                         </div>
                                     }
                                     className='d-inline-block margin-right-md'>
                                     <div className="flex-items-align-center caption font-weight-thin">
                                         <img src={carFreakLikeGreyIcon} style={{ width: 30, height: 20 }} className="margin-right-sm cursor-pointer" />
-                                        {getPlural('Like', 'Likes', totalLike || 0, true)}
+                                        {getPlural('Like', 'Likes', _.get(post , `totalLike`) || 0 || 0, true)}
                                     </div>
                                 </LikePostButton>
 

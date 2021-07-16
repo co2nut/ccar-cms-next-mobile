@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import { v4 } from 'uuid';
 import { findIndexesOfString, getObjectId, checkObjectId, getUserName } from '../../common-function';
+import Compress from "browser-image-compression";
 
 export const chatRestrictTime = 2000;
 export const carFreakPostAspectRatio = (1);
@@ -286,7 +287,7 @@ export function validateViewType(data) {
 
 export function isNotAllowedSocialInteraction(club, viewType) {
     // return _.get(club, `clubType`) == 'public' && (viewType == clubProfileViewTypes[3] || viewType == clubProfileViewTypes[2])
-    return _.get(club, `nonMemberAccessibilitySettings.socialInteraction`) === false && (viewType == clubProfileViewTypes[3] || viewType == clubProfileViewTypes[2])
+    return _.get(club, `nonMemberAccessibilitySettings.socialInteraction`) == false && (viewType == clubProfileViewTypes[3] || viewType == clubProfileViewTypes[2])
 }
 
 export function isJoinAutoApproval(club) {
@@ -328,4 +329,42 @@ export function patchReduxPosts(originalData = [], posts = [], mode = 'init') {
         }
     }
     return data;
+}
+
+export async function compressImages(images = []) {
+    let promiseArr = [];
+
+    if (_.isArray(images) && !_.isEmpty(images)) {
+
+        for (let i = 0; i < images.length; i++) {
+
+            if (_.get(images, `[${i}].originFileObj`)) {
+                let imgObj = images[i].originFileObj
+                const options = {
+                    maxSizeMB: 0.2,
+                    useWebWorker: true,
+                    maxWidthOrHeight: 1920,
+                }
+
+                let imageFile = Compress(imgObj, options)
+                    .then(compressedBlob => {
+
+                        compressedBlob.lastModifiedDate = new Date()
+                        const convertedBlobFile = new File([compressedBlob], imgObj.name, { type: imgObj.type, lastModified: Date.now() })
+                        return convertedBlobFile
+                    })
+
+                promiseArr.push(imageFile.then((res) => {
+                    images[i].originFileObj = res
+                    return images[i]
+                }))
+
+            }
+            else {
+                promiseArr.push(images[i])
+            }
+        }
+    }
+
+    return Promise.all(promiseArr);
 }

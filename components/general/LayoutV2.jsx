@@ -1272,6 +1272,7 @@ class LayoutV2 extends React.Component {
                                                 <span className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '9' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/socialVideos') }} > Social Videos</span>
                                                 <span className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '7' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/petrolprice') }} > Petrol Price</span>
                                                 <span className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '8' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/kpp') }} > Driving School</span>
+                                                <span className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '11' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/car-review') }} > Car Review</span>
                                                 {_.get(this.props.user, ['authenticated']) ?
                                                     <span className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '10' ? 'yellow' : ''}`} onClick={() => { this.props.router.push(routePaths.profile.as(_.get(this.props, ['user', 'info', 'user'])).pathname) }}> Profile</span>
                                                     :

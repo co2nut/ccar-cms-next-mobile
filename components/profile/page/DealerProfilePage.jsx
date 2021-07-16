@@ -66,7 +66,7 @@ const UserProfileIndex = (props) => {
     }
  
     return (
-        <LayoutV2>
+        <LayoutV2 hideOpenApp>
             <div className="section-version3">
                 <div className="container-version3" style={{touchAction:'pan-y'}}>
                     {

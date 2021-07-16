@@ -17,6 +17,7 @@ import UserAvatar from '../../general/UserAvatar';
 import { loading, loginMode } from '../../../redux/actions/app-actions';
 import { formatNumber, getObjectId, getPlural, getUserName, notEmptyLength, objectRemoveEmptyValue } from '../../../common-function';
 import EmojiPickerButton from '../../general/EmojiPickerButton';
+import SocialInput from './social-input';
 
 
 
@@ -321,23 +322,25 @@ const EventPost = (props) => {
                         </div>
                     </Col>
                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                        <EventDetailsBox data={_.get(post, ['eventId'])} hideAction hideDescription={props.hideDescription === true ? true : false} hideGuestList={props.hideGuestList === true ? true : false} />
+                        <EventDetailsBox readOnly={props.readOnly} data={_.get(post, ['eventId'])} hideAction hideDescription={props.hideDescription === true ? true : false} hideGuestList={props.hideGuestList === true ? true : false} 
+                        onEventJoinActionClick={(e) => {
+                                if (props.onEventJoinActionClick) {
+                                    props.onEventJoinActionClick(e);
+                                }
+                            }} />
                     </Col>
                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                         <div className="fill-parent flex-justify-start flex-items-align-center cursor-pointer">
                             <LikePostButton 
-                                postLike={props.postLike}
                                 chatId={_.get(post, ['_id'])}
                                 likeOn="chat"
+                                readOnly={props.readOnly}
                                 onClick={(actived) => {
-                                    setTotalLike(actived ? parseInt(totalLike) + 1 : parseInt(totalLike) - 1);
-                                }}
-                                onSuccessUpdate={(liked, data) => {
-                                    if (props.onPostLikeChange) {
-                                        props.onPostLikeChange(liked, data);
+                                    if (props.onUpdatePost && !props.readOnly) {
+                                        props.onUpdatePost({ ...post, totalLike: actived ? parseInt(post.totalLike) + 1 : parseInt(post.totalLike) - 1 });
                                     }
-                                    if (props.onUpdatePost) {
-                                        props.onUpdatePost({ ...post, totalLike: liked ? parseInt(post.totalLike) + 1 : parseInt(post.totalLike) - 1 });
+                                    if (props.onLikeClick) {
+                                        props.onLikeClick();
                                     }
                                 }}
                                 activeButton={
@@ -353,7 +356,9 @@ const EventPost = (props) => {
                                 </div>
                             </LikePostButton>
                             <span className='flex-items-align-center cursor-pointer' onClick={(e) => {
-                                setExpandReplyKey(expandReplyKey ? null : '1')
+                                if(!props.readOnly){
+                                    setExpandReplyKey(expandReplyKey ? null : '1')
+                                }
                             }}  >
                                 <span className='margin-right-sm' >
                                     {formatNumber(messageTotal, 'auto', true, 0, true)}
@@ -386,34 +391,19 @@ const EventPost = (props) => {
                                             }
                                         </div>
                                     </div>
-                                    <div className="no-border-input thin-border round-border-big background-white padding-sm margin-top-xs" id="post-post-input">
-                                        <Input
-                                            placeholder="What's on your mind?"
-                                            maxLength={1000}
-                                            ref={commentInputRef}
-                                            size="small"
-                                            onPressEnter={(e) => {
-                                                handleSubmit(text);
-                                            }}
-                                            autoFocus={true}
-                                            value={text}
-                                            onChange={(e) => {
-                                                setText(e.target.value)
-                                            }}
-                                            suffix={
-                                                <EmojiPickerButton
-                                                    className="emoji-mart-small"
-                                                    onSelect={(emoji) => {
-                                                        let originalMsg = text || ''
-                                                        originalMsg = text + emoji.native
-                                                        setText(originalMsg)
-                                                    }}
-                                                    position={{ bottom: 0, right: 33 }}
-                                                >
-                                                    <Icon type="smile" className='cursor-pointer grey margin-right-sm margin-top-xs' style={{ fontSize: '17px' }} />
-                                                </EmojiPickerButton>
-                                            } />
-                                    </div>
+                                    <SocialInput
+                                        placeholder="What's on your mind?"
+                                        maxLength={1000}
+                                        inputRef={commentInputRef}
+                                        clubId={getObjectId(_.get(post, ['eventId', 'clubId']))}
+                                        size="small"
+                                        excludeEnter
+                                        emojiPosition={{ bottom: 0, right: 33 }}
+                                        onSubmit={(finalText) => {
+                                            handleSubmit(finalText);
+                                        }}
+                                        autoFocus={true}
+                                    />
                                 </Collapse.Panel>
                             </Collapse>
                         </div>

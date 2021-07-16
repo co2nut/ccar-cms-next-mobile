@@ -96,6 +96,17 @@ const SocialClubProfilePage1 = (props) => {
         props.updateActiveMenu('6');
     }, [])
 
+
+    useEffect(() => {
+        let query = props.router.query;
+        if (!query) {
+            query = {};
+        }
+        if (query.invite == '1') {
+            setInviteVisible(true)
+        }
+    }, [props.router.query])
+
     useEffect(() => {
         let query = props.router.query;
         if (!query) {
@@ -331,7 +342,7 @@ const SocialClubProfilePage1 = (props) => {
                                             {
                                                 viewType == clubProfileViewTypes[3] || viewType == clubProfileViewTypes[2] ?
                                                     <span className='d-inline-block margin-right-md' >
-                                                        <JoinClubButton club={club} clubId={_.get(club, ['_id'])} userId={_.get(props.user, ['info', 'user', '_id'])}
+                                                        <JoinClubButton club={club} userId={_.get(props.user, ['info', 'user', '_id'])}
                                                             onSuccess={(res) => {
 
                                                                 if (_.get(res, ['type']) == 'approved') {

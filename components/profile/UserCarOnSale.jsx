@@ -52,6 +52,9 @@ const UserCarOnSale = (props) => {
         }
     }, [props.data])
 
+    useEffect(() => { 
+    console.log(productList);
+    } , [productList])
 
     useEffect(() => {
 
@@ -131,6 +134,8 @@ const UserCarOnSale = (props) => {
             }
             props.loading(true);
             let match = { $match: { ...objectRemoveEmptyValue(filterGroup), 'createdBy': _.get(profile, ['_id']) } }
+            console.log(match);
+            console.log(sorting);
             axios.get(`${client.io.io.uri}carAdsFilterV3`,
                 {
                     params: {
@@ -141,6 +146,7 @@ const UserCarOnSale = (props) => {
                     }
                 }
             ).then((res) => {
+                console.log(res);
                 props.loading(false);
                 if (notEmptyLength(res.data.data)) {
                     setProductList(res.data.data)

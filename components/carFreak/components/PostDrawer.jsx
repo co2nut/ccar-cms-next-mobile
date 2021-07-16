@@ -12,7 +12,7 @@ import client from '../../../feathers';
 import SocialInput from './social-input';
 import { loading, loginMode } from '../../../redux/actions/app-actions';
 import { setUser } from '../../../redux/actions/user-actions';
-import { arrayLengthCount, formatNumber, getObjectId, getPlural, getUserName, notEmptyLength } from '../../../common-function';
+import { arrayLengthCount, formatNumber, getObjectId, getPlural, getUserName, notEmptyLength, sortByDateDesc } from '../../../common-function';
 import UserAvatar from '../../general/UserAvatar';
 import Scrollbars from 'react-custom-scrollbars';
 import Loading from '../../general/Loading';
@@ -27,10 +27,11 @@ import { commentIcon, shareIcon } from '../../live/config';
 import { carFreakLikeGreyIcon, carFreakLikeIcon } from '../../../icon';
 import ShareButtonDialog from '../../general/ShareButtonDialog';
 import CommentBox1 from './comment-box-1';
-import { chatRestrictTime } from '../config';
+import { chatRestrictTime, compressImages } from '../config';
 import ScrollLoadWrapper from '../../general/ScrollLoadWrapper';
 import WindowScrollLoadWrapper from '../../general/WindowScrollLoadWrapper';
 import moment from 'moment';
+import uploadImages from '../../../api/uploadImages';
 
 const { TextArea } = Input;
 
@@ -42,60 +43,64 @@ const IMAGE_LIMIT = 10;
 
 const IMAGE_HEIGHT = 300;
 const postCommentRef = React.createRef();
+let emojiPosition = { top: -360, right: 0 }
 const PostDrawer = (props) => {
 
 
     const [visible, setVisible] = useState(false);
     const [post, setPost] = useState({});
-    const [postLike, setPostLike] = useState({});
     const [totalLike, setTotalLike] = useState(0);
     const [messageTotal, setMessageTotal] = useState(0);
     const [messages, setMessages] = useState([]);
+    const [messagePage, setMessagePage] = useState(1);
     const [canSendMessage, setCanSendMessage] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [typeMessage, setTypeMessage] = useState('');
+    const [commentImages, setCommentImages] = useState([]);
     const [resetIndicator, setResetIndicator] = useState('');
 
 
+    const [pinnedCommentIds, setPinnedCommentIds] = useState([]);
+    const [pinnedComments, setPinnedComments] = useState([]);
 
     useEffect(() => {
-        if (_.isPlainObject(props.data) && !_.isEmpty(props.data)) {
-            setMessages([]);
+
+        if (_.get(post, `_id`) == _.get(props.data, `_id`)) {
             setPost(props.data);
+            setPinnedCommentIds(_.get(props.data, ['pinnedComments']) || [])
         } else {
-            setPost({});
+            if (_.isPlainObject(props.data) && !_.isEmpty(props.data)) {
+                setPinnedCommentIds(_.get(props.data, ['pinnedComments']) || [])
+                setPost(props.data);
+            } else {
+                setPost({});
+                setMessages([]);
+                setPinnedCommentIds([]);
+            }
         }
 
     }, [props.data])
 
     useEffect(() => {
-
-        if (_.isPlainObject(props.postLike) && !_.isEmpty(props.postLike)) {
-            setPostLike(props.postLike);
-        } else {
-            setPostLike({});
-        }
-
-    }, [props.postLike])
-
-    useEffect(() => {
-
-        if (_.isPlainObject(post) && !_.isEmpty(post) && visible) {
-            getData();
-        }
-
-        else {
-            setMessages([]);
-        }
-
-        setTotalLike(!_.isNaN(parseInt(_.get(post, ['totalLike']))) ? formatNumber(_.get(post, ['totalLike']), null, true, 0, 0) : 0)
-    }, [post, visible])
-
-
-    useEffect(() => {
         setVisible(props.visible)
     }, [props.visible]);
 
+    useEffect(() => {
+        getData(props.data, _.map(pinnedCommentIds || [], '_id'), (messagePage - 1) * messagePageSize);
+    }, [messagePage])
+
+    useEffect(() => {
+        if (messagePage == 1) {
+            getData(props.data, _.map(pinnedCommentIds || [], '_id'));
+        } else {
+            setMessagePage(1);
+        }
+        getPinnedDataMessage(_.map(pinnedCommentIds || [], '_id'))
+    }, [pinnedCommentIds])
+
+    useEffect(() => {
+        console.log(post);
+    }, [post])
 
     function closeModal() {
         if (props.onCancel) {
@@ -106,82 +111,91 @@ const PostDrawer = (props) => {
         setCanSendMessage(true);
     }
 
-    function handleSubmit(text) {
+    function handleSubmit(text, images) {
 
         if (!_.get(props.user, ['authenticated']) && !_.get(props.user, ['info', 'user', '_id'])) {
             AntMessage.error('Please Login First!');
             props.loginMode(true);
             return;
         }
-        if (_.get(post, ['_id']) && text) {
-            if (canSendMessage) {
-                client.authenticate()
-                    .then((res) => {
-                        client.service('chatmessages')
-                            .create({
-                                chatId: post._id,
-                                userId: res.user._id,
-                                message: text,
-                            })
-                            .then((res1) => {
-                                if (props.onUpdatePost) {
-                                    props.onUpdatePost({ ...post, totalReply: messageTotal + 1 })
-                                }
-                                setTypeMessage('');
-                                setResetIndicator(v4());
-                                setCanSendMessage(false);
-                                res1.userId = res.user;
-                                //for new message appear at top after submit
-                                let newData = [res1]
-                                setMessages(newData.concat(messages))
-                                // setMessages(messages.concat([res1]));
-                                setMessageTotal(messageTotal + 1);
-                                setTimeout(() => {
-                                    setCanSendMessage(true);
-                                }, chatRestrictTime);
+        if (_.get(post, ['_id']) && (text || _.isArray(images) && !_.isEmpty(images))) {
 
-                            }).catch((err) => {
-                                console.log(err);
-                                console.log('Unable to send messages.')
-                            })
+            setIsLoading(true);
+            client.authenticate()
+                .then(async (res) => {
+                    if (_.isArray(images) && !_.isEmpty(images)) {
+                        images = await uploadImages(images);
+                    }
+                    client.service('chatmessages')
+                        .create({
+                            chatId: post._id,
+                            userId: res.user._id,
+                            message: text,
+                            mediaList: images,
+                        })
+                        .then((res1) => {
 
-                    })
-                    .catch((err) => {
-                        return AntMessage.error("Please Login.")
-                    })
-            } else {
-                AntMessage.warning('You are typing too fast...')
-            }
+                            setIsLoading(false);
+                            if (props.onUpdatePost) {
+                                props.onUpdatePost({ ...post, totalReply: messageTotal + 1 })
+                            }
+                            setTypeMessage('');
+                            setCommentImages([]);
+                            setResetIndicator(v4());
+                            res1.userId = res.user;
+                            //for new message appear at top after submit
+                            let newData = [res1]
+                            setMessages(newData.concat(messages))
+                            // setMessages(messages.concat([res1]));
+                            setMessageTotal(messageTotal + 1);
+
+                        }).catch((err) => {
+                            console.log(err);
+                            console.log('Unable to send messages.')
+                        })
+
+                })
+                .catch((err) => {
+                    console.log(err);
+                    setIsLoading(false);
+                    return AntMessage.error("Something went wrong.")
+                })
         }
 
     };
 
-    function getData() {
+    function getData(post, excludeIds = [], skip = 0) {
 
         if (_.get(post, ['_id'])) {
             setIsLoading(true);
 
+            if (!_.isNumber(skip)) {
+                skip = 0;
+            }
+            let query = {
+                chatId: post._id,
+                $populate: 'userId',
+                $limit: messagePageSize,
+                $sort: { _id: -1 },
+                $skip: skip
+            };
+
+            if (_.isArray(excludeIds) && !_.isEmpty(excludeIds)) {
+                query._id = {
+                    $nin: excludeIds || [],
+                }
+            }
+
             client.service('chatmessages').find(
                 {
                     query: {
-                        chatId: post._id,
-                        $populate: 'userId',
-                        $limit: messagePageSize,
-                        $sort: { _id: -1 },
-                        $skip: messages.length
+                        ...query
                     }
                 }
             ).then((res) => {
 
                 setIsLoading(false);
-                if (res.data.length > 0) {
-                    let newMessages = messages.concat(res.data)
-                    setMessages(newMessages)
-                }
-                //if not found , remain , no need set empty
-                // else {
-                //     setMessages([])
-                // }
+                setMessages(messagePage == 1 ? _.get(res, `data`) : _.concat(messages, _.get(res, `data`) || []))
                 setMessageTotal(res.total)
 
             }).catch(err => {
@@ -199,6 +213,12 @@ const PostDrawer = (props) => {
             });
 
             setMessages(newMessages);
+
+            newMessages = _.map(pinnedComments, function (v) {
+                return _.get(v, ['_id']) == _.get(data, ['_id']) ? data : v;
+            });
+
+            setPinnedComments(newMessages);
         }
     }
 
@@ -209,10 +229,57 @@ const PostDrawer = (props) => {
             });
 
             setMessages(newMessages);
+
+            let newPinnedMessages = _.filter(pinnedComments, function (v) {
+                return _.get(v, ['_id']) != _.get(data, ['_id']);
+            }) || [];
+
+            if (!_.isEqual(newPinnedMessages, pinnedComments)) {
+                setPinnedComments(newPinnedMessages);
+            }
+
+            if (props.onUpdatePost) {
+                props.onUpdatePost({ ...post, pinnedComments: newPinnedMessages, totalReply: (messageTotal + arrayLengthCount(newPinnedMessages)) - 1 });
+            }
         }
     }
 
-    let emojiPosition = { top: -360, right: 0 }
+
+    function getPinnedDataMessage(ids) {
+
+        if (_.isEmpty(post) === true) {
+            return
+        }
+
+        let query = {
+            _id: {
+                $in: ids || [],
+            },
+            chatId: post._id,
+            $populate: 'userId',
+            $sort: { createdAt: -1 },
+
+        }
+
+        client.service('chatmessages').find(
+            {
+                query: {
+                    ...query,
+                }
+            }
+        ).then((res) => {
+            setPinnedComments(_.isArray(res.data) && notEmptyLength(res.data) ? res.data : []);
+        })
+    }
+
+    function handlePinCommentChange(ids) {
+        ids = _.isArray(ids) && !_.isEmpty(ids) ? ids : [];
+        setPinnedCommentIds(ids);
+        if (props.onUpdatePost) {
+            props.onUpdatePost({ ...post, pinnedComments: ids })
+        }
+    }
+
 
     return (
         <React.Fragment>
@@ -229,7 +296,7 @@ const PostDrawer = (props) => {
                 width="100%"
                 closable={false}
             >
-                <ScrollLoadWrapper autoHeight autoHeightMin={typeof (window) != undefined ? window.innerHeight * 0.8 : 500} autoHeightMax={typeof (window) != undefined ? window.innerHeight * 0.8 : 500} onScrolledBottom={() => { if (arrayLengthCount(messages) < messageTotal) { getData(); } }}>
+                <ScrollLoadWrapper autoHeight autoHeightMin={typeof (window) != undefined ? window.innerHeight * 0.8 : 500} autoHeightMax={typeof (window) != undefined ? window.innerHeight * 0.8 : 500} onScrolledBottom={() => { if (arrayLengthCount(messages) < messageTotal) { setMessagePage(messagePage + 1) } }}>
                     <div className="flex-items-align-center flex-justify-space-between padding-md">
                         <span className='flex-items-align-center' >
                             <UserAvatar redirectProfile data={_.get(post, ['userId'])} size={50} className="margin-right-md" />
@@ -252,7 +319,7 @@ const PostDrawer = (props) => {
                                 followingButton={() => {
                                     return <span className='d-inline-block round-border background-white padding-y-sm padding-x-md caption black' style={{ border: 'solid 1px', borderColor: '#FFCC32' }} >
                                         Following
-                                  </span>
+                                    </span>
                                 }}
                                 handleSuccess={(data) => {
                                     message.success(data.type == 'remove' ? 'Unfollowed' : 'Followed')
@@ -279,7 +346,7 @@ const PostDrawer = (props) => {
                         </span>
                     </div>
                     {
-                        _.get(post, `chatType` ) == 'carfreaks'?
+                        _.get(post, `chatType`) == 'carfreaks' ?
                             <div className="margin-bottom-sm">
                                 <LightBoxCarousel height={IMAGE_HEIGHT} images={_.compact(_.map(_.get(post, ['mediaList']), function (v) {
                                     return _.get(v, ['url']) || null;
@@ -303,7 +370,6 @@ const PostDrawer = (props) => {
                     <div className="width-100 flex-justify-start flex-items-align-center padding-x-md padding-y-sm" >
                         <LikePostButton className='d-inline-block margin-right-md'
                             chatId={post._id}
-                            postLike={postLike}
                             likeOn="chat"
                             onClick={(liked) => { setTotalLike(liked ? parseInt(totalLike) + 1 : parseInt(totalLike) - 1) }}
                             onSuccessUpdate={(liked, data) => {
@@ -317,13 +383,13 @@ const PostDrawer = (props) => {
                             activeButton={
                                 <div className="flex-items-align-center caption font-weight-thin">
                                     <img src={carFreakLikeIcon} style={{ width: 30, height: 20 }} className="margin-right-sm cursor-pointer" />
-                                    {getPlural('Like', 'Likes', totalLike || 0, true)}
+                                    {getPlural('Like', 'Likes', post.totalLike || 0, true)}
                                 </div>
                             }
                             className='d-inline-block margin-right-md'>
                             <div className="flex-items-align-center caption font-weight-thin">
                                 <img src={carFreakLikeGreyIcon} style={{ width: 30, height: 20 }} className="margin-right-sm cursor-pointer" />
-                                {getPlural('Like', 'Likes', totalLike || 0, true)}
+                                {getPlural('Like', 'Likes', post.totalLike || 0, true)}
                             </div>
                         </LikePostButton>
                         <span className='flex-items-align-center cursor-pointer margin-right-sm' onClick={(e) => {
@@ -350,25 +416,59 @@ const PostDrawer = (props) => {
                     </div>
                     <div className="padding-x-md padding-y-sm">
                         {
+                            _.isArray(pinnedComments) && !_.isEmpty(pinnedComments) ?
+                                _.map(pinnedComments, function (v, index) {
+                                    return (
+                                        <CommentBox1
+                                            key={`pinnedcomment-${getObjectId(v)}`}
+                                            data={v}
+                                            pinnedComments={pinnedComments}
+                                            pinnable={props.pinnable}
+                                            theme="pin"
+                                            imageUpload={_.get(post, `chatType`) == 'socialboard'}
+                                            imageUploadMultiple={_.get(post, `chatType`) == 'socialboard'}
+                                            onChange={(data) => {
+                                                handleCommentChange(data);
+                                            }}
+                                            onRemove={(data) => {
+                                                handleRemoveComment(data);
+                                            }}
+                                            onUpdatePinComments={(data) => {
+                                                handlePinCommentChange(data);
+                                            }}
+                                        />
+                                    )
+                                })
+                                :
+                                null
+
+                        }
+                        {
                             _.isArray(messages) && notEmptyLength(messages) ?
                                 messages.map(function (v, i) {
                                     return (
-                                        <React.Fragment key={'messages' + i}>
+                                        <React.Fragment >
                                             <CommentBox1 data={v}
+                                                key={`comment-${getObjectId(v)}`}
+                                                pinnedComments={pinnedComments}
+                                                pinnable={props.pinnable}
+                                                imageUpload={_.get(post, `chatType`) == 'socialboard'}
+                                                imageUploadMultiple={_.get(post, `chatType`) == 'socialboard'}
                                                 onChange={(data) => {
                                                     handleCommentChange(data);
                                                 }}
                                                 onRemove={(data) => {
                                                     handleRemoveComment(data);
                                                 }}
+                                                onUpdatePinComments={(data) => {
+                                                    handlePinCommentChange(data);
+                                                }}
                                             />
                                         </React.Fragment>
                                     )
                                 })
                                 :
-                                <div className="width-100" style={{ height: 100 }}>
-                                    <Empty description="No comment yet..." ></Empty>
-                                </div>
+                                null
                         }
                     </div>
                 </ScrollLoadWrapper>
@@ -377,6 +477,7 @@ const PostDrawer = (props) => {
                     <div className="flex-justify-space-around flex-items-align-center padding-bottom-sm">
                         <span className='d-inline-block width-80' >
                             <SocialInput
+                                clubId={getObjectId(_.get(post, `clubId`))}
                                 placeholder="What's on your mind?"
                                 maxLength={1000}
                                 inputRef={postCommentRef}
@@ -384,14 +485,23 @@ const PostDrawer = (props) => {
                                 onChange={(v, finalText) => {
                                     setTypeMessage(finalText)
                                 }}
+                                onImageChange={(images) => {
+                                    setCommentImages(images)
+                                }}
+                                imageUpload={_.get(post, `chatType`) == 'socialboard'}
+                                imageUploadMultiple={_.get(post, `chatType`) == 'socialboard'}
                                 hideEmojiPicker
                                 autoFocus={true}
                                 excludeEnter
                                 resetIndicator={resetIndicator}
                             />
                         </span>
-                        <span className='d-inline-block cursor-pointer ccar-button-yellow caption font-weight-bold' onClick={(e) => { handleSubmit(typeMessage) }} >
-                            Send
+                        <span className={`'d-inline-block caption font-weight-bold ${isLoading ? 'cursor-not-allowed yellow-lighten-2' : 'cursor-pointer ccar-button-yellow '}`} onClick={(e) => {
+                            if (!isLoading) {
+                                handleSubmit(typeMessage, commentImages)
+                            }
+                        }} >
+                            {isLoading ? 'Sending' : 'Send'}
                         </span>
                     </div>
                 </div>

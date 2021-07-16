@@ -3,7 +3,6 @@ import RadioGroup from 'antd/lib/radio/group';
 import _ from 'lodash';
 import { withRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroller';
 import { connect } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import { v4 } from 'uuid';
@@ -21,9 +20,13 @@ import InfiniteScrollWrapper from '../../general/InfiniteScrollWrapper';
 import {
     updateActiveMenu
 } from '../../../redux/actions/app-actions';
-import WritePostDrawer from '../components/WritePostDrawer';
-import PostMobileView from '../components/PostMobileView';
+import { fetchCarFreakPosts, fetchUserPostLikeIds } from '../../../redux/actions/carfreak.action';
 import { routePaths } from '../../../route';
+import InfiniteScrollWrapper from '../../general/InfiniteScrollWrapper';
+import LayoutV2 from '../../general/LayoutV2';
+import CarFreakLayout from '../components/car-freak-layout';
+import ClubJoinModal from '../components/club/ClubJoinModal';
+import EventPost from '../components/event-post';
 import PostDrawer from '../components/PostDrawer';
 import PostModalCarousel from '../components/PostModalCarousel';
 import WriteEventModal from '../components/write-event-modal';
@@ -53,7 +56,6 @@ const PAGE_SIZE = 12;
 
 const CarFreakPage = (props) => {
 
-    const [chats, setChats] = useState([])
     const [chatInfo, setChatInfo] = useState({});
     const [visible, setVisible] = useState(false);
     const [editMode, setEditMode] = useState('');
@@ -61,7 +63,6 @@ const CarFreakPage = (props) => {
     const [writePostChatType, setWritePostChatType] = useState('carfreaks');
     const [writeModalVisible, setWriteModalVisible] = useState(false);
     const [scope, setScope] = useState('public');
-    const [userChatLikes, setUserChatLikes] = useState([]);
     const [chatPage, setChatPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
 
@@ -77,6 +78,13 @@ const CarFreakPage = (props) => {
     const [notFollowingList, setNotFollowingList] = useState([]);
     const [editPicVisible, setEditPicVisible] = useState(false);
 
+    const [writeEventVisible, setWriteEventVisible] = useState(false);
+    const [eventEditMode, setEventEditMode] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState({});
+
+
+    const [joinClubModalVisible, setJoinClubModalVisible] = useState(false);
+
     useEffect(() => {
         props.updateActiveMenu('6');
     }, [])
@@ -88,6 +96,7 @@ const CarFreakPage = (props) => {
         if (document) {
             setHtmlDocument(document);
         }
+
     }, [])
 
     useEffect(() => {
@@ -99,16 +108,22 @@ const CarFreakPage = (props) => {
     }, [scope])
 
 
+
+
     useEffect(() => {
 
         if (_.isPlainObject(chatInfo) && !_.isEmpty(chatInfo)) {
-            let newChatInfo = _.find(chats, function (chat) {
+            let newChatInfo = _.find(_.get(props.carfreak, 'carFreakPosts') || [], function (chat) {
                 return chat._id == chatInfo._id;
             })
             setChatInfo(newChatInfo || {})
         }
 
-    }, [chats])
+        if (arrayLengthCount(_.get(props.carfreak, 'carFreakPosts') || []) < totalChat) {
+            setHasMore(true);
+        }
+    }, [props.carfreak.carFreakPosts])
+
 
     useEffect(() => {
         getChatData((chatPage - 1) * PAGE_SIZE, scope)
@@ -116,8 +131,15 @@ const CarFreakPage = (props) => {
 
 
     useEffect(() => {
-        getFollowingList();
-        getUserChatLikes(_.map(chats, '_id'))
+        if (props.user.authenticated) {
+            getFollowingList();
+            getUserChatLikes(_.map(_.get(props.carfreak, 'carFreakPosts') || [], '_id')).then(userLikes => {
+                props.fetchUserPostLikeIds(_.map(_.get(userLikes, ['data']) || [], 'chatId'))
+            })
+        } else {
+            props.fetchUserPostLikeIds([])
+        }
+
     }, [props.user.authenticated])
 
     function confirmDelete(v) {
@@ -125,10 +147,18 @@ const CarFreakPage = (props) => {
             client.service('chats')
                 .remove(v._id).then((res) => {
                     message.success('Record Deleted')
-                    handleRemovePost(v)
+                    patchUserCarFreakPosts([v], 'delete');
                 }).catch((err) => {
                     console.log('Unable to delete Chat.');
                 })
+        }
+    }
+
+    function patchUserCarFreakPosts(posts = [], mode = 'init') {
+
+        let data = patchReduxPosts(_.get(props.carfreak, `carFreakPosts`), posts, mode);
+        if (!_.isEqual(data, _.get(props.carfreak, `carFreakPosts`))) {
+            props.fetchCarFreakPosts(data);
         }
     }
 
@@ -153,7 +183,7 @@ const CarFreakPage = (props) => {
                     // ...title,
                     ...following,
                     chatType: {
-                        $in: ['carfreaks']
+                        $in: ['carfreaks', 'event']
                     },
                     parentType: {
                         $ne: 'club'
@@ -163,35 +193,85 @@ const CarFreakPage = (props) => {
                             path: 'userId',
                             ref: 'users',
                             select: 'avatar _id fullName firstName lastName freakId userurlId'
-                        }, 'eventId', 'clubId'],
+                        },
+                        {
+                            path: 'eventId',
+                            ref: 'events',
+                            populate: [
+                                {
+                                    path: 'createdBy',
+                                    ref: 'users'
+                                },
+                                {
+                                    path: 'clubId',
+                                    ref: 'clubs'
+                                },
+                            ]
+                        }, 'clubId'],
                     $limit: PAGE_SIZE,
                     $sort: { _id: -1 },
                     $skip: skip,
                 }
             })
-            .then((res) => {
-
-                let newData = _.cloneDeep(chats)
-                if (chatPage > 1) {
-                    newData = newData.concat(res.data)
-                } else {
-                    newData = res.data;
-                }
-                setChats(newData)
+            .then(async (res) => {
+                res.data = await processEventPost(res.data);
+                patchUserCarFreakPosts(res.data, chatPage == 1 ? 'init' : 'concat');
                 setTotalChat(res.total)
-                setIsLoading(false)
-                if (arrayLengthCount(newData) < totalChat) {
-                    setHasMore(true);
-                }
-                getUserChatLikes(_.map(_.get(res, ['data']), '_id'), true)
-
-            })
+                getUserChatLikes(_.map(_.get(res, ['data']), '_id')).then(userLikes => {
+                    patchUserPostLikeIds(_.map(_.get(userLikes, ['data']) || [], 'chatId'));
+                    setIsLoading(false)
+                })
+            }).catch(err => {
+                console.log(err);
+            });
     }
 
-    function getUserChatLikes(ids, concat) {
+    async function processEventPost(posts = []) {
+
+        if (_.isArray(posts) && !_.isEmpty(posts)) {
+            let eventPosts = [];
+            eventPosts = _.filter(posts, (post) => {
+                return _.get(post, `chatType`) == 'event';
+            })
+            return getClubJoins(_.uniq(_.compact(_.map(eventPosts, 'eventId.clubId._id')))).then(res => {
+                eventPosts = _.map(eventPosts, (eventPost) => {
+                    eventPost.clubJoin = _.find(_.get(res, `data`) || [], ['clubId', _.get(eventPost, `eventId.clubId._id`)]) || {};
+                    eventPost.viewType = getViewType(eventPost.clubJoin);
+                    eventPost.isNotAllowedSocialInteraction = isNotAllowedSocialInteraction(_.get(eventPost, `eventId.clubId`, eventPost.viewType));
+                    return eventPost;
+                })
+
+                posts = _.map(posts, (post) => {
+                    return _.find(eventPosts, ['_id', getObjectId(post)]) || post;
+                })
+                return posts;
+            })
+        } else {
+            return posts;
+        }
+
+    }
+
+    function patchUserPostLikeIds(ids = [], addMode = true) {
+
+        let newPostLikes = props.carfreak.userPostLikeIds || [];
+
+        if (_.isArray(ids) && !_.isEmpty(ids)) {
+            if (addMode) {
+                newPostLikes = _.union(newPostLikes, ids || []);
+            } else {
+                newPostLikes = _.pullAll(newPostLikes, ids || []);
+            }
+            if (!_.isEqual(newPostLikes, props.carfreak.userPostLikeIds)) {
+                props.fetchUserPostLikeIds(newPostLikes);
+            }
+        }
+    }
+
+    function getUserChatLikes(ids = []) {
 
         if (_.isArray(ids) && !_.isEmpty(ids) && _.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', '_id'])) {
-            client.service('chatlikes')
+            return client.service('chatlikes')
                 .find({
                     query: {
                         chatId: {
@@ -200,9 +280,11 @@ const CarFreakPage = (props) => {
                         userId: _.get(props.user, ['info', 'user', '_id'])
                     }
                 })
-                .then((res) => {
-                    setUserChatLikes(concat ? _.concat(userChatLikes, res.data) : res.data)
-                })
+        } else {
+            return {
+                then: () => {
+                }
+            }
         }
     }
 
@@ -226,43 +308,35 @@ const CarFreakPage = (props) => {
     }
 
 
-    function handleOnAddPost(post) {
-        if (_.isPlainObject(post) && !_.isEmpty(post)) {
-            let posts = _.concat([post], chats)
-            setChats(posts);
-        }
 
+    function confirmDeleteEvent(v) {
+        if (v._id && _.get(v, ['eventId', '_id'])) {
+            client.service('events')
+                .remove(_.get(v, ['eventId', '_id'])).then((res) => {
+                    confirmDelete(v);
+                }).catch((err) => {
+                    console.log('Unable to delete Event.');
+                })
+        }
     }
 
-    function handlePostChange(post) {
+    function getClubJoins(ids = []) {
 
-        if (_.get(post, ['_id'])) {
-            // client.service('chats').find({
-            //     query: {
-            //         _id: post._id,
-            //         $populate: 'userId',
-            //     }
-            // }).then(res => {
-            // post = _.isArray(res.data) && !_.isEmpty(res.data) ? res.data[0] : {};
-            if (_.isPlainObject(post) && !_.isEmpty(post)) {
-                let posts = _.map(chats, function (chat) {
-                    return chat._id == _.get(post, ['_id']) ? post : chat;
-                });
-                setChats(posts);
+        if (_.isArray(ids) && !_.isEmpty(ids) && _.get(props.user, ['authenticated']) && _.get(props.user, ['info', 'user', '_id'])) {
+            return client.service('clubjoin').find({
+                query: {
+                    clubId: {
+                        $in: ids || [],
+                    },
+                    userId: _.get(props.user, ['info', 'user', '_id']),
+                }
+            })
+        } else {
+            return {
+                then: () => {
+                }
             }
-            // }).catch(err => {
-            //     console.log(err);
-            //     message.error(err.message)
-            // });
         }
-
-    }
-    function handleRemovePost(post) {
-        let posts = _.filter(chats, function (chat) {
-            return chat._id != _.get(post, ['_id']);
-        });
-
-        setChats(posts);
     }
 
     return (
@@ -394,58 +468,78 @@ const CarFreakPage = (props) => {
                         }}>
                         <Row>
                             <InfiniteScrollWrapper onScrolledBottom={() => {
-                                if (arrayLengthCount(chats) < totalChat) {
+                                if (arrayLengthCount(_.get(props.carfreak, `carFreakPosts`) || []) < totalChat) {
                                     setChatPage(chatPage + 1)
                                 }
                             }}
-                                hasMore={!isLoading && arrayLengthCount(chats) < totalChat}
+                                hasMore={!isLoading && arrayLengthCount(_.get(props.carfreak, `carFreakPosts`) || []) < totalChat}
                             >
                                 {
-                                    _.isArray(chats) && notEmptyLength(chats) ?
-                                        _.map(chats, function (v, i) {
+                                    _.isArray(_.get(props.carfreak, `carFreakPosts`) || []) && notEmptyLength(_.get(props.carfreak, `carFreakPosts`) || []) ?
+                                        _.map(_.get(props.carfreak, `carFreakPosts`) || [], function (v, i) {
                                             return (
                                                 <Col xs={24} sm={12} md={8} lg={6} xl={6} key={`post-${_.get(v, `_id`)}`}>
-                                                    <PostMobileView data={v}
-                                                        className="background-white"
-                                                        postLike={_.find(userChatLikes, { chatId: v._id })}
-                                                        showClub
-                                                        onRedirectToPost={(post) => {
-                                                            if (_.get(post, ['chatType']) == 'event') {
+                                                    {
+                                                        _.get(v, ['chatType']) == 'event' ?
+                                                            <EventPost manualControl data={v}
+                                                                readOnly={isNotAllowedSocialInteraction(_.get(v, `eventId.clubId`), _.get(v, `viewType`))}
+                                                                onEditClick={(data) => {
+                                                                    if (_.isPlainObject(data) && !_.isEmpty(data)) {
+                                                                        setSelectedPost(data);
+                                                                        setEventEditMode(true);
+                                                                        setWriteEventVisible(true);
+                                                                    }
+                                                                }}
+                                                                onRemoveClick={(data) => {
+                                                                    confirmDeleteEvent(data)
+                                                                }}
+                                                                onLikeClick={() => {
+                                                                    if (isNotAllowedSocialInteraction(_.get(v, `eventId.clubId`), _.get(v, `viewType`))) {
+                                                                        setJoinClubModalVisible(true)
+                                                                        setSelectedPost(v);
+                                                                    }
+                                                                }}
+                                                                onUpdatePost={(data) => {
+                                                                    patchUserCarFreakPosts(_.compact([data]), 'update');
+                                                                }}
+                                                                onReplyClick={() => {
+                                                                    if (isNotAllowedSocialInteraction(_.get(v, `eventId.clubId`), _.get(v, `viewType`))) {
+                                                                        setJoinClubModalVisible(true)
+                                                                        setSelectedPost(v);
+                                                                    }
+                                                                }}
+                                                                onEventJoinActionClick={(e) => {
+                                                                    if (isNotAllowedSocialInteraction(_.get(v, `eventId.clubId`), _.get(v, `viewType`))) {
+                                                                        setJoinClubModalVisible(true)
+                                                                        setSelectedPost(v);
+                                                                    }
+                                                                }}
 
-                                                                // const win = htmlWindow.open(`/event-post/${_.get(post, ['_id'])}`, '_blank');
-                                                                // if (win != null) {
-                                                                //     win.focus();
-                                                                // }
-                                                            } else {
-                                                                console.log('redirect');
-                                                                setChatInfo(post);
-                                                                setVisible(true);
-                                                                setEditMode('');
-                                                            }
-                                                        }}
-                                                        onEditClick={(post) => {
-                                                            setEditMode('edit');
-                                                            setWriteModalVisible(true);
-                                                            setWritePostChatType('carfreaks')
-                                                            setSelectedPost(post);
-                                                        }}
+                                                            />
+                                                            :
+                                                            <PostMobileView data={v}
+                                                                className="background-white"
+                                                                showClub
+                                                                onRedirectToPost={(post) => {
+                                                                    setChatInfo(post);
+                                                                    setVisible(true);
+                                                                    setEditMode('');
+                                                                }}
+                                                                onEditClick={(post) => {
+                                                                    setEditMode('edit');
+                                                                    setWriteModalVisible(true);
+                                                                    setWritePostChatType('carfreaks')
+                                                                    setSelectedPost(post);
+                                                                }}
 
-                                                        onUpdatePost={(data) => {
-                                                            handlePostChange(data);
-                                                        }}
-                                                        onRemoveClick={(post) => {
-                                                            confirmDelete(post)
-                                                        }}
-                                                        onPostLikeChange={(liked, data) => {
-                                                            if (liked) {
-                                                                setUserChatLikes(_.concat(userChatLikes, [data]));
-                                                            } else {
-                                                                setUserChatLikes(_.filter(userChatLikes, function (like) {
-                                                                    return _.get(like, ['chatId']) != _.get(data, ['chatId']);
-                                                                }))
-                                                            }
-                                                        }}
-                                                    />
+                                                                onUpdatePost={(data) => {
+                                                                    patchUserCarFreakPosts(_.compact([data]), 'update');
+                                                                }}
+                                                                onRemoveClick={(post) => {
+                                                                    confirmDelete(post)
+                                                                }}
+                                                            />
+                                                    }
                                                 </Col>
                                             )
                                         })
@@ -583,21 +677,11 @@ const CarFreakPage = (props) => {
                 data={chatInfo}
                 visible={visible}
                 editMode={editMode}
-                postLike={_.find(userChatLikes, { chatId: _.get(chatInfo, ['_id']) })}
                 onCancel={() => {
                     setVisible(false);
                     setChatInfo({});
                 }
                 }
-                onPostLikeChange={(liked, data) => {
-                    if (liked) {
-                        setUserChatLikes(_.concat(userChatLikes, [data]));
-                    } else {
-                        setUserChatLikes(_.filter(userChatLikes, function (like) {
-                            return _.get(like, ['chatId']) != _.get(data, ['chatId']);
-                        }))
-                    }
-                }}
                 onEditClick={(post) => {
                     setEditMode('edit');
                     setWriteModalVisible(true);
@@ -611,7 +695,7 @@ const CarFreakPage = (props) => {
                 }}
 
                 onUpdatePost={(data) => {
-                    handlePostChange(data);
+                    patchUserCarFreakPosts(_.compact([data]), 'update');
                 }}
             />
 
@@ -622,36 +706,117 @@ const CarFreakPage = (props) => {
                 visible={writeModalVisible}
                 notify
                 onUpdatePost={(data) => {
-                    handlePostChange(data);
+                    patchUserCarFreakPosts(_.compact([data]), 'update');
                 }}
                 onCreatePost={(data) => {
-
-                    if (_.get(data, `chatType`) == 'carfreaks') {
-                        handleOnAddPost(data)
-                    }
-                    if (_.get(data, `chatType`) == 'socialboard') {
-                        props.router.push(routePaths.socialBoard.as().pathname)
-                    }
+                    patchUserCarFreakPosts(_.compact([data]), 'append');
                 }}
                 onClose={(v) => {
                     setWriteModalVisible(false);
                     setSelectedPost({});
                 }} />
 
-        </React.Fragment>
+            <WriteEventModal
+                visible={writeEventVisible}
+                editMode={eventEditMode}
+                data={_.get(selectedPost, ['eventId']) || {}}
+                onCancel={() => {
+                    setSelectedPost({});
+                    setEventEditMode(false);
+                    setWriteEventVisible(false);
+                }}
+                type="club"
+                notify
+                onCreate={(event) => {
+                    if (_.isPlainObject(event) && !_.isEmpty(event)) {
+                        client.service('chats').find({
+                            query: {
+                                eventId: _.get(event, `_id`),
+                                $limit: 1,
+                                $populate: [
+                                    {
+                                        path: 'userId',
+                                        ref: 'users'
+                                    },
+                                    {
+                                        path: 'eventId',
+                                        ref: 'events',
+                                        populate: [
+                                            {
+                                                path: 'createdBy',
+                                                ref: 'users'
+                                            },
+                                            {
+                                                path: 'clubId',
+                                                ref: 'clubs'
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        path: 'clubId',
+                                        ref: 'clubs'
+                                    }
+                                ],
+                            }
+                        }).then(res => {
+                            if (_.isArray(res.data) && !_.isEmpty(res.data)) {
+                                setPosts(_.concat(_.get(res, `data[0]`) || [], posts));
+                            }
+                        }).catch(err => {
+                            message.error(err.message)
+                        });
+                    }
+                }}
+                onUpdate={(event) => {
+                    if (_.isPlainObject(event) && !_.isEmpty(event)) {
+                        let newData = _.cloneDeep(selectedPost);
+                        newData.eventId = {
+                            ...event,
+                            clubId: _.get(newData, ['eventId', 'clubId']),
+                        }
+                        let newPosts = _.map(posts, function (item) {
+                            return item._id == _.get(newData, ['_id']) ? newData : item;
+                        });
+                        setPosts(newPosts);
+                    }
+                }}
+            ></WriteEventModal>
+
+            <ClubJoinModal
+                visible={joinClubModalVisible}
+                club={_.get(selectedPost, `eventId.clubId`)}
+                onCancel={() => {
+                    setJoinClubModalVisible(false)
+                }}
+                onChange={(res) => {
+                    if (_.get(res, ['type']) == 'approved') {
+                        let effectedPosts = _.filter(_.get(props.carfreak, `carFreakPosts`), (post) => {
+                            return _.get(post, `chatType`) == 'event' && getObjectId(_.get(post, `eventId.clubId`)) == getObjectId(_.get(res, `data.clubId`))
+                        })
+                        effectedPosts = processEventPost(effectedPosts || []);
+                        patchUserCarFreakPosts(effectedPosts, 'update')
+                    }
+                }}
+            ></ClubJoinModal>
+
+        </React.Fragment >
     )
 
 }
+
+
 
 const mapStateToProps = state => ({
     app: state.app,
     user: state.user,
     userlikes: state.userlikes,
-    carFreak: state.carFreak,
+    carfreak: state.carfreak,
 });
 
 const mapDispatchToProps = {
     updateActiveMenu: updateActiveMenu,
+    fetchUserPostLikeIds,
+    fetchCarFreakPosts,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(withRouter(CarFreakPage)));
