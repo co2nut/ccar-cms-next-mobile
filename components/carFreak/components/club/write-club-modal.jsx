@@ -12,6 +12,25 @@ import client from '../../../../feathers';
 import UserAvatar from '../../../general/UserAvatar';
 import { getUserName } from '../../../../common-function';
 import { clubPrivateIcon, clubPublicIcon } from '../../../../icon';
+import { useMediaQuery } from 'react-responsive';
+
+const Desktop = ({ children }) => {
+    const isDesktop = useMediaQuery({ minWidth: 992 })
+    return isDesktop ? children : null
+}
+const Tablet = ({ children }) => {
+    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
+    return isTablet ? children : null
+}
+const Mobile = ({ children }) => {
+    const isMobile = useMediaQuery({ maxWidth: 767 })
+    return isMobile ? children : null
+}
+const Default = ({ children }) => {
+    const isNotMobile = useMediaQuery({ minWidth: 768 })
+    return isNotMobile ? children : null
+}
+
 const { TextArea } = Input;
 
 
@@ -227,6 +246,219 @@ const WriteClubModal = (props) => {
     }
     return (
         <React.Fragment>
+            <Tablet>
+            <Modal
+                visible={visible}
+                footer={null}
+                centered
+                maskClosable={false}
+                onCancel={() => {
+                    closeModal();
+                }}
+                width={700}
+                bodyStyle={{ backgroundColor: 'white' }}
+            >
+                <Form layout="vertical" className="padding-md">
+                    <Row>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="flex-justify-space-between flex-items-align-start">
+                                <span className='d-inline-block' >
+                                    <div className="flex-justify-start flex-items-align-center">
+                                        <UserAvatar data={_.get(props.user, ['info', 'user'])} size={50} className="margin-right-md" />
+                                        <span className='d-inline-block' >
+                                            <div className="headline text-truncate black">
+                                                {getUserName(_.get(props.user, ['info', 'user']), 'fullName') || ''}
+                                            </div>
+                                            <div className="caption text-truncate font-weight-light">
+                                                Admin
+                                            </div>
+                                            {/* <Form.Item style={{ margin: 0 }} >
+                                                {getFieldDecorator('clubType', {
+                                                    initialValue: _.get(props.data, ['clubType']) || 'public',
+                                                    rules: [{ required: true, message: 'Please input.' }],
+                                                })(<Radio.Group className=" round-border-radio-button margin-y-xs" buttonStyle="solid">
+                                                    <Radio.Button className="round-border-right" value="public" onClick={(e) => {
+                                                    }}>
+                                                        <span className='d-inline-block caption' >
+                                                            Public
+                                                        </span>
+                                                    </Radio.Button>
+                                                    <Radio.Button className="round-border-left border-left-ccar-button-yellow" value="private" onClick={(e) => {
+                                                    }}>
+                                                        <span className='d-inline-block caption' >
+                                                            Private
+                                                        </span>
+                                                    </Radio.Button>
+                                                </Radio.Group>)}
+                                            </Form.Item> */}
+                                        </span>
+                                    </div>
+                                </span>
+
+                                <span className='d-inline-block' >
+
+                                    <div style={{ 'position': 'relative', textAlign: 'center' }} className="margin-md">
+
+                                        <Upload {...props} showUploadList={false} accept="image/*" onChange={(v) => { handlePreview(v.file); setUploadImage(v.file) }} multiple={false}>
+                                            <Avatar size={50} src={uploadImagePreview} className='cursor-pointer'></Avatar>
+
+                                            <Avatar size={30} src={profileImage} style={{ 'position': 'absolute', top: 0, bottom: 0, right: 0, left: 0, margin: 'auto' }} className="padding-xs cursor-pointer" />
+
+                                        </Upload>
+                                    </div>
+
+                                    <div style={{ textAlign: 'center' }}>
+
+                                        <h5 className="font-weight-thin">File size: Max 1MB</h5>
+                                        <h5 className="font-weight-thin">File Extension: JPEG, PNG</h5>
+                                    </div>
+                                </span>
+                            </div>
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="headline margin-bottom-sm">
+                                Club Name
+                            </div>
+                            <Form.Item style={{ margin: 0 }} >
+                                {getFieldDecorator('clubName', {
+                                    initialValue: _.get(props.data, ['clubName']),
+                                    rules: [{ required: true, message: 'Please input.' }],
+                                })(<Input placeholder="Club Name" />)}
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="headline margin-bottom-sm">
+                                Bio
+                            </div>
+                            <Form.Item style={{ margin: 0 }}>
+                                {getFieldDecorator('clubBio', {
+                                    initialValue: _.get(props.data, ['clubBio']),
+                                    rules: [{ required: true, message: 'Please input.' }],
+                                })(<TextArea rows={4} placeholder="Please enter your bio (maximum 1000 characters)" maxLength={1000} />)}
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="headline margin-bottom-sm">
+                                Privacy
+                            </div>
+                            <Form.Item style={{ margin: 0 }} >
+                                {getFieldDecorator('clubType', {
+                                    initialValue: _.get(props.data, ['clubType']) || 'public',
+                                    rules: [{ required: true, message: 'Please input.' }],
+                                })(
+
+                                    <Select
+                                        placeholder="Choose privacy"
+                                        className="club-privacy-select"
+                                    >
+                                        <Select.Option value="public" className="padding-y-sm">
+                                            <div className="flex-justify-start flex-items-align-center padding-y-sm">
+                                                <img src={clubPublicIcon} style={{ width: 30, height: 30 }} className="margin-right-md" />
+                                                <span className='d-inline-block ' style={{ lineHeight: 'normal' }} >
+                                                    <div className="font-weight-bold headline no-padding" style={{ lineHeight: 'auto' }}>
+                                                        Public
+                                                  </div>
+                                                    <div className="small-text text-overflow-break no-padding" style={{ lineHeight: 'normal' }}>
+                                                        Anyone can see all the posts, discussions, events and member in the group.
+                                                  </div>
+                                                </span>
+                                            </div>
+                                        </Select.Option>
+                                        <Select.Option value="private">
+                                            <div className="flex-justify-start flex-items-align-center padding-y-sm">
+                                                <img src={clubPrivateIcon} style={{ width: 30, height: 30 }} className="margin-right-md" />
+                                                <span className='d-inline-block ' style={{ lineHeight: 'normal' }} >
+                                                    <div className="font-weight-bold headline no-padding" style={{ lineHeight: 'auto' }}>
+                                                        Private
+                                                  </div>
+                                                    <div className="small-text text-overflow-break no-padding" style={{ lineHeight: 'normal' }}>
+                                                        Only members can see all the posts, discussions, events and member in the group.
+                                                  </div>
+                                                </span>
+                                            </div>
+                                        </Select.Option>
+                                    </Select>
+                                )}
+                            </Form.Item>
+                        </Col>
+                        {
+                            props.form.getFieldValue('clubType') == 'public' ?
+                                [
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <div className="flex-justify-space-between flex-items-align-center padding-y-md">
+                                            <span className='d-inline-block ' style={{ maxWidth: '70%' }} >
+                                                <div className="font-weight-bold headline no-padding" style={{ lineHeight: 'auto' }}>
+                                                    Like, Comment & Write Posts
+                                        </div>
+                                                <div className="small-text text-overflow-break no-padding" style={{ lineHeight: 'normal' }}>
+                                                    Anyone can like, comment & write posts in the group.
+                                        </div>
+                                            </span>
+                                            <span className='d-inline-block ' >
+                                                <Form.Item style={{ margin: 0 }} >
+                                                    {getFieldDecorator('nonMemberAccessibilitySettings.socialInteraction', {
+                                                        initialValue: _.get(props.data, ['nonMemberAccessibilitySettings', 'socialInteraction']) || false,
+                                                        rules: [{ required: true, message: 'Please input.' }],
+                                                        valuePropName : 'checked',
+                                                    })(
+                                                        <Switch size="small" />
+                                                    )}
+                                                </Form.Item>
+                                            </span>
+                                        </div>
+                                    </Col>,
+                                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                        <div className="flex-justify-space-between flex-items-align-center padding-y-md">
+                                            <span className='d-inline-block ' style={{ maxWidth: '70%' }} >
+                                                <div className="font-weight-bold headline no-padding" style={{ lineHeight: 'auto' }}>
+                                                    Automatic Member Approvals
+                                    </div>
+                                                <div className="small-text text-overflow-break no-padding" style={{ lineHeight: 'normal' }}>
+                                                    Anyone can join the group instantly without admin approval
+                                    </div>
+                                            </span>
+                                            <span className='d-inline-block ' >
+                                                <Form.Item style={{ margin: 0 }} >
+                                                    {getFieldDecorator('nonMemberAccessibilitySettings.autoApproval', {
+                                                        initialValue: _.get(props.data, ['nonMemberAccessibilitySettings', 'autoApproval']) || false,
+                                                        rules: [{ required: true, message: 'Please input.' }],
+                                                        valuePropName : 'checked',
+                                                    })(
+                                                        <Switch size="small" />
+                                                    )}
+                                                </Form.Item>
+                                            </span>
+                                        </div>
+                                    </Col>
+                                ]
+                                :
+                                null
+                        }
+
+
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="width-100 margin-top-md">
+                                <Button block disabled={isLoading} className=" background-ccar-button-yellow" onClick={(e) => { handleSubmit() }}>Submit</Button>
+                            </div>
+                        </Col>
+
+
+                        {/* <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="headline margin-bottom-sm">
+                                Description
+                            </div>
+                            <Form.Item style={{ margin: 0 }}>
+                                {getFieldDecorator('clubDescription', {
+                                    rules: [{ required: true, message: 'Please input.' }],
+                                })(<TextArea rows={4} placeholder="Please enter your content (maximum 1000 characters)" maxLength={1000} />)}
+                            </Form.Item>
+                        </Col> */}
+
+                    </Row>
+                </Form>
+            </Modal>
+            </Tablet>
+            <Mobile>
             <Drawer
                 className="header-no-padding body-no-padding"
                 title={
@@ -438,6 +670,8 @@ const WriteClubModal = (props) => {
                     </Row>
                 </Form>
             </Drawer>
+            </Mobile>
+            
 
             <ClubInviteModal
                 visible={inviteVisible}

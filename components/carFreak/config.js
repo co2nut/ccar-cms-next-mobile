@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 import { findIndexesOfString, getObjectId, checkObjectId, getUserName } from '../../common-function';
 
 export const chatRestrictTime = 2000;
+export const carFreakPostAspectRatio = (1);
 export const carFreakGlobalSearch = ['carFreak', 'socialBoard', 'club', 'dealer', 'people'];
 export const tagPrefix = '@';
 export const hashTagPrefix = '#';
@@ -14,6 +15,7 @@ export const hashTagSuffixHashValue = '#>^}~end';
 export const seperatorHashValue = ']<%seperator>!;_';
 export const clubProfileViewTypes = ['admin', 'member', 'pending', 'non-member'];
 
+export const carFreakBackground = "/banner/motion-speed-effect-with-city-night.png";
 
 export function parseTagStringToArray(text) {
     if (text) {
@@ -289,4 +291,41 @@ export function isNotAllowedSocialInteraction(club, viewType) {
 
 export function isJoinAutoApproval(club) {
     return _.get(club, `nonMemberAccessibilitySettings.autoApproval`) === true;
+}
+
+export function patchReduxPosts(originalData = [], posts = [], mode = 'init') {
+
+    let data = _.cloneDeep([...originalData]);
+
+    if (_.isArray(posts) && !_.isEmpty(posts)) {
+
+        switch (mode) {
+            case 'clear':
+                data = [];
+                break;
+            case 'init':
+                data = posts;
+                break;
+            case 'append':
+                data = _.union(posts, data);
+                break;
+            case 'concat':
+                data = _.union(data, posts);
+                break;
+            case 'update':
+                data = _.map(data, function (item) {
+                    let selectedItem = _.find(posts, ['_id', getObjectId(item)]);
+                    return selectedItem || item;
+                });
+                break;
+            case 'delete':
+                data = _.filter(data, function (item) {
+                    return !_.some(posts, ['_id', getObjectId(item)]);
+                });
+                break;
+            default:
+                break;
+        }
+    }
+    return data;
 }

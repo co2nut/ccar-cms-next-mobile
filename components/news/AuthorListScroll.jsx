@@ -11,6 +11,7 @@ import UserAvatar from '../general/UserAvatar';
 import { withRouter } from 'next/router';
 
 
+
 const itemCol = {
     xs: 6,
     sm: 6,

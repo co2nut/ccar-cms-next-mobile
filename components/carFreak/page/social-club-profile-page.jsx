@@ -207,7 +207,7 @@ const SocialClubProfilePage1 = (props) => {
     const _renderView = (value) => {
         switch (value) {
             case 'carfreaks':
-                return <ClubFreaksBox viewType={getViewType(clubJoin)} club={club} />
+                return <ClubFreaksBox viewType={getViewType(clubJoin)} club={club} /> 
                 break;
             case 'socialboard':
                 return <ClubSocialBoardBox viewType={getViewType(clubJoin)} club={club} />
@@ -235,6 +235,47 @@ const SocialClubProfilePage1 = (props) => {
     return (
         <React.Fragment>
             <LayoutV2 searchTypes={carFreakGlobalSearch} enterSearchCarFreaks scrollRange={document.body.scrollHeight * 0.5} hideOpenApp>
+
+            <Tablet>
+                    <CarFreakLayout>
+                        <Row gutter={[15, 15]}>
+                            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                <ClubProfolioBanner viewType={getViewType(clubJoin)} data={club} onChange={(data) => {
+                                    if (_.isPlainObject(data) && !_.isEmpty(data)) {
+                                        setClub(data);
+                                    }
+                                }}></ClubProfolioBanner>  
+                            </Col>
+                            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                <Scrollbars style={{ width: '100%' }} autoHide autoHeight>
+                                    <div className="flex-justify-start flex-items-align-center">
+                                        {
+                                            _.map(tabs || [], function (tab) {
+                                                return (
+                                                    <span className={`d-inline-block flex-items-no-shrink cursor-pointer margin-x-lg h7 ${tabKey == tab.value ? 'ccar-yellow border-bottom-ccar-yellow' : 'black'}`} onClick={(e) => { setTabKey(tab.value); }} >
+                                                        {tab.text}
+                                                    </span>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                </Scrollbars>
+                                <Divider style={{ margin: '10px 0px 10px 0px' }} type="horizontal"></Divider>
+                            </Col>
+                            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                {_renderView(tabKey)}
+                            </Col>
+                            {/* <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                <Card
+                                    title="Other Carfreaks Club(s)"
+                                >
+                                    <OtherClubsBox clubId={_.get(club, ['_id'])} userId={_.get(props.user, ['info', 'user', '_id'])} />
+                                </Card>
+                            </Col> */}
+                        </Row>
+                    </CarFreakLayout>
+                </Tablet>
+
                 <Mobile>
                     <CarFreakLayout hideScope hideAddPost>
                         <div className="width-100 relative-wrapper padding-md" style={{ backgroundImage: `url("${_.get(club, `clubBackgroundImage`) || ''}")`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: defaultHeight, backgroundPosition: 'center' }}>

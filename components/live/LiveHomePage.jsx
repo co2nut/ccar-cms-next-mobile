@@ -20,9 +20,27 @@ import { withRouter } from 'next/router';
 import Link from 'next/link';
 import { isIOS, isMobile } from 'react-device-detect'
 import BroadCasterListScroll from './BroadCasterListScroll';
+import { useMediaQuery } from 'react-responsive';
+import SocialVideoTablet from '../news/social-video-tablet';
 
 TweenOne.plugins.push(BezierPlugin);
 
+const Desktop = ({ children }) => {
+  const isDesktop = useMediaQuery({ minWidth: 1025 })
+  return isDesktop ? children : null
+}
+const Tablet = ({ children }) => {
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1024 })
+  return isTablet ? children : null
+}
+const Mobile = ({ children }) => {
+  const isMobile = useMediaQuery({ maxWidth: 767 })
+  return isMobile ? children : null
+}
+const Default = ({ children }) => {
+  const isNotMobile = useMediaQuery({ minWidth: 768 })
+  return isNotMobile ? children : null
+}
 
 const banner = 'hands-on-wheel.jpg'
 const ads = '20-Car-Dealership-Promotion-Ideas.jpg'
@@ -552,6 +570,64 @@ class LiveIndex extends React.Component {
     return (
       <React.Fragment>
         <LayoutV2>
+          <Tablet>
+          <div className='section'>
+            <div className='padding-x-md padding-y-lg'>
+              <Row gutter={[10, 30]} type="flex" align="stretch">
+                <Col xs={24} sm={24} md={24} lg={24} xl={24} >
+                  {/* <div className="h6 font-weight-bold">
+                    Live
+                  </div> */}
+                  <div className="width-100 background-white padding-md">
+                    <div className="width-100 ">
+                      <BroadCasterListScroll
+                        showName={true} 
+                        activeBroadcasters={notEmptyLength(this.state.filteredBroadcasters) ? this.state.filteredBroadcasters : []}
+                        // allowSearch
+                      />
+                    </div>
+                  </div>
+                </Col>
+
+                {
+                  _.isArray(this.state.broadcasters) && !_.isEmpty(this.state.broadcasters) ?
+                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                      <div className="h6 font-weight-bold">TOP LIVE</div>
+                    </Col>
+                    :
+                    null
+                }
+                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                  <Row gutter={[10,10]}>
+                    {
+                      _.isArray(this.state.broadcasters) && !_.isEmpty(this.state.broadcasters) ?
+                        this._renderTopLives()
+                        :
+                        null
+                    }
+
+                  </Row>
+                </Col>
+
+                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                  <Row>
+                    <Col className="gutter-row" span={24} className="margin-bottom-sm margin-top-sm">
+                      <span className='d-inline-block h6 font-weight-bold grey-darken-3' style={{ marginLeft: '10px' }} >Social Videos</span>
+                    </Col>
+                    <Col xs={24} sm={24} md={24} lg={24} xl={24} style={{ overflowX: 'auto' }} >
+                      <SocialVideoTablet/> 
+                    </Col>
+                    <Col xs={24} sm={24} md={24} lg={24} xl={24} className="margin-top-md margin-bottom-md text-align-center">
+                      <a href="/socialNewsAndVideo?type=videos"><Button type="primary"> Show More </Button></a>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </div>
+          </div>
+          </Tablet>
+
+          <Mobile>
           <div className='section-version3'>
             <div className='padding-x-sm padding-y-lg'>
               <Row gutter={[10, 30]} type="flex" align="stretch">
@@ -612,7 +688,7 @@ class LiveIndex extends React.Component {
               </Row>
             </div>
           </div>
-
+          </Mobile>
         </LayoutV2>
       </React.Fragment >
     )

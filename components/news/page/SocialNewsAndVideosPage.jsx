@@ -358,7 +358,7 @@ const SocialNewsAndVideosPage = (props) => {
                                                 ...newsFilterGroup,
                                                 language: nextActiveLanguage != newsActiveLanguage ? nextActiveLanguage : newsActiveLanguage,
                                                 author: author,
-                                            })
+                                            }) 
                                             setNewsActiveLanguage(nextActiveLanguage != newsActiveLanguage ? nextActiveLanguage : newsActiveLanguage);
                                             setNewsSelectedAuthor(author);
                                         } else {

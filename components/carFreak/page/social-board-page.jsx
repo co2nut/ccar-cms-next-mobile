@@ -17,7 +17,7 @@ import { withRouter } from 'next/router';
 import { routePaths } from '../../../route';
 import WritePostDrawer from '../components/WritePostDrawer';
 import PostDrawer from '../components/PostDrawer';
-
+import SocialBoardCardTablet from '../components/social-board-card-tablet';
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 992 })
@@ -27,10 +27,14 @@ const Tablet = ({ children }) => {
     const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
     return isTablet ? children : null
 }
+// const Mobile = ({ children }) => {
+//     const isMobile = useMediaQuery({ maxWidth: 767 })
+//     const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
+//     return isMobile || isTablet ? children : null
+// }
 const Mobile = ({ children }) => {
     const isMobile = useMediaQuery({ maxWidth: 767 })
-    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
-    return isMobile || isTablet ? children : null
+    return isMobile ? children : null
 }
 const Default = ({ children }) => {
     const isNotMobile = useMediaQuery({ minWidth: 768 })
@@ -166,6 +170,79 @@ const SocialBoardPage = (props) => {
                 setSocialBoardPage(socialBoardPage + 1);
             }
         }} hideOpenApp>
+
+            <Tablet>
+                <CarFreakLayout>
+                    <Row gutter={[10, 10]}> 
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="flex-justify-end flex-items-align-center margin-bottom-lg">
+                                <span className='d-inline-block margin-right-md' >
+                                    <Button size="large" className="border-ccar-yellow" onClick={(e) => {
+                                        setEditMode(null);
+                                        setWriteModalVisible(true);
+                                        setSelectedPost(null);
+                                    }}  ><Icon type="edit" /> Write a Post</Button>
+                                </span>
+                            </div>
+                            {
+                                _.isArray(socialBoards) && notEmptyLength(socialBoards) ?
+                                    <Row gutter={[10, 10]} justify="center">
+                                        {
+                                            socialBoards.map(function (post, i) {
+                                                return (
+                                                    <Col key={'chats' + i} className="gutter-row"
+                                                        xs={12} sm={12} md={12} lg={12} xl={12}
+                                                    >
+                                                        <SocialBoardCardTablet data={post} 
+                                                            onRedirectToPost={(data) => {
+                                                                if (_.isPlainObject(data) && !_.isEmpty(data) && _.get(data, ['_id'])) {
+                                                                    props.router.push(`/social-board/${data._id}`, undefined, { shallow : false })
+                                                                }
+                                                            }}
+                                                            onEditClick={(post) => {
+                                                                setWriteModalVisible(true);
+                                                                setSelectedPost(post);
+                                                                setEditMode('edit');
+                                                            }}
+
+                                                            onRemoveClick={(post) => {
+                                                                confirmDelete(post)
+                                                            }}
+
+                                                        />
+                                                    </Col>
+                                                )
+                                            })
+
+                                        }
+                                    </Row>
+                                    :
+
+                                    !isLoading ?
+                                        <div className="width-100 flex-items-align-center flex-justify-center background-white" style={{ height: 400 }}><Empty /></div>
+                                        :
+                                        <div></div>
+                            }
+                        </Col>
+                        {/* <Col xs={24} sm={24} md={9} lg={9} xl={9}>
+                            <TrendingSocialBoardBox redirectToSocialBoard={(data) => {
+                                if (_.isPlainObject(data) && !_.isEmpty(data) && data._id) {
+                                    props.router.push(`/social-board/${data._id}`, undefined, { shallow : false })
+                                }
+                            }} />
+                        </Col> */}
+                    </Row>
+                    <div className="width-100 flex-justify-center" style={{ height: 50 }}>
+                        {
+                            isLoading ?
+                                <Icon type="loading" style={{ fontSize: 50 }} />
+                                :
+                                null
+                        }
+                    </div>
+                </CarFreakLayout>
+            </Tablet>
+
             <Mobile>
                 <CarFreakLayout hideScope
                     onWritePostClick={(type) => {

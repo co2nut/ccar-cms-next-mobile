@@ -12,6 +12,7 @@ import { isValidNumber, notEmptyLength, objectRemoveEmptyValue, viewPort } from 
 import { withRouter } from 'next/router';
 import { loading } from '../../redux/actions/app-actions';
 import { setUser } from '../../redux/actions/user-actions';
+import { useMediaQuery } from 'react-responsive';
 
 const itemCol = {
     xs: 6,
@@ -21,6 +22,23 @@ const itemCol = {
     xl: 2,
     xxl: 2,
 }
+
+const Desktop = ({ children }) => {
+    const isDesktop = useMediaQuery({ minWidth: 1025 })
+    return isDesktop ? children : null
+  }
+  const Tablet = ({ children }) => {
+    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1024 })
+    return isTablet ? children : null
+  }
+  const Mobile = ({ children }) => {
+    const isMobile = useMediaQuery({ maxWidth: 767 })
+    return isMobile ? children : null
+  }
+  const Default = ({ children }) => {
+    const isNotMobile = useMediaQuery({ minWidth: 768 })
+    return isNotMobile ? children : null
+  }
 
 const BROADCASTER_LIMIT = 40;
 
@@ -119,66 +137,133 @@ const BroadcasterListScroll = (props) => {
 
     return (
         <React.Fragment>
-            <div id="broadcaster-list-container" className={`width-100 height-100 ${props.className ? props.className : ''}`} style={{ ...props.style }}>
+            <Tablet>
+                <div id="broadcaster-list-container" className={`width-100 height-100 ${props.className ? props.className : ''}`} style={{ ...props.style }}>
 
                 {
                     props.allowSearch != null && props.allowSearch == true ?
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <div className='width-30 round-border-big thin-border padding-x-sm padding-y-xs margin-bottom-lg'>
-                                <Input placeholder="Search" className='no-border-input' size="small" compact suffix={<Icon type="search" />} onChange={(e) => { setSearchWord(e.target.value) }} ></Input>
-                            </div>
-                        </Col>
-                        :
-                        null
+                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                    <div className='width-30 round-border-big thin-border padding-x-sm padding-y-xs margin-bottom-lg'>
+                        <Input placeholder="Search" className='no-border-input' size="small" compact suffix={<Icon type="search" />} onChange={(e) => { setSearchWord(e.target.value) }} ></Input>
+                    </div>
+                    </Col>
+                :
+                    null
+}
 
-                }
-
-                <Scrollbars autoHeight> 
-                        {
-                            _.isArray(broadcasters) && notEmptyLength(broadcasters) ?
-                                _.map(broadcasters, function (broadcaster) {
-                                    return (
-                                        <span className={`relative-wrapper d-inline-block ${isActiveBroadcaster(broadcaster) ? 'cursor-pointer' : 'cursor-not-allowed'} width-100`} onClick={(e) => {
-                                            let selectedActiveBroadcaster = _.find(activeBroadcasters, function (activeBroadcaster) {
-                                                return activeBroadcaster.dealerDbId == broadcaster._id;
-                                            })
-                                            if (!selectedActiveBroadcaster || !selectedActiveBroadcaster.dealerSocketId) {
-                                                // props.router.push(`/live-streamer/${broadcaster._id}`)
-                                            }
-                                            else {
-                                                //donar it manages the routes
-                                                props.router.push(`/live/${selectedActiveBroadcaster.dealerSocketId}`, undefined, { shallow: true })
-                                            }
-                                        }}>
-                                            <UserAvatar
-                                                isBroadcastersList={true}
-                                                avatarClassName={`${isActiveBroadcaster(broadcaster) ? 'border-red' : 'border-grey cursor-not-allowed'} ${props.avatarClassName ? props.avatarClassName : ''}`}
-                                                avatarStyle={isActiveBroadcaster(broadcaster) ? { borderWidth: 'thick' } : {}}
-                                                className={`${isActiveBroadcaster(broadcaster) ? '' : 'cursor-not-allowed'}`}
-                                                size={isValidNumber(props.size) ? props.size : 50}
-                                                showName={!props.showName || props.showName == false ? false : true}
-                                                textClassName={`text-truncate margin-top-md ${props.textClassName ? props.textClassName : ''}`}
-                                                data={broadcaster} />
-                                            {/* {
-                                                isActiveBroadcaster(broadcaster) ?
-                                                    <span className='d-inline-block background-red white text-align-center round-border width-50' style={{ padding: 3, fontSize: 12, position: 'absolute', top: (isValidNumber(props.size) ? props.size : 80) - (isValidNumber(props.size) ? props.size : 80) * 0.2, left: 0, right: 0, margin: 'auto' }} >
-                                                        Live
-                                                        </span>
-                                                    :
-                                                    <span className='d-inline-block background-grey white text-align-center round-border width-50' style={{ padding: 3, fontSize: 12, position: 'absolute', top: (isValidNumber(props.size) ? props.size : 80) - (isValidNumber(props.size) ? props.size : 80) * 0.2, left: 0, right: 0, margin: 'auto' }} >
-                                                        Live
-                                                        </span>
-                                            } */}
+<Scrollbars autoHide autoHeight >
+    <div className=" flex-items-align-start padding-x-md">
+        {
+            _.isArray(broadcasters) && notEmptyLength(broadcasters) ?
+                _.map(broadcasters, function (broadcaster) {
+                    return (
+                        <span className={`relative-wrapper d-inline-block ${isActiveBroadcaster(broadcaster) ? 'cursor-pointer' : 'cursor-not-allowed'} margin-right-xl`} onClick={(e) => {
+                            let selectedActiveBroadcaster = _.find(activeBroadcasters, function (activeBroadcaster) {
+                                return activeBroadcaster.dealerDbId == broadcaster._id;
+                            })
+                            if (!selectedActiveBroadcaster || !selectedActiveBroadcaster.dealerSocketId) {
+                                // props.router.push(`/live-streamer/${broadcaster._id}`)
+                            }
+                            else {
+                                //donar it manages the routes
+                                props.router.push(`/live/${selectedActiveBroadcaster.dealerSocketId}`, undefined, { shallow: true })
+                            }
+                        }}>
+                            <UserAvatar
+                                isBroadcastersList={true}
+                                avatarClassName={`${isActiveBroadcaster(broadcaster) ? 'border-red' : 'border-grey cursor-not-allowed'} ${props.avatarClassName ? props.avatarClassName : ''}`}
+                                avatarStyle={isActiveBroadcaster(broadcaster) ? { borderWidth: 'thick' } : {}}
+                                className={`${isActiveBroadcaster(broadcaster) ? '' : 'cursor-not-allowed'}`}
+                                size={isValidNumber(props.size) ? props.size : 80}
+                                showName={!props.showName || props.showName == false ? false : true}
+                                textClassName={`text-truncate margin-top-md ${props.textClassName ? props.textClassName : ''}`}
+                                data={broadcaster} />
+                            {
+                                isActiveBroadcaster(broadcaster) ?
+                                    <span className='d-inline-block background-red white text-align-center round-border width-50' style={{ padding: 3, fontSize: 12, position: 'absolute', top: (isValidNumber(props.size) ? props.size : 80) - (isValidNumber(props.size) ? props.size : 80) * 0.2, left: 0, right: 0, margin: 'auto' }} >
+                                        Live
                                         </span>
-                                    )
-                                })
-                                :
-                                <div className="width-100">
-                                    <Empty></Empty>
-                                </div>
-                        }
-                </Scrollbars>
+                                    :
+                                    <span className='d-inline-block background-grey white text-align-center round-border width-50' style={{ padding: 3, fontSize: 12, position: 'absolute', top: (isValidNumber(props.size) ? props.size : 80) - (isValidNumber(props.size) ? props.size : 80) * 0.2, left: 0, right: 0, margin: 'auto' }} >
+                                        Live
+                                        </span>
+                            }
+                        </span>
+                    )
+                })
+                :
+                <div className="width-100">
+                    <Empty></Empty>
+                </div>
+        }
+    </div>
+</Scrollbars>
+</div>
+            </Tablet>
+
+            <Mobile>
+            <div id="broadcaster-list-container" className={`width-100 height-100 ${props.className ? props.className : ''}`} style={{ ...props.style }}>
+
+{
+    props.allowSearch != null && props.allowSearch == true ?
+        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+            <div className='width-30 round-border-big thin-border padding-x-sm padding-y-xs margin-bottom-lg'>
+                <Input placeholder="Search" className='no-border-input' size="small" compact suffix={<Icon type="search" />} onChange={(e) => { setSearchWord(e.target.value) }} ></Input>
             </div>
+        </Col>
+        :
+        null
+
+}
+
+<Scrollbars autoHeight> 
+        {
+            _.isArray(broadcasters) && notEmptyLength(broadcasters) ?
+                _.map(broadcasters, function (broadcaster) {
+                    return (
+                        <span className={`relative-wrapper d-inline-block ${isActiveBroadcaster(broadcaster) ? 'cursor-pointer' : 'cursor-not-allowed'} width-100`} onClick={(e) => {
+                            let selectedActiveBroadcaster = _.find(activeBroadcasters, function (activeBroadcaster) {
+                                return activeBroadcaster.dealerDbId == broadcaster._id;
+                            })
+                            if (!selectedActiveBroadcaster || !selectedActiveBroadcaster.dealerSocketId) {
+                                // props.router.push(`/live-streamer/${broadcaster._id}`)
+                            }
+                            else {
+                                //donar it manages the routes
+                                props.router.push(`/live/${selectedActiveBroadcaster.dealerSocketId}`, undefined, { shallow: true })
+                            }
+                        }}>
+                            <UserAvatar
+                                isBroadcastersList={true}
+                                avatarClassName={`${isActiveBroadcaster(broadcaster) ? 'border-red' : 'border-grey cursor-not-allowed'} ${props.avatarClassName ? props.avatarClassName : ''}`}
+                                avatarStyle={isActiveBroadcaster(broadcaster) ? { borderWidth: 'thick' } : {}}
+                                className={`${isActiveBroadcaster(broadcaster) ? '' : 'cursor-not-allowed'}`}
+                                size={isValidNumber(props.size) ? props.size : 50}
+                                showName={!props.showName || props.showName == false ? false : true}
+                                textClassName={`text-truncate margin-top-md ${props.textClassName ? props.textClassName : ''}`}
+                                data={broadcaster} />
+                            {/* {
+                                isActiveBroadcaster(broadcaster) ?
+                                    <span className='d-inline-block background-red white text-align-center round-border width-50' style={{ padding: 3, fontSize: 12, position: 'absolute', top: (isValidNumber(props.size) ? props.size : 80) - (isValidNumber(props.size) ? props.size : 80) * 0.2, left: 0, right: 0, margin: 'auto' }} >
+                                        Live
+                                        </span>
+                                    :
+                                    <span className='d-inline-block background-grey white text-align-center round-border width-50' style={{ padding: 3, fontSize: 12, position: 'absolute', top: (isValidNumber(props.size) ? props.size : 80) - (isValidNumber(props.size) ? props.size : 80) * 0.2, left: 0, right: 0, margin: 'auto' }} >
+                                        Live
+                                        </span>
+                            } */}
+                        </span>
+                    )
+                })
+                :
+                <div className="width-100">
+                    <Empty></Empty>
+                </div>
+        }
+</Scrollbars>
+</div>
+            </Mobile>
+            
         </React.Fragment>
     )
 }

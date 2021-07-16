@@ -69,6 +69,8 @@ const ClubSocialBoardBox = (props) => {
     const [chatInfo, setChatInfo] = useState({});
     const [visible, setVisible] = useState(false);
     const [editMode, setEditMode] = useState('');
+    const [writePostVisible, setWritePostVisible] = useState(false);
+    const [writePostEditMode, setWritePostEditMode] = useState(false);
 
     useEffect(() => {
         setViewType(validateViewType(props.viewType))
@@ -195,6 +197,90 @@ const ClubSocialBoardBox = (props) => {
 
     return (
         <React.Fragment>
+
+<Tablet>
+                <ClubBackdrop viewType={viewType} club={club}>
+                    <Row>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="flex-justify-end flex-items-align-center">
+                                <span className='d-inline-block ' >
+                                    <Button size="medium" className="border-ccar-yellow" onClick={(e) => {
+                                        if (isNotAllowedSocialInteraction(club, viewType)) {
+                                            setJoinClubModalVisible(true);
+                                        } else if (viewType != clubProfileViewTypes[3] || viewType != clubProfileViewTypes[2]) {
+                                            setWritePostEditMode(false);
+                                            setWritePostVisible(true);
+                                        }
+                                    }}  ><Icon type="edit" /> Write a Post</Button>
+                                </span>
+                            </div>
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <WindowScrollLoadWrapper scrollRange={document.body.scrollHeight * 0.5} onScrolledBottom={() => {
+                                if (arrayLengthCount(posts) < postTotal) {
+                                    setPostPage(postPage + 1);
+                                }
+                            }}>
+                                <div className="padding-md">
+                                    {
+                                        _.isArray(posts) && !_.isEmpty(posts) ?
+                                            _.map(posts, function (post) {
+                                                return (
+                                                    <div className="margin-bottom-md">
+                                                        <PostCollapse
+                                                            data={post}
+                                                            readOnly={isNotAllowedSocialInteraction(club, viewType)}
+                                                            postLike={_.find(userChatLikes, { chatId: post._id })}
+                                                            onEditClick={(data) => {
+                                                                if (_.isPlainObject(data) && !_.isEmpty(data)) {
+                                                                    setWritePostEditMode(true);
+                                                                    setSelectedPost(data);
+                                                                    setWritePostVisible(true);
+                                                                }
+                                                            }}
+                                                            clubId={_.get(club, `_id`)}
+                                                            onRemoveClick={(data) => {
+                                                                confirmDelete(data)
+                                                            }}
+                                                            onLikeClick={() => {
+                                                                if(isNotAllowedSocialInteraction(club, viewType)){
+                                                                    setJoinClubModalVisible(true)
+                                                                }
+                                                            }}
+                                                            onReplyClick={() => {
+                                                                if(isNotAllowedSocialInteraction(club, viewType)){
+                                                                    setJoinClubModalVisible(true)
+                                                                }
+                                                            }}
+                                                        ></PostCollapse>
+                                                    </div>
+                                                )
+                                            })
+                                            :
+                                            <div className="padding-md flex-items-align-center flex-justify-center">
+                                                <Empty></Empty>
+                                            </div>
+                                    }
+                                </div>
+                            </WindowScrollLoadWrapper>
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+
+                            <div className="flex-justify-center flex-items-align-center" style={{ height: 30 }}>
+                                {
+                                    isLoading ?
+                                        <Icon type="loading" style={{ fontSize: 30 }} />
+                                        :
+                                        null
+                                }
+                            </div>
+
+                        </Col>
+                    </Row>
+                </ClubBackdrop>
+            </Tablet>
+
+            <Mobile>
             <ClubBackdrop viewType={viewType} club={club}>
                 <Row>
                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
@@ -295,6 +381,8 @@ const ClubSocialBoardBox = (props) => {
                     </Col>
                 </Row>
             </ClubBackdrop>
+            </Mobile>
+            
 
             <PostDrawer
                 data={chatInfo}
@@ -327,6 +415,34 @@ const ClubSocialBoardBox = (props) => {
                 }}
             />
 
+            <WritePostModal1
+                visible={writePostVisible}
+                editMode={writePostEditMode}
+                onCancel={() => {
+                    setWritePostVisible(false);
+                }}
+                parentType="club"
+                clubId={_.get(club, `_id`)}
+                data={selectedPost}
+                notify
+                onCreatePost={(post) => {
+                    if (_.isPlainObject(post) && !_.isEmpty(post)) {
+                        setPosts([post].concat(posts));
+                    }
+                }}
+                hideChatType
+                chatType="socialboard"
+                onUpdatePost={(data) => {
+                    if (_.isPlainObject(data) && !_.isEmpty(data)) {
+                        let newPosts = _.map(posts, function (item) {
+                            return item._id == _.get(data, ['_id']) ? data : item;
+                        });
+                        setPosts(newPosts);
+                    }
+                }}
+            >
+            </WritePostModal1>
+            
             <WritePostDrawer
                 data={selectedPost}
                 editMode={editMode}

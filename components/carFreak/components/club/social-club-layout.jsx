@@ -11,6 +11,24 @@ import Link from 'next/link';
 import { routePaths } from '../../../../route';
 import MyClubModal from './MyClubModal';
 import MyClubInvitationModal from './MyClubInvitationModal';
+import { useMediaQuery } from 'react-responsive';
+
+const Desktop = ({ children }) => {
+    const isDesktop = useMediaQuery({ minWidth: 992 })
+    return isDesktop ? children : null
+}
+const Tablet = ({ children }) => {
+    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
+    return isTablet ? children : null
+}
+const Mobile = ({ children }) => {
+    const isMobile = useMediaQuery({ maxWidth: 767 })
+    return isMobile ? children : null
+}
+const Default = ({ children }) => {
+    const isNotMobile = useMediaQuery({ minWidth: 768 })
+    return isNotMobile ? children : null
+}
 
 const SocialClubLayout = (props) => {
 
@@ -55,6 +73,48 @@ const SocialClubLayout = (props) => {
 
     return (
         <React.Fragment>
+            <Tablet>
+            <Row gutter={[15, 15]}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                    <div className="width-100 flex-justify-end flex-items-align-center">
+                        <span className={`d-inline-block margin-right-md subtitle1 black cursor-pointer ${tabKey == 'allClubs' ? 'ccar-button-yellow border-bottom-ccar-button-yellow' : 'black'}`} onClick={(e) => {
+                            handleChange('allClubs');
+                        }} >
+                            All
+                        </span>
+                        <span className={`d-inline-block margin-right-md subtitle1 black cursor-pointer ${tabKey == 'myClub' ? 'ccar-button-yellow border-bottom-ccar-button-yellow' : 'black'}`} onClick={(e) => {
+                            handleChange('myClub');
+                            if (!_.get(props.user, ['authenticated']) || !_.get(props.user, ['info', 'user', '_id'])) {
+                                message.error('Please Login First!')
+                                props.loginMode(true);
+                            }
+                        }} >
+                            My Club
+                        </span>
+                        <span className={`d-inline-block margin-right-md subtitle1 black cursor-pointer ${tabKey == 'myClubInvitation' ? 'ccar-button-yellow border-bottom-ccar-button-yellow' : 'black'}`} onClick={(e) => {
+                            handleChange('myClubInvitation');
+                            if (!_.get(props.user, ['authenticated']) || !_.get(props.user, ['info', 'user', '_id'])) {
+                                message.error('Please Login First!')
+                                props.loginMode(true);
+                            }
+                        }} >
+                            My Club Invitation
+                        </span>
+                        <span className='d-inline-block margin-right-md' >
+                            <Button size="large" className="border-ccar-yellow" onClick={(e) => {
+                                setEditMode(false);
+                                setWriteModalVisible(true);
+                            }}  ><Icon type="edit" /> Create a Club</Button>
+                        </span>
+                    </div>
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                    {props.children}
+                </Col>
+            </Row>
+            </Tablet>
+            
+            <Mobile>
             <Row gutter={[15, 15]}>
                 <Col span={24} style={{ textAlign: 'right' }} >
                     <Button onClick={(e) => {
@@ -89,6 +149,8 @@ const SocialClubLayout = (props) => {
                     {props.children}
                 </Col>
             </Row>
+            </Mobile>
+            
 
             <MyClubModal
                 visible={myClubModalVisible}

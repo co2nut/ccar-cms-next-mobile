@@ -348,9 +348,9 @@ const CarReviewFormPage = (props) => {
 
     return (
         <LayoutV2>
-            <Desktop>
+            <Tablet>
                 <div className="section">
-                    <div style={{ padding: "0px 200px" }}>
+                    <div className="container-version3 padding-x-xl">
                         <div className="flex-justify-center font-weight-bold h6 grey-darken-1 padding-md">
                             Your review matters!
                             </div>
@@ -601,7 +601,7 @@ const CarReviewFormPage = (props) => {
                         </Form>
                     </div>
                 </div>
-            </Desktop >
+            </Tablet>
 
             <Mobile>
                 <div className="section-version3">

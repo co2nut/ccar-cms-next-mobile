@@ -25,7 +25,7 @@ export const clubPrivateIcon = '/assets/car-freak/private@3x.png';
 export const clubPublicIcon = '/assets/car-freak/public@3x.png';
 export const tagPeopleIcon = 'https://img.icons8.com/material-sharp/20/ffcc32/conference-call.png';
 export const eventIcon = 'https://img.icons8.com/android/15/ffcc32/tear-off-calendar.png';
-
+export const writePostIconUi = '/assets/car-freak/write-post-icon.png';
 
 //Car Market
 export const carspecNotFoundImage = '/coming-soon.png'
@@ -38,7 +38,14 @@ export const rayaFood = '/assets/productList/Food(Final)_1.gif'
 export const rayaLamp = '/assets/productList/Lamp_Final_.gif'
 export const rayaMosque = '/assets/productList/Mosque(Final).gif'
 export const rayaPeople = '/assets/productList/Orang(Final).gif'
-
+export const car360ViewIcon = '/assets/CarListingIcon/Group_2297.png'
+export const car360ViewBlackIcon = '/assets/CarListingIcon/Artboard_3@3x.png'
+export const car360ViewActiveIcon = '/assets/CarListingIcon/Group_2299.png'
+export const readyStockIcon = '/assets/CarListingIcon/correction.png'
+export const readyStockActiveIcon = '/assets/CarListingIcon/correction-1.png'
+export const carRegistrationCardIcon = '/assets/CarListingIcon/Group_2296.png'
+export const carRegistrationCardBlackIcon = '/assets/CarListingIcon/Artboard_2@3x.png'
+export const carRegistrationCardActiveIcon = '/assets/CarListingIcon/Group_2298.png'
 
 
 
@@ -99,6 +106,7 @@ export const bellInactive = '/assets/notification/bell.png';
 //Review
 export const ratingBanner = '/assets/car-review/rating.png';
 export const threedots = '/3-dots.png'
+export const noRatingImage = '/assets/car-review/no_data2-03.png'
 
 //Menu
 export const menuLogin = '/assets/menu-icon/Nologin.png';
