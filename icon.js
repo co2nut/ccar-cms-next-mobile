@@ -57,6 +57,8 @@ export const cnyLogo = '/assets/login/ccar-cny-logo.png';
 export const googleLogo = '/google.png';
 export const cnyLogo2 = '/ccar cny 2.svg';
 export const tbh = '/assets/login/fara.png';
+export const homeBanner = '/banner/Tab_Banner_Aug-01.jpg';
+export const homeBannerTablet = '/banner/Mobile_Banner_Aug-01.jpg';
 
 
 //Profile

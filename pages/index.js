@@ -17,6 +17,7 @@ import client from '../feathers'
 import { fetchProductsListHome } from '../redux/actions/productsList-actions'
 import { useMediaQuery } from 'react-responsive';
 import { loading, updateActiveMenu } from '../redux/actions/app-actions';
+import { homeBanner } from '../icon'
 
 const BgElement = Element.BgElement;
 
@@ -81,7 +82,7 @@ const Index = (props) => {
               // onClick={(e) => {window.location='https://www.facebook.com/ccar.malaysia/shop/?referral_code=page_shop_tab&preview=1&ref=page_internal'}}
             >
               <div className="width-100 relative-wrapper" style={{height : 100}}>
-                <img src={'/banner/Mobile-Banner-June-01.jpg'} className="absolute-center"/>
+                <img src={homeBanner} className="fill-parent img-cover"/>
               </div>
             </Element>
 
