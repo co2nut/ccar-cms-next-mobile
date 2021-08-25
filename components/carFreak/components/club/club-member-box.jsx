@@ -12,24 +12,7 @@ import { arrayLengthCount, getUserName, isValidNumber } from '../../../../common
 import UserAvatar from '../../../general/UserAvatar';
 import FollowButton from '../../../profile/FollowButton';
 import { loading } from '../../../../redux/actions/app-actions';
-import { useMediaQuery } from 'react-responsive';
 
-const Desktop = ({ children }) => {
-    const isDesktop = useMediaQuery({ minWidth: 992 })
-    return isDesktop ? children : null
-}
-const Tablet = ({ children }) => {
-    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
-    return isTablet ? children : null
-}
-const Mobile = ({ children }) => {
-    const isMobile = useMediaQuery({ maxWidth: 767 })
-    return isMobile ? children : null
-}
-const Default = ({ children }) => {
-    const isNotMobile = useMediaQuery({ minWidth: 768 })
-    return isNotMobile ? children : null
-}
 
 const PAGE_SIZE = 10;
 const BOX_HEIGHT = 300;
@@ -45,7 +28,7 @@ const ClubMemberBox = (props) => {
     const [adminIsLoading, setAdminIsLoading] = useState(false);
     const [memberIsLoading, setMemberIsLoading] = useState(false);
     const [viewType, setViewType] = useState('non-member');
-    const [club, setClub] = useState({});
+
 
     useEffect(() => {
         setViewType(validateViewType(props.viewType))
@@ -54,10 +37,6 @@ const ClubMemberBox = (props) => {
     useEffect(() => {
         setClubId(props.clubId || '')
     }, [props.clubId])
-
-    useEffect(() => {
-        setClub(_.isPlainObject(props.club) && !_.isEmpty(props.club) ? props.club : {});
-    }, [props.club])
 
     useEffect(() => {
         getAdmins(0);
@@ -183,69 +162,7 @@ const ClubMemberBox = (props) => {
     const _renderJoinedUser = (join) => {
         if (_.isPlainObject(join) && !_.isEmpty(join)) {
             return (
-                <div>
-                    <Tablet>
-                    <div className="flex-justify-space-between flex-items-align-center margin-bottom-md">
-                    <span className='flex-items-align-center' style={{ maxWidth: '70%' }} >
-                        <span className='d-inline-block margin-right-md' >
-                            <UserAvatar data={_.get(join, ['userId'])} redirectProfile size={70} />
-                        </span>
-                        <span className='d-inline-block' >
-                            <div className="subtitle1 font-weight-normal text-truncate">
-                                {getUserName(_.get(join, ['userId']), 'fullName')}
-                            </div>
-                            <div className="headline text-truncate grey-darken-2 capitalize">
-                                {_.get(join, ['role']) || ''}
-                            </div>
-                            <div className="headline text-truncate grey-darken-2">
-                                Joined about {moment(_.get(join, ['joinedAt'])).fromNow()}
-                            </div>
-                        </span>
-                    </span>
-                    <span className='d-inline-block ' >
-                        <FollowButton type="user" userId={_.get(join, ['userId', '_id'])} followerId={_.get(props.user, ['info', 'user', '_id'])} className="margin-right-md"></FollowButton> 
-                        {
-                            _.get(props.user, ['info', 'user', '_id']) != _.get(join, ['userId', '_id']) && viewType == clubProfileViewTypes[0] ?
-                                _.get(join, ['status']) == 'removed' ?
-                                    <span className="d-inline-block red margin-right-md" style={{ padding: '0px 15px' }} >
-                                        Removed
-                                    </span>
-                                    :
-                                    <Popconfirm
-                                        title="Are you sure to remove this member?"
-                                        onConfirm={(e) => {
-                                            handleRemove(join);
-                                        }}
-                                        okText="Yes"
-                                        cancelText="No"
-                                    >
-                                        <Button className="background-red border-red white margin-right-md">Remove</Button>
-                                    </Popconfirm>
-                                :
-                                _.get(props.user, ['info', 'user', '_id']) == _.get(join, ['userId', '_id']) && viewType != clubProfileViewTypes[0] ?
-                                    _.get(join, ['status']) == 'removed' ?
-                                        <span className="d-inline-block red margin-right-md" style={{ padding: '0px 15px' }} >
-                                            Left
-                                        </span>
-                                        :
-                                        <Popconfirm
-                                            title="Are you sure to leave this group?"
-                                            onConfirm={(e) => {
-                                                handleRemove(join);
-                                            }}
-                                            okText="Yes"
-                                            cancelText="No"
-                                        >
-                                            <Button className="background-red border-red white margin-right-md">Leave</Button>
-                                        </Popconfirm>
-                                    :
-                                    null
-                        }
-                    </span>
-                </div>
-                    </Tablet>
-                    <Mobile>
-                    <div className="flex-justify-space-between flex-items-align-center margin-bottom-md">
+                <div className="flex-justify-space-between flex-items-align-center margin-bottom-md">
                     <span className='flex-items-align-center' style={{ width: '70%' }} >
                         <span className='d-inline-block margin-right-md' >
                             <UserAvatar data={_.get(join, ['userId'])} redirectProfile size={50} />
@@ -303,10 +220,6 @@ const ClubMemberBox = (props) => {
                         }
                     </span>
                 </div>
-                    </Mobile>
-                    
-                </div>
-                
             )
         } else {
             return null;
@@ -316,58 +229,6 @@ const ClubMemberBox = (props) => {
 
     return (
         <React.Fragment>
-            <Tablet>
-            <ClubBackdrop viewType={viewType} club={club}>
-                <div className={`thin-border round-border padding-md ${props.className || ''}`} style={{ ...props.style }}>
-                    <Row gutter={[10, 10]}>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <div className="font-weight-bold subtitle1">
-                                Admin
-                        </div>
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <ScrollLoadWrapper style={{ width: '100%' }} autoHide autoHeight autoHeightMax={BOX_HEIGHT}>
-                                {
-                                    _.map(admins, function (admin) {
-                                        return _renderJoinedUser(admin)
-                                    })
-                                }
-                            </ScrollLoadWrapper>
-                        </Col>
-                        <Divider />
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <div className="font-weight-bold subtitle1">
-                                Members
-                        </div>
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <ScrollLoadWrapper style={{ width: '100%' }} autoHide autoHeight autoHeightMax={BOX_HEIGHT} scrollRange={50} scrollRangeUsePercentage onScrolledBottom={() => {
-                                if (arrayLengthCount(members) < memberTotal) {
-                                    setMemberPage(memberPage + 1);
-                                }
-                            }}>
-                                {
-                                    _.map(members, function (member) {
-                                        return _renderJoinedUser(member)
-                                    })
-                                }
-                            </ScrollLoadWrapper>
-                            <div className="flex-justify-center flex-items-align-center" style={{ height: 30 }}>
-                                {
-                                    memberIsLoading ?
-                                        <Icon type="loading" style={{ fontSize: 30 }} />
-                                        :
-                                        null
-                                }
-                            </div>
-                        </Col>
-
-                    </Row>
-                </div>
-            </ClubBackdrop>
-            </Tablet>
-
-            <Mobile>
             <ClubBackdrop viewType={viewType}>
                 <div className={`thin-border round-border padding-sm ${props.className || ''}`} style={{ ...props.style }}>
                     <Row gutter={[10, 10]}>
@@ -416,7 +277,6 @@ const ClubMemberBox = (props) => {
                     </Row>
                 </div>
             </ClubBackdrop>
-            </Mobile>
         </React.Fragment>
     );
 }

@@ -198,39 +198,14 @@ class Details extends React.Component {
     return '-'
   }
 
-  _renderView = () => {
-    switch (this.state.view) {
-      case 'overview':
-        return <NewCarOverview changeTabs={this.changeTabs} ></NewCarOverview>  
-        break;
-      case 'specs':
-        return <CompareNewCarIndex /> 
-        break;
-      default:
-        return null;
-        break;
-    }
-  }
-
   render() {
 
     return (
       <LayoutV2>
 
-        <Tablet>
-        <div className='section'>
-            <div style={{ paddingLeft: '10px', paddingRight: '10px' }}> 
-              <NewCarMenu  view={this.state.view} onChange={(view) => { this.setState({ view: view }) }} />
-              <Divider style={{ marginTop: '0px', height: '2px' }} />
-              <div className="margin-top-lg">
-                {this._renderView()}
-              </div>
-            </div>
-          </div>
-        </Tablet>
-
         <Mobile>
           <div className="padding-y-md">
+
             <LightBoxGallery images={[_.get(this.state.currentVariant, `carmodelId.url`) || '']}>
               {
                 (data, setCurrentIndex, setVisible) => {
@@ -512,6 +487,7 @@ class Details extends React.Component {
                 :
                 null
             }
+
           </div>
         </Mobile>
 

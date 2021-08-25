@@ -16,13 +16,11 @@ import { fetchBrandDetail, fetchClub, fetchFuel, fetchNewCarFilterGroup, fetchNe
 import client from '../../../feathers';
 import GlobalSearchBar from '../../general/global-search-bar';
 import LayoutV2 from '../../general/LayoutV2';
-import SocialNewTabs from '../../news/social-news-tab-2';
+import SocialNewTabs from '../../news/social-new-tabs';
 import SocialVideoTabs from '../../news/social-video-tabs';
 import { formatNumber, isValidNumber, notEmptyLength, queryStringifyNestedObject, arrayLengthCount } from '../../../common-function';
 import { routePaths } from '../../../route';
 import BrandFiltering from '../BrandFiltering';
-import SocialVideoTablet from '../../news/social-video-tablet';
-import SocialNewsTablet from '../../news/social-news-tablet';
 
 const BgElement = Element.BgElement;
 var PAGESIZE = 8
@@ -283,123 +281,89 @@ class NewCarVersion3 extends React.Component {
     }
 
     renderFilterCarsTabs = () => {
-        return (
-            this.state.carLoading ?
-                <NewCarListSkeleton xs={{ span: 22, offset: 1 }} sm={{ span: 22, offset: 1 }} md={{ span: 6, offset: 0 }} lg={{ span: 6, offset: 0 }} xl={{ span: 6, offset: 0 }} size={CARBRANDSSIZE} />
-                :
-                _.isArray(this.state.popularCars) && !_.isEmpty(this.state.popularCars) ?
-                    this.state.popularCars.map(function (item, i) {
-                        return (
-                            <Col xs={{ span: 22, offset: 1 }} sm={{ span: 22, offset: 1 }} md={{ span: 6, offset: 0 }} lg={{ span: 6, offset: 0 }} xl={{ span: 6, offset: 0 }} key={i}>
-                                <Tablet>
-                                    <Link shallow={false} href={routePaths.newCarDetails.to || '/'} as={typeof (routePaths.newCarDetails.as) == 'function' ? routePaths.newCarDetails.as(item) : '/'} passHref >
-                                        <a>
-                                            <div className="newcars-uniqBy-model cursor-pointer" style={{ height: 230 }} >
-                                                <img src={item.uri} style={{ width: '100%', padding: '5px' }}></img>
-                                                <div className="newcars-wrap-p">
-                                                    <p style={{ textTransform: 'capitalize', textAlign: 'center', fontSize: '16px', fontWeight: '600', marginBottom: '0px', color: "rgba(0, 0, 0, 0.65)" }}> {item.make}  {item.model}</p>
-                                                    <p style={{ textAlign: 'center', color: '#FBB040', fontSize: '16px', fontWeight: 600 }}>
-                                                        {
-                                                            !item.minPrice && !item.maxPrice ?
-                                                                'TBC'
+        if (arrayLengthCount(_.get(this.props, ['newCars', 'popularCars'])) > 0) {
+            return (
+                this.props.newCars.popularCars.map(function (item, i) {
+                    return (
+                        <Col xs={{ span: 22, offset: 1 }} sm={{ span: 22, offset: 1 }} md={{ span: 6, offset: 0 }} lg={{ span: 6, offset: 0 }} xl={{ span: 6, offset: 0 }} key={i}>
+                            <Desktop>
+                                <Link shallow={false} href={routePaths.newCarDetails.to || '/'} as={typeof (routePaths.newCarDetails.as) == 'function' ? routePaths.newCarDetails.as(item) : '/'} passHref >
+                                    <a>
+                                        <div className="newcars-uniqBy-model cursor-pointer" style={{ height: 320 }} >
+                                            <img src={item.uri} style={{ width: '100%', padding: '5px' }}></img>
+                                            <div className="newcars-wrap-p">
+                                                <p style={{ textTransform: 'capitalize', textAlign: 'center', fontSize: '16px', fontWeight: '600', marginBottom: '0px', color: "rgba(0, 0, 0, 0.65)" }}> {item.make}  {item.model}</p>
+                                                <p style={{ textAlign: 'center', color: '#FBB040', fontSize: '16px', fontWeight: 600 }}>
+                                                    {
+                                                        !item.minPrice && !item.maxPrice ?
+                                                            'TBC'
+                                                            :
+                                                            item.minPrice == item.maxPrice ?
+                                                                `${item.minPrice ? 'RM ' + formatNumber(item.minPrice) : 'TBC'}`
                                                                 :
-                                                                item.minPrice == item.maxPrice ?
-                                                                    `${item.minPrice ? 'RM ' + formatNumber(item.minPrice) : 'TBC'}`
-                                                                    :
-                                                                    `${item.minPrice ? 'RM ' + formatNumber(item.minPrice) : 'TBC'} - ${item.maxPrice ? 'RM ' + formatNumber(item.maxPrice) : 'TBC'}`
-                                                        }
-                                                    </p>
-                                                </div>
+                                                                `${item.minPrice ? 'RM ' + formatNumber(item.minPrice) : 'TBC'} - ${item.maxPrice ? 'RM ' + formatNumber(item.maxPrice) : 'TBC'}`
+                                                    }
+                                                </p>
                                             </div>
-                                        </a>
-                                    </Link>
-                                </Tablet>
-                            </Col>
-                        )
-                    })
-                    :
-                    <div style={{ height: '30em' }}>
-                        <Empty
-                            style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}
-                            image="/empty.png"
-                            imageStyle={{
-                                height: 60,
-                            }
-                            }
-                            description={
-                                <span>
-                                    No Result
-                        </span>
-                            }
-                        >
-                        </Empty>
-                    </div>
-        )
+                                        </div>
+
+                                    </a>
+                                </Link>
+                            </Desktop>
+
+                            <Tablet>
+                                <Link shallow={false} href={routePaths.newCarDetails.to || '/'} as={typeof (routePaths.newCarDetails.as) == 'function' ? routePaths.newCarDetails.as(item) : '/'} passHref >
+                                    <a>
+                                        <div className="newcars-uniqBy-model cursor-pointer" style={{ height: 230 }} >
+                                            <img src={item.uri} style={{ width: '100%', padding: '5px' }}></img>
+                                            <div className="newcars-wrap-p">
+                                                <p style={{ textTransform: 'capitalize', textAlign: 'center', fontSize: '16px', fontWeight: '600', marginBottom: '0px', color: "rgba(0, 0, 0, 0.65)" }}> {item.make}  {item.model}</p>
+                                                <p style={{ textAlign: 'center', color: '#FBB040', fontSize: '16px', fontWeight: 600 }}>
+                                                    {
+                                                        !item.minPrice && !item.maxPrice ?
+                                                            'TBC'
+                                                            :
+                                                            item.minPrice == item.maxPrice ?
+                                                                `${item.minPrice ? 'RM ' + formatNumber(item.minPrice) : 'TBC'}`
+                                                                :
+                                                                `${item.minPrice ? 'RM ' + formatNumber(item.minPrice) : 'TBC'} - ${item.maxPrice ? 'RM ' + formatNumber(item.maxPrice) : 'TBC'}`
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </Link>
+                            </Tablet>
+
+                            {/* <div className="car-tab">
+                  <img src={item.uri} style={{ width: "100%", padding:'10px'}} />
+                  <p className="overlay-car-name" style={{textTransform:'capitalize', textAlign:'center', fontSize:'18px'}}> {item.make} {item.model}</p>
+              </div> */}
+                        </Col>
+                    )
+                })
+            )
+        } else {
+            return (
+                <div style={{ height: '30em' }}>
+                    <Empty
+                        style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}
+                        image="/empty.png"
+                        imageStyle={{
+                            height: 60,
+                        }
+                        }
+                        description={
+                            <span>
+                                No Result
+                            </span>
+                        }
+                    >
+                    </Empty>
+                </div>
+            )
+        }
     }
-
-    _renderCarousel = () => {
-        return (
-            <div>
-                <Tablet>
-                    <BannerAnim className="carousel" prefixCls="banner-user-tab" autoPlay>
-                        <Element
-                            prefixCls="banner-user-elem"
-                            key="0"
-                        >
-                            <BgElement
-                                // onClick={(e) => { window.location = 'https://ccar.my/banner/CCARAYA-T&C.pdf' }}
-                                key="bg"
-                                className="bg"
-                                style={{
-                                    backgroundImage: 'url(/banner/Tab-Banner-June-01.jpg)',
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center',
-                                    backgroundRepeat: 'no-repeat',
-                                    maxInlineSize: '-webkit-fill-available'
-                                }}
-                            />
-                            {/* <div className="width-100 relative-wrapper" style={{height : 250}}>
-                            <img src={'/banner/CCAR-Tab-Banner-TBH-March-2021.jpg'} className="absolute-center"/>
-                        </div> */}
-                        </Element>
-                        <Element
-                            prefixCls="banner-user-elem"
-                            key="1"
-                        >
-                            <BgElement
-                                key="bg"
-                                className="bg"
-                                style={{
-                                    backgroundImage: 'url(/banner/Tab-Banner-360-01.jpg)',
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center',
-                                    backgroundRepeat: 'no-repeat',
-                                    maxInlineSize: '-webkit-fill-available'
-                                }}
-                            />
-                        </Element>
-
-                        <Element
-                            prefixCls="banner-user-elem"
-                            key="2"
-                        >
-                            <BgElement
-                                key="bg"
-                                className="bg"
-                                style={{
-                                    backgroundImage: 'url(/banner/Tab-Banner-01.jpg)',
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center',
-                                    backgroundRepeat: 'no-repeat',
-                                    maxInlineSize: '-webkit-fill-available'
-                                }}
-                            />
-                        </Element>
-                    </BannerAnim>
-                </Tablet>
-            </div>
-        );
-    };
 
     renderSearchFilter() {
         const { size } = this.state;
@@ -562,128 +526,7 @@ class NewCarVersion3 extends React.Component {
 
     render() {
         return (
-            <LayoutV2 hideSearchBar={this.state.hideSearchBar}>
-                <Row className="banner-newcar">
-                    <Col xs={0} sm={0} md={24} lg={0} xl={0} >
-                        {this._renderCarousel()}
-                    </Col>
-                </Row>
-
-                <Tablet>
-                <div className="section-version3">
-                        <div className="container-version3" style={{ touchAction: 'pan-y' }}>
-                            <Row>
-                                <Col span={24} className="overlay-search-bar-res text-align-center certain-category-search ">
-                                    <Row>
-                                        <Col xs={{ span: 12, offset: 6 }} sm={{ span: 12, offset: 6 }} md={{ span: 10, offset: 7 }} lg={{ span: 10, offset: 7 }} xl={{ span: 10, offset: 7 }}  >
-                                            <div ref={searchBarRef}>
-                                                <GlobalSearchBar searchTypes={this.props.searchTypes || ['productAds', 'carspec', 'dealerWithAds']} />
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
-                            <Row className="background-white padding-top-md ">
-                                <Col xs={24} sm={24} md={24} lg={24} xl={24} >
-                                    <div className="brand-header">
-                                        <Tabs defaultActiveKey="1" >
-                                            <TabPane tab="Car Maker" key="parent1">
-                                                {this._renderCarBrandsList(notEmptyLength(this.state.filterCarBrands) ? this.state.filterCarBrands : [])}
-                                            </TabPane>
-
-                                            <TabPane tab="Body Type" key="parent2">
-                                                {bodyTypeOri.map((v, i) => {
-                                                    if (i > 0) {
-                                                        return (
-                                                            <Col className="cartype" style={{ marginRight: '10px' }} xs={6} sm={6} md={3} lg={2} xl={2} key={i}>
-                                                                <div className="type cursor-pointer" onClick={() => {
-                                                                    this.setState({ bodyType: (v.value).toLowerCase() }
-                                                                        // ,()=>this.getData(0) 
-                                                                    );
-                                                                    this.props.router.push(`/newcar/filter?${queryStringifyNestedObject({ bodyType: v.value.toLowerCase() })}`)
-                                                                }
-                                                                }>
-                                                                    <img src={v.icon} />
-                                                                    <p style={{ marginTop: '-12px', textAlign: 'center', fontWeight: '700', textTransform: 'capitalize', marginBottom: '0px' }}> {v.value} </p>
-                                                                </div>
-                                                                {/* <p style={{color:'black', textAlign:'center', paddingTop:'10px'}}> {v.value}</p> */}
-                                                            </Col>
-                                                        )
-                                                    }
-                                                })}
-                                            </TabPane>
-                                        </Tabs>
-                                    </div>
-                                </Col>
-                            </Row>
-
-                            <Row className="background-white ">
-                                <Col className="gutter-row" span={24} style={{ paddingLeft: '10px', paddingRight: '10px' }} className="margin-bottom-sm margin-top-sm text-align-center yellow-divider">
-                                    <Divider> <span className='d-inline-block h6 font-weight-bold grey-darken-3' style={{ marginLeft: '10px' }} > All NEW CARS</span> </Divider>
-                                    {/* <span style={{float:'right', marginRight:'10px'}}> <Link shallow={false}  href={'/newcar/filter'}>See More</Link> </span> */}
-                                </Col>
-                                <Col span={24}>
-                                    <div className="brand-header ">
-                                        <Tabs defaultActiveKey="1" onChange={this.callback} tabBarExtraContent={<Link shallow={false} href={routePaths.newCarFilter.to || '/'} as={typeof (routePaths.newCarFilter.as) == 'function' ? routePaths.newCarFilter.as() : '/'} passHref>
-                                            <a>See More</a></Link>}>
-                                            <TabPane tab="RM20K - RM60K" key="5">
-                                                <Row>
-                                                    {this.renderFilterCarsTabs()}
-                                                </Row>
-                                            </TabPane>
-
-                                            <TabPane tab="RM60K - RM100K" key="6">
-                                                <Row>
-                                                    {this.renderFilterCarsTabs()}
-                                                </Row>
-                                            </TabPane>
-
-                                            <TabPane tab="Over RM100K" key="7">
-                                                <Row>
-                                                    {this.renderFilterCarsTabs()}
-                                                </Row>
-                                            </TabPane>
-                                        </Tabs>
-                                    </div>
-                                </Col>
-                            </Row>
-
-                            <Row className="background-white">
-                                <Col xs={24} sm={24} md={24} lg={24} xl={24} style={{ paddingLeft: '10px', paddingRight: '10px' }}>
-                                    <Row>
-                                        <Col className="gutter-row" span={24} className="margin-bottom-sm margin-top-sm text-align-center yellow-divider ">
-                                            <Divider><span className='d-inline-block h6 font-weight-bold grey-darken-3' style={{ marginLeft: '10px' }} >SOCIAL VIDEOS</span></Divider>
-                                        </Col>
-                                        <Col span={24} style={{ overflowX: 'auto' }}>
-                                            <SocialVideoTablet/>
-                                        </Col>
-                                        <Col xs={24} sm={24} md={24} lg={24} xl={24} className="margin-top-md margin-bottom-md text-align-center">
-                                            <a href="/socialNewsAndVideo?type=videos"><Button type="primary"> Show More </Button></a>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
-
-                            <Row className="background-white ">
-                                <Col xs={24} sm={24} md={24} lg={24} xl={24} style={{ paddingLeft: '10px', paddingRight: '10px' }}>
-                                    <Row>
-                                        <Col className="gutter-row" span={24} className="margin-bottom-sm margin-top-sm text-align-center yellow-divider">
-                                            <Divider> <span className='d-inline-block h6 font-weight-bold grey-darken-3' style={{ marginLeft: '10px' }} >SOCIAL NEWS</span></Divider>
-                                        </Col>
-                                        <Col span={24} >
-                                            <SocialNewsTablet />
-                                        </Col>
-                                        <Col xs={24} sm={24} md={24} lg={24} xl={24} className="margin-top-md margin-bottom-md text-align-center">
-                                            <a href="/socialNewsAndVideo"><Button type="primary"> Show More </Button></a>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
-                        </div>
-                    </div>
-                </Tablet>
-
-                <Mobile>
+            <LayoutV2 >
                 <div className="section-version3" style={{ marginTop: '20px' }}>
                     <div className="container-version3 padding-sm" id="filter-top" style={{ touchAction: 'pan-y' }} >
                         <Row>
@@ -705,8 +548,7 @@ class NewCarVersion3 extends React.Component {
                         </Row>
                     </div>
                 </div>
-                </Mobile>
-                
+
             </LayoutV2>
         );
     }

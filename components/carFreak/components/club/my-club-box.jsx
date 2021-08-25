@@ -12,24 +12,6 @@ import OtherClubsBox from './other-clubs-box';
 import Link from 'next/link';
 import { routePaths } from '../../../../route';
 import { earthGreyIcon, followingGreyIcon, createCarFreakIcon, createSocialBoardIcon } from '../../../../icon';
-import { useMediaQuery } from 'react-responsive';
-
-const Desktop = ({ children }) => {
-    const isDesktop = useMediaQuery({ minWidth: 992 })
-    return isDesktop ? children : null
-}
-const Tablet = ({ children }) => {
-    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
-    return isTablet ? children : null
-}
-const Mobile = ({ children }) => {
-    const isMobile = useMediaQuery({ maxWidth: 767 })
-    return isMobile ? children : null
-}
-const Default = ({ children }) => {
-    const isNotMobile = useMediaQuery({ minWidth: 768 })
-    return isNotMobile ? children : null
-}
 
 const PAGE_SIZE = 30;
 
@@ -151,8 +133,7 @@ const MyClubBox = (props) => {
 
     return (
         <React.Fragment>
-            <Tablet>
-            <Row gutter={[20, 0]}>
+            {/* <Row gutter={[20, 0]}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                     <React.Fragment>
                         <Card
@@ -236,11 +217,9 @@ const MyClubBox = (props) => {
                         <OtherClubsBox userId={props.userId} />
                     </Card>
                 </Col>
-            </Row>
-            </Tablet>
-            
-<Mobile>
-{
+            </Row> */}
+
+            {
                 menuOpened ?
                     <div className="background-black-opacity-50 absolute-center" style={{ zIndex: 2 }} >
                     </div>
@@ -284,8 +263,6 @@ const MyClubBox = (props) => {
                         />
                         </span>
                     </Dropdown>
-</Mobile>
-            
         </React.Fragment >
     )
 

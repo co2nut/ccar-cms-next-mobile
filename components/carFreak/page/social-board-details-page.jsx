@@ -134,22 +134,8 @@ const SocialBoardDetailsPage = (props) => {
     return (
         <LayoutV2 searchTypes={carFreakGlobalSearch} enterSearchCarFreaks hideOpenApp >
 
-            <Tablet>
-                <div className="section-version3">
-                    <div className="container-version3">
-                        <CarFreakLayout>
-                            <Row gutter={[10, 10]}>
-                                <Col xs={24} sm={24} md={24} lg={18} xl={18}>
-                                    <SocialBoardDetailsBox data={post} />
-                                </Col>
-                            </Row>
-                        </CarFreakLayout>
-                    </div>
-                </div>
-            </Tablet>
 
-        <Mobile>
-        <PostDrawer
+            <PostDrawer
                 data={post}
                 visible={true}
                 postLike={_.find(userChatLikes, { chatId: _.get(post, ['_id']) })}
@@ -194,8 +180,6 @@ const SocialBoardDetailsPage = (props) => {
                     setWriteModalVisible(false);
                     setSelectedPost({});
                 }} />
-        </Mobile>
-            
         </LayoutV2 >
     )
 

@@ -309,12 +309,12 @@ const fuelpriceindex = (props) => {
                 </Col></Row>)
             }
         },
-        // {
-        //     dataIndex: '',
-        //     key: '',
-        //     width: '10%',
+        {
+            dataIndex: '',
+            key: '',
+            width: '10%',
 
-        // },
+        },
     ];
 
 
@@ -332,16 +332,6 @@ const fuelpriceindex = (props) => {
         <Spin tip={'Loading...'} spinning={loading} size="large">
             <LayoutV2>
                 <div className="section-version3">
-                    <Tablet>
-                    <div className="container padding-x-xs padding-top-md">
-                        <Card title="Chart" className="card-padding-0">
-                            <LineChart {...config} chartRef={chartRef} data={chartData} description={{ visible: true, text: 'Last Update by ' + lastRecord.date }} />
-                            <Table style={{marginTop:'10px'}} className={body} scroll={{ y: 400 }} dataSource={tableData} columns={columns} pagination={false} rowKey="_id" />
-                        </Card>
-                    </div>
-                    </Tablet>
-
-                    <Mobile>
                     <div className="container-version3 padding-x-md padding-y-md" style={{marginTop:'40px'}}>
                         <Row>
                             <Link href={'/history-price' || '/'}>
@@ -453,9 +443,10 @@ const fuelpriceindex = (props) => {
                                 </a>
                             </Link>
                         </Row> */}
-                        </div>
-                    </Mobile>
+
+                    </div>
                 </div>
+
             </LayoutV2>
 
         </Spin>

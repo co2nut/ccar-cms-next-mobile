@@ -5,7 +5,6 @@ import { findIndexesOfString, getObjectId, checkObjectId, getUserName } from '..
 import Compress from "browser-image-compression";
 
 export const chatRestrictTime = 2000;
-export const carFreakPostAspectRatio = (1);
 export const carFreakGlobalSearch = ['carFreak', 'socialBoard', 'club', 'dealer', 'people'];
 export const tagPrefix = '@';
 export const hashTagPrefix = '#';
@@ -16,7 +15,6 @@ export const hashTagSuffixHashValue = '#>^}~end';
 export const seperatorHashValue = ']<%seperator>!;_';
 export const clubProfileViewTypes = ['admin', 'member', 'pending', 'non-member'];
 
-export const carFreakBackground = "/banner/motion-speed-effect-with-city-night.png";
 
 export function parseTagStringToArray(text) {
     if (text) {

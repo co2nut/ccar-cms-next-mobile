@@ -220,7 +220,7 @@ const UserCarOnSale = (props) => {
 
                     <span className='flex-justify-center flex-items-align-center margin-x-xs'>
                         <span style={{fontSize:'12px'}} className="d-inline-block">
-                            Ready Stock: 
+                            Ready Stock:
                         </span>
                         <span className="d-inline-block margin-left-xs">
                             <Switch checked={filterGroup.readyStock} onChange={(checked) => { props.loading(true); setFilterGroup({ ...filterGroup, readyStock: checked ? 'yes' : null }); }} />

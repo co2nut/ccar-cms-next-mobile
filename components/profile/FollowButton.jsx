@@ -6,24 +6,8 @@ import client from '../../feathers';
 import { withRouter } from 'next/router';
 import { notEmptyLength } from '../../common-function';
 import { loginMode } from '../../redux/actions/app-actions';
-import { useMediaQuery } from 'react-responsive';
 
-const Desktop = ({ children }) => {
-    const isDesktop = useMediaQuery({ minWidth: 992 })
-    return isDesktop ? children : null
-}
-const Tablet = ({ children }) => {
-    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
-    return isTablet ? children : null
-}
-const Mobile = ({ children }) => {
-    const isMobile = useMediaQuery({ maxWidth: 767 })
-    return isMobile ? children : null
-}
-const Default = ({ children }) => {
-    const isNotMobile = useMediaQuery({ minWidth: 768 })
-    return isNotMobile ? children : null
-}
+
 
 const FollowButton = (props) => {
 
@@ -146,50 +130,6 @@ const FollowButton = (props) => {
     return (
 
         <span className={props.className ? props.className : null} style={props.style ? props.style : null}>
-            <Tablet>
-            <Modal
-                visible={confirmModalState}
-                title="Are you sure?"
-                maskClosable={true}
-                centered={true}
-                onOk={(e) => { handleSubmit(); setConfirmModalState(false); }}
-                onCancel={(e) => { setConfirmModalState(false) }}
-            >
-                <div>
-                    {props.description || 'Do you want to unfollow?'}
-
-                </div>
-            </Modal>
-
-            {
-                _.get(props, ['userId']) == _.get(props.user, ['info', 'user', '_id']) ?
-                    null
-                    :
-                    isFollowed ?
-                        <a onClick={() => { handleChange() }}>
-
-                            {
-                                props.followingButton ?
-                                    props.followingButton()
-                                    :
-                                    <span>
-                                        <Icon type="check" style={{ color: '#F57F17' }} className="margin-right-xs" />
-                                    Following
-                                </span>
-                            }
-                        </a>
-                        :
-                        <a onClick={() => { handleChange() }}>
-                            {
-                                props.followButton ?
-                                    props.followButton()
-                                    :
-                                    <Button>+ Follow</Button>
-                            }
-                        </a>
-            }
-            </Tablet>
-            <Mobile>
             <Modal
                 visible={confirmModalState}
                 title="Are you sure?"
@@ -231,7 +171,7 @@ const FollowButton = (props) => {
                             }
                         </a>
             }
-            </Mobile>
+
         </span>
     );
 }

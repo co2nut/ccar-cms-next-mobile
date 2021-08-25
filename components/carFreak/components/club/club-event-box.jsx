@@ -9,27 +9,9 @@ import EventDetailsBox from './event-details-box';
 import { loading } from '../../../../redux/actions/app-actions';
 import WindowScrollLoadWrapper from '../../../general/WindowScrollLoadWrapper';
 import { arrayLengthCount, isValidNumber } from '../../../../common-function';
-import { validateViewType, clubProfileViewTypes, isNotAllowedSocialInteraction } from '../../config';
+import { validateViewType, clubProfileViewTypes } from '../../config';
 import ClubBackdrop from './club-backdrop';
 import EventDetailsBoxUi from './event-details-box-ui';
-import { useMediaQuery } from 'react-responsive';
-
-const Desktop = ({ children }) => {
-    const isDesktop = useMediaQuery({ minWidth: 992 })
-    return isDesktop ? children : null
-}
-const Tablet = ({ children }) => {
-    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
-    return isTablet ? children : null
-}
-const Mobile = ({ children }) => {
-    const isMobile = useMediaQuery({ maxWidth: 767 })
-    return isMobile ? children : null
-}
-const Default = ({ children }) => {
-    const isNotMobile = useMediaQuery({ minWidth: 768 })
-    return isNotMobile ? children : null
-}
 
 
 const PAGE_SIZE = 10;
@@ -139,94 +121,7 @@ const ClubEventBox = (props) => {
     return (
         <React.Fragment>
 
-            <Tablet>
-            <ClubBackdrop viewType={viewType} club={club}>
-                <div className={`thin-border round-border padding-md ${props.className || ''}`} style={{ ...props.style }}>
-                    <Row>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <div className="flex-justify-space-between flex-items-align-center">
-                                <span className='d-inline-block h7' >
-                                    Upcoming Event
-                                </span>
-                                {
-                                    viewType == clubProfileViewTypes[0] ?
-                                        <span className='d-inline-block' >
-                                            <Button className="border ccar-button-yellow black" onClick={(e) => { setWriteEventVisible(true) }}>Create Event</Button>
-                                        </span>
-                                        :
-                                        null
-                                }
-                            </div>
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <Divider type="horizontal" ></Divider>
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <WindowScrollLoadWrapper scrollRange={document.body.scrollHeight * 0.5} onScrolledBottom={() => {
-                                if (arrayLengthCount(events) < eventTotal) {
-                                    setEventPage(eventPage + 1);
-                                }
-                            }}>
-                                {
-                                    _.isArray(events) && !_.isEmpty(events) ?
-                                        _.map(events, function (event, index) {
-                                            return (
-                                                <React.Fragment>
-                                                    <div className="width-100">
-                                                        <EventDetailsBox data={event}
-                                                            readOnly={isNotAllowedSocialInteraction(club, viewType) || _.get(event , `scope`) == 'private'}
-                                                            hideDescription
-                                                            manualControl
-                                                            onEditClick={(data) => {
-                                                                if (_.isPlainObject(data) && !_.isEmpty(data)) {
-                                                                    setSelectedEvent(data);
-                                                                    setEventEditMode(true);
-                                                                    setWriteEventVisible(true);
-                                                                }
-                                                            }}
-                                                            onEventJoinActionClick={(e) => {
-                                                                if(isNotAllowedSocialInteraction(club, viewType)){
-                                                                    setJoinClubModalVisible(true)
-                                                                }
-                                                            }}
-                                                            onRemoveClick={(data) => {
-                                                                confirmDelete(data)
-                                                            }}
-                                                        />
-                                                    </div>
-                                                    {
-                                                        index + 1 != arrayLengthCount(events) ?
-                                                            <Divider type="horizontal" />
-                                                            :
-                                                            null
-                                                    }
-                                                </React.Fragment>
-                                            )
-                                        })
-                                        :
-                                        null
-                                }
-                            </WindowScrollLoadWrapper>
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-
-                            <div className="flex-justify-center flex-items-align-center" style={{ height: 30 }}>
-                                {
-                                    isLoading ?
-                                        <Icon type="loading" style={{ fontSize: 30 }} />
-                                        :
-                                        null
-                                }
-                            </div>
-
-                        </Col>
-                    </Row>
-                </div>
-            </ClubBackdrop>
-            </Tablet>
-
-        <Mobile>
-        <ClubBackdrop viewType={viewType}>
+            <ClubBackdrop viewType={viewType}>
                 <div className={`thin-border round-border padding-md ${props.className || ''}`} style={{ ...props.style }}>
                     <Row>
                         {/* <Col xs={24} sm={24} md={24} lg={24} xl={24}>
@@ -304,10 +199,8 @@ const ClubEventBox = (props) => {
                     </Row>
                 </div>
             </ClubBackdrop>
-        </Mobile>
-            
 
-            <WriteEventModal 
+            <WriteEventModal
                 visible={writeEventVisible}
                 editMode={eventEditMode}
                 data={selectedEvent}
