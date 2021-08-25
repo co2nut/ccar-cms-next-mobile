@@ -779,7 +779,250 @@ class LayoutV2 extends React.Component {
                 {/* <WindowScrollDisableWrapper> */}
                 <div className="relative-wrapper">
                     <Row style={{ position: 'sticky', top: 0, zIndex: '99', height: '61px' }}>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24} >
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                        <Tablet>
+                                <div id="menu-bar" className="topnav" style={{ position: 'sticky', top: 0, zIndex: '99', height: '65px' }}>
+                                    <Row type="flex" align="middle" className='padding-x-md' style={{ backgroundColor: '#000000' }}>
+                                        <Col xs={12} sm={12} md={14} lg={14} xl={12}>
+                                            <div className='flex-justify-start flex-items-align-center topnav-child'>
+                                                <Link shallow={false} href={`/`}  >
+                                                    <a>
+                                                        <span className='d-inline-block relative-wrapper margin-right-md cursor-pointer padding-md' >
+                                                            <img alt="ccar" style={{ height: '40px', width: '197px' }} src={"/assets/web-ccar-logo.png"} />
+                                                        </span>
+                                                    </a>
+                                                </Link>
+                                                {
+                                                    this.props.hideSearchBar ?
+                                                        null
+                                                        :
+                                                        <span className='d-inline-block' style={{ minWidth: '250px', overflow: 'visible' }} >
+                                                            <GlobalSearchBar enterSearchCarFreaks={this.props.enterSearchCarFreaks} searchTypes={this.props.searchTypes || ['productAds', 'carspec', 'dealerWithAds']} />
+                                                        </span>
+                                                }
+                                            </div>
+                                        </Col>
+                                        <Col xs={10} sm={10} md={10} lg={10} xl={10}>
+                                            <div style={{ width: '300' }} className='flex-justify-end flex-items-align-center topnav-child'>
+                                                {
+                                                    _.get(this.props, ['user', 'authenticated']) ?
+                                                        <span className='d-inline-block' style={{ marginRight: '20px' }}>
+                                                            {this._renderNotificationBox()}
+                                                        </span>
+                                                        :
+                                                        null
+                                                }
+                                                <Button type="primary" onClick={this.showDrawer} style={{ marginBottom: 0, float: 'right' }} >
+                                                    <Icon type="menu" />
+                                                </Button>
+
+                                                <Drawer
+                                                    className="login-drawer"
+                                                    title={null}
+                                                    placement="right"
+                                                    closable={true}
+                                                    onClose={this.onClose}
+                                                    visible={this.state.visible}
+                                                    width={'50%'}
+                                                    zIndex={2000}
+                                                >
+                                                    {_.get(this.props.user, ['authenticated']) ?
+                                                        <div>
+                                                            <div className="margin-left-lg margin-top-lg">
+                                                                {this._renderUserRes(profileMenu)}
+                                                            </div>
+
+                                                            <div className="padding-md">
+                                                                <Row className="margin-bottom-md">
+                                                                    <Col span={11} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '2' ? 'yellow' : ''}`} onClick={() => { this.props.router.push(routePaths.carsOnSale.as().pathname) }}>
+                                                                            <img src="/assets/menu-icon/buy-car.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}> CarMarket </p>
+                                                                        </div>
+                                                                    </Col>
+                                                                    <Col span={11} offset={2} className="thickBorder round-border ">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '3' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/newcar') }}>
+                                                                            <img src="/assets/menu-icon/new-car.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>All-NewCar</p>
+                                                                        </div>
+                                                                    </Col>
+                                                                </Row>
+
+                                                                <Row className="margin-bottom-md">
+                                                                    <Col span={11} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '6' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/car-freaks') }}>
+                                                                            <img src="/assets/menu-icon/carfreaks.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>CarFreaks</p>
+                                                                        </div>
+                                                                    </Col>
+                                                                    <Col span={11} offset={2} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '14' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/car-review') }}>
+                                                                            <img src="/assets/menu-icon/car-review.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>Car Review</p>
+                                                                        </div>
+                                                                    </Col>
+                                                                </Row>
+
+                                                                <Row className="margin-bottom-md">
+                                                                    <Col span={11} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '4' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/live') }}>
+                                                                            <img src="/assets/menu-icon/live.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>LIVE</p>
+                                                                        </div>
+                                                                    </Col>
+                                                                    <Col span={11} offset={2} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '5' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/socialNews') }}>
+                                                                            <img src="/assets/menu-icon/social-news.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>Social News </p>
+                                                                        </div>
+                                                                    </Col>
+
+                                                                </Row>
+
+                                                                <Row className="margin-bottom-md">
+                                                                    <Col span={11} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '9' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/socialVideos') }}>
+                                                                            <img src="/assets/menu-icon/social-videos.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>Social Videos </p>
+                                                                        </div>
+                                                                    </Col>
+                                                                    <Col span={11} offset={2} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '8' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/kpp') }}>
+                                                                            <img src="/assets/menu-icon/driving-school.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>Driving School</p>
+                                                                        </div>
+                                                                    </Col>
+                                                                </Row>
+
+                                                                <Row className="margin-bottom-md">
+                                                                    <Col span={11} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '7' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/petrolprice') }}>
+                                                                            <img src="/assets/menu-icon/fuel.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>Fuel Price</p>
+                                                                        </div>
+                                                                    </Col>
+                                                                </Row>
+
+                                                                <div style={{ fontSize: '16px', margin: '10px 10px 10px 0px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '16' ? 'yellow' : ''}`} onClick={() => { this.props.router.push(routePaths.profileWishLists.as(_.get(this.props, ['user', 'info', 'user'])).pathname) }}>
+                                                                    <img src="/assets/Archive/wishlist.png" style={{ width: '10%', marginRight: '10px' }}></img>My Wishlist</div>
+                                                                <div style={{ fontSize: '16px', margin: '10px 10px 10px 0px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '20' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/setting') }}>
+                                                                    <img src="/assets/Archive/setting.png" style={{ width: '10%', marginRight: '10px' }}></img>Setting </div>
+                                                                <div style={{ fontSize: '16px', margin: '10px 10px 10px 0px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '15' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/faq') }}>
+                                                                    <img src="/assets/Archive/faq.png" style={{ width: '10%', marginRight: '10px' }}></img>FAQ</div>
+
+                                                                <div style={{ fontSize: '16px', margin: '10px 10px 10px 0px' }} onClick={() => { this.props.router.push(routePaths.logout.as().pathname) }}>
+                                                                    {/* <span className='d-inline-block relative-wrapper' style={{ width: '20px', height: '20px' }} > */}
+                                                                    <img src='/logout icon.svg' style={{ width: '10%', marginRight: '10px' }}></img>
+                                                                    {/* </span> */}
+                                                                    Logout
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        :
+
+                                                        <div>
+                                                            <div className="margin-bottom-xs padding-sm" style={{ backgroundImage: `url("${menuLogin}")`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', height: '20vh', backgroundPosition: 'center', position: 'relative' }}>
+                                                                <div>
+                                                                    <span style={{ marginRight: '10px' }}>
+                                                                        <img src="https://img.icons8.com/windows/32/ffffff/user-male-circle.png" />
+                                                                    </span>
+                                                                    <span style={{ color: '#ffffff', fontWeight: '700' }}>Login to access more features now!</span>
+                                                                </div>
+                                                                {/* <div className="flex-justify-center">
+                                                        {this._renderUserRes(profileMenu)}
+                                                    </div> */}
+
+                                                                <div className="login-center">
+                                                                    <Button style={{ borderRadius: '20px' }} className="background-ccar-button-yellow black border-ccar-button-yellow cursor-pointer padding-x-xl" onClick={() => { this.props.loginMode(true); this.onClose(); }}>
+                                                                        Login
+                                                                    </Button>
+                                                                </div>
+
+                                                            </div>
+
+                                                            {/* <div style={{fontSize:'16px', margin:'10px'}} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '1' ? 'yellow' : ''}`} onClick={() => {this.props.router.push('/')}}> Home</div> */}
+
+                                                            <div className="padding-md">
+                                                                <Row className="margin-bottom-md">
+                                                                    <Col span={11} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '2' ? 'yellow' : ''}`} onClick={() => { this.props.router.push(routePaths.carsOnSale.as().pathname) }}>
+                                                                            <img src="/assets/menu-icon/buy-car.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}> CarMarket </p>
+                                                                        </div>
+                                                                    </Col>
+                                                                    <Col span={11} offset={2} className="thickBorder round-border ">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '3' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/newcar') }}>
+                                                                            <img src="/assets/menu-icon/new-car.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>All-NewCar</p>
+                                                                        </div>
+                                                                    </Col>
+                                                                </Row>
+
+                                                                <Row className="margin-bottom-md">
+                                                                    <Col span={11} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '6' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/car-freaks') }}>
+                                                                            <img src="/assets/menu-icon/carfreaks.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>CarFreaks</p>
+                                                                        </div>
+                                                                    </Col>
+                                                                    <Col span={11} offset={2} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '14' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/car-review') }}>
+                                                                            <img src="/assets/menu-icon/car-review.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>Car Review</p>
+                                                                        </div>
+                                                                    </Col>
+                                                                </Row>
+
+                                                                <Row className="margin-bottom-md">
+                                                                    <Col span={11} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '4' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/live') }}>
+                                                                            <img src="/assets/menu-icon/live.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>LIVE</p>
+                                                                        </div>
+                                                                    </Col>
+                                                                    <Col span={11} offset={2} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '5' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/socialNews') }}>
+                                                                            <img src="/assets/menu-icon/social-news.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>Social News </p>
+                                                                        </div>
+                                                                    </Col>
+
+                                                                </Row>
+
+                                                                <Row className="margin-bottom-md">
+                                                                    <Col span={11} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '9' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/socialVideos') }}>
+                                                                            <img src="/assets/menu-icon/social-videos.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>Social Videos </p>
+                                                                        </div>
+                                                                    </Col>
+                                                                    <Col span={11} offset={2} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '8' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/kpp') }}>
+                                                                            <img src="/assets/menu-icon/driving-school.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>Driving School</p>
+                                                                        </div>
+                                                                    </Col>
+                                                                </Row>
+
+                                                                <Row className="margin-bottom-md">
+                                                                    <Col span={11} className="thickBorder round-border">
+                                                                        <div style={{ fontSize: '14px', margin: '10px' }} className={`flex-items-no-shrink margin-sm ${this.props.app.activeMenu == '7' ? 'yellow' : ''}`} onClick={() => { this.props.router.push('/petrolprice') }}>
+                                                                            <img src="/assets/menu-icon/fuel.png" style={{ width: '40%' }}></img>
+                                                                            <p style={{ marginBottom: '0px', color: '#000000' }}>Fuel Price</p>
+                                                                        </div>
+                                                                    </Col>
+                                                                </Row>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </Drawer>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </div>
+                            </Tablet>
+
                             <Mobile>
                                 <div id="menu-bar" className="topnav" style={{ position: 'sticky', top: 0, zIndex: '99', minHeight: '100px', backgroundColor: '#000000' }}>
                                     <Row type="flex" align="middle" className='padding-x-sm' >

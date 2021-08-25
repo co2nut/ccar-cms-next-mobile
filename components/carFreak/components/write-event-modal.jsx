@@ -13,7 +13,24 @@ import { loading, loginMode } from '../../../redux/actions/app-actions';
 import { setUser } from '../../../redux/actions/user-actions';
 import UserAvatar from '../../general/UserAvatar';
 import { getUserName } from '../../../common-function';
+import { useMediaQuery } from 'react-responsive';
 
+const Desktop = ({ children }) => {
+    const isDesktop = useMediaQuery({ minWidth: 992 })
+    return isDesktop ? children : null
+}
+const Tablet = ({ children }) => {
+    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
+    return isTablet ? children : null
+}
+const Mobile = ({ children }) => {
+    const isMobile = useMediaQuery({ maxWidth: 767 })
+    return isMobile ? children : null
+}
+const Default = ({ children }) => {
+    const isNotMobile = useMediaQuery({ minWidth: 768 })
+    return isNotMobile ? children : null
+}
 
 
 
@@ -238,6 +255,172 @@ const WriteEventModal = (props) => {
     }
     return (
         <React.Fragment>
+
+            <Tablet>
+            <Modal
+                visible={visible}
+                footer={null}
+                centered
+                maskClosable={false}
+                onCancel={() => {
+                    closeModal();
+                }}
+                width={500}
+                bodyStyle={{ backgroundColor: 'white' }}
+            >
+                <Form layout="vertical">
+
+                    <Row gutter={[10, 10]}>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="flex-justify-space-between flex-items-align-start margin-bottom-md">
+                                <span className='d-inline-block' >
+                                    <div className="flex-justify-start flex-items-align-center">
+                                        {
+                                            props.type == 'club' ?
+                                                <ClubAvatar data={creator} size={50} className="margin-right-md" />
+                                                :
+                                                <UserAvatar data={creator} size={50} className="margin-right-md" />
+                                        }
+                                        <span className='d-inline-block' >
+                                            <div className="subtitle1 text-truncate black">
+                                                {
+                                                    props.type == 'club' ?
+                                                        _.get(creator, ['clubName'])
+                                                        :
+                                                        getUserName(creator, 'fullName') || ''
+                                                }
+                                            </div>
+                                            <div className="headline text-truncate font-weight-light">
+                                                Host
+                                                </div>
+                                        </span>
+                                    </div>
+                                </span>
+
+                            </div>
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <Form.Item style={{ margin: 0 }} className="radio-button-space-around" >
+                                {getFieldDecorator('scope', {
+                                    initialValue: props.editMode ? _.get(props.data, ['scope']) : 'public',
+                                    rules: [{ required: true, message: 'Please input.' }],
+                                })(
+                                    <Radio.Group buttonStyle="solid" disabled={editMode} >
+                                        <Radio.Button value="public" className="padding-x-lg margin-x-md round-border-big text-align-center border-ccar-button-yellow" style={{ width: "40%" }}>
+                                            <span className="h7" >
+                                                Public
+                                                </span>
+                                        </Radio.Button>
+                                        <Radio.Button value="private" className="padding-x-lg margin-x-md round-border-big text-align-center border-ccar-button-yellow" style={{ width: "40%" }}>
+                                            <span className="h7" >
+                                                Private
+                                                </span>
+                                        </Radio.Button>
+                                    </Radio.Group>
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="headline margin-bottom-sm">
+                                Event Name
+                            </div>
+                            <Form.Item style={{ margin: 0 }} >
+                                {getFieldDecorator('name', {
+                                    initialValue: _.get(props.data, ['name']),
+                                    rules: [{ required: true, message: 'Please input.' }],
+                                })(<Input placeholder="Event Name" />)}
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="headline margin-bottom-sm">
+                                Event Date
+                                </div>
+                            <Form.Item style={{ margin: 0 }} >
+                                {getFieldDecorator('dateRange', {
+                                    initialValue: props.editMode ? [moment(_.get(props.data, ['startAt'])), moment(_.get(props.data, ['endAt']))] : [],
+                                    rules: [{ required: true, message: 'Please input.' }],
+                                })(<DatePicker.RangePicker disabledDate={(current) => {
+                                    return current < moment();
+                                }} showTime style={{ width: '100%' }} />)}
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="headline margin-bottom-sm">
+                                Location
+                                </div>
+                            <Form.Item style={{ margin: 0 }}>
+                                {getFieldDecorator('location', {
+                                    initialValue: _.get(props.data, ['location']),
+                                    rules: [{ required: true, message: 'Please input.' }],
+                                })(<TextArea rows={2} placeholder="Please enter event location (maximum 1000 characters)" maxLength={1000} />)}
+                            </Form.Item>
+                        </Col>
+
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="headline margin-bottom-sm">
+                                Description
+                                </div>
+                            <Form.Item style={{ margin: 0 }}>
+                                {getFieldDecorator('description', {
+                                    initialValue: _.get(props.data, ['description']),
+                                    rules: [{ required: true, message: 'Please input.' }],
+                                })(<TextArea rows={4} placeholder="Please enter event description (maximum 1000 characters)" maxLength={1000} />)}
+                            </Form.Item>
+                            <div className="caption grey font-weight-light">
+                                Provide more information about your event so that guests know what to expect.
+                                </div>
+                        </Col>
+                        <Divider style={{ margin: 0 }} type="horizontal" />
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="headline margin-bottom-sm">
+                                Additional Details
+                                </div>
+                            <div className="thin-border cursor-pointer relative-wrapper">
+                                <Upload accept="image/*" showUploadList={false} onChange={(v) => { handlePreview(v.file); setUploadImage(v.file) }} multiple={false}
+                                >
+                                    <div className="flex-justify-center flex-items-align-center " style={{ borderRadius: '2px', height: 150 }}>
+                                        {
+                                            uploadImagePreview ?
+                                                <img src={uploadImagePreview} className=" absolute-center-img-no-stretch fill-parent" />
+                                                :
+                                                <React.Fragment>
+                                                    <img src={uploadPhoto} style={{ width: 100, height: 70 }} className='absolute-center' />
+                                                    <div className="flex-justify-center flex-items-align-center grey subtitle1 absolute-center" style={{ paddingTop: 70 + 20 }}>
+                                                        POST / UPLOAD PHOTO
+                                                        </div>
+                                                </React.Fragment>
+
+                                        }
+                                    </div>
+                                </Upload>
+                            </div>
+                        </Col>
+
+
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="width-100">
+                                <Button block disabled={isLoading} className=" background-ccar-button-yellow" onClick={(e) => { handleSubmit() }}>Submit</Button>
+                            </div>
+                        </Col>
+
+
+                        {/* <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="headline margin-bottom-sm">
+                                Description
+                            </div>
+                            <Form.Item style={{ margin: 0 }}>
+                                {getFieldDecorator('clubDescription', {
+                                    rules: [{ required: true, message: 'Please input.' }],
+                                })(<TextArea rows={4} placeholder="Please enter your content (maximum 1000 characters)" maxLength={1000} />)}
+                            </Form.Item>
+                        </Col> */}
+
+                    </Row>
+                </Form>
+            </Modal>
+            </Tablet>
+            
+            <Mobile>
             <Drawer
                 className="header-no-padding"
                 title={
@@ -402,6 +585,8 @@ const WriteEventModal = (props) => {
                     </Row>
                 </Form>
             </Drawer>
+            </Mobile>
+            
 
 
         </React.Fragment>

@@ -13,7 +13,24 @@ import { loading } from '../../redux/actions/app-actions';
 import { setUser } from '../../redux/actions/user-actions';
 import Link from 'next/link';
 import { routePaths } from '../../route';
+import { useMediaQuery } from 'react-responsive';
 
+const Desktop = ({ children }) => {
+    const isDesktop = useMediaQuery({ minWidth: 992 })
+    return isDesktop ? children : null
+  }
+  const Tablet = ({ children }) => {
+    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
+    return isTablet ? children : null
+  }
+  const Mobile = ({ children }) => {
+    const isMobile = useMediaQuery({ maxWidth: 767 })
+    return isMobile ? children : null
+  }
+  const Default = ({ children }) => {
+    const isNotMobile = useMediaQuery({ minWidth: 768 })
+    return isNotMobile ? children : null
+  }
 
 const ANSWERS_PER_COL = 10;
 
@@ -513,7 +530,9 @@ const AnswerPaperForm = (props) => {
                 </div> */}
 
                 {_renderSummary()}
-                {/* <Modal centered overlay={true} closable={false} maskClosable={true} mask visible={countDownModal} footer={null} width="100%" className='no-padding-modal-body background-black'
+
+                <Tablet>
+                <Modal centered overlay={true} closable={false} maskClosable={true} mask visible={countDownModal} footer={null} width="100%" className='no-padding-modal-body background-black'
                 >
                     <Row type="flex" align="top" justify="center" gutter={[0, 20]} style={{ height: '100vh' }} className='background-black kpp-background'>
                         <img className="kpp-background" style={{ position: "absolute" }} src="/orange-line-background-2.png"></img>
@@ -581,7 +600,9 @@ const AnswerPaperForm = (props) => {
                             </div>
                         </Col>
                     </Row>
-                </Modal> */}
+                </Modal>
+                </Tablet>
+                
             </React.Fragment>
             :
             <Empty></Empty>

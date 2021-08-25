@@ -35,7 +35,6 @@ const Default = ({ children }) => {
     return isNotMobile ? children : null
 }
 
-
 const defaultHeight = 400;
 
 
@@ -255,7 +254,7 @@ const ClubProfolioBanner = (props) => {
                                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                                     <div className={`width-100 flex-justify-center flex-items-align-center`}>
                                         <Button className=" background-black-opacity-30 white margin-right-md" onClick={(e) => { setClubApprovalVisible(true) }}>Club Request</Button>
-                                        <Button className=" background-black-opacity-30 white" onClick={(e) => { setWriteClubVisible(true) }}>Edit Profile</Button>
+                                        <Button className=" background-black-opacity-30 white" onClick={(e) => { setWriteClubVisible(true) }}>Edit Club Info</Button>
                                     </div>
                                 </Col>
                                 :
@@ -358,7 +357,7 @@ const ClubProfolioBanner = (props) => {
             </div>
             </Tablet>
 
-            <WriteClubModal
+            <WriteClubModal 
                 editMode={true}
                 data={club}
                 notify

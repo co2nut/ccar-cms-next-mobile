@@ -12,7 +12,24 @@ import { convertNameString } from '../../config';
 import ClubAvatar from './club-avatar';
 import JoinClubButton from './join-club-button';
 import OtherClubsBox from './other-clubs-box';
+import { useMediaQuery } from 'react-responsive';
 
+const Desktop = ({ children }) => {
+    const isDesktop = useMediaQuery({ minWidth: 992 })
+    return isDesktop ? children : null
+}
+const Tablet = ({ children }) => {
+    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
+    return isTablet ? children : null
+}
+const Mobile = ({ children }) => {
+    const isMobile = useMediaQuery({ maxWidth: 767 })
+    return isMobile ? children : null
+}
+const Default = ({ children }) => {
+    const isNotMobile = useMediaQuery({ minWidth: 768 })
+    return isNotMobile ? children : null
+}
 
 const MyClubInvitationBox = (props) => {
 
@@ -75,6 +92,91 @@ const MyClubInvitationBox = (props) => {
 
     return (
         <React.Fragment>
+            <Tablet>
+                <Row gutter={[10, 10]}>
+                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                    {
+                        _.isArray(invites) && notEmptyLength(invites) ?
+                            <React.Fragment>
+                                <div className="thin-border round-border padding-md">
+                                    {
+                                        _.map(invites, function (invite) {
+                                            return (
+                                                <div className="flex-justify-space-between flex-items-align-center margin-bottom-md">
+                                                    <span className='d-inline-block flex-items-no-shrink' style={{ maxWidth: '60%' }}>
+                                                        <div className="flex-items-align-center">
+                                                            <span className='d-inline-block margin-right-md' >
+                                                                <ClubAvatar data={_.get(invite, ['clubId'])} size={70} redirectProfile></ClubAvatar>
+                                                            </span>
+                                                            <span className='d-inline-block'>
+                                                                <div className="font-weight-bold h6 black">
+                                                                    {_.get(invite, ['clubId', 'clubName']) || ''}
+                                                                </div>
+                                                                {
+                                                                    _.isArray(_.get(invite, ['invitedBy'])) && !_.isEmpty(_.get(invite, ['invitedBy'])) ?
+                                                                        <div className="headline grey-darken-2">
+                                                                            Invited by {convertNameString(_.get(invite, ['invitedBy']))}
+                                                                        </div>
+                                                                        :
+                                                                        null
+                                                                }
+                                                                <div className="headline grey-darken-2">
+                                                                    Requested {moment(_.get(invite, ['createdAt'])).fromNow()}
+                                                                </div>
+                                                            </span>
+                                                        </div>
+                                                    </span>
+                                                    <span className='d-inline-block flex-items-no-shrink' style={{ maxWidth: '40%' }} >
+                                                        <div className="flex-items-align-center">
+                                                            <span className='d-inline-block margin-right-md' >
+                                                                {
+                                                                    _.get(invite, ['status']) != 'rejected' ?
+                                                                        <JoinClubButton club={_.get(invite, ['clubId'])} notify clubId={_.get(invite, ['clubId', '_id'])} userId={_.get(props.user, ['info', 'user', '_id'])}
+                                                                            joinButton={(joinAction) => {
+                                                                                return <Button className="padding-x-md background-ccar-button-yellow black ">{joinAction == 'approved' ? 'Accept' : 'Join'}</Button>
+                                                                            }}
+                                                                            onSuccess={(joinRes) => {
+                                                                                if (_.isPlainObject(joinRes) && !_.isEmpty(joinRes)) {
+                                                                                    handleStatusChange(joinRes.data);
+                                                                                }
+                                                                            }}
+                                                                        ></JoinClubButton>
+                                                                        :
+                                                                        null
+                                                                }
+                                                            </span>
+                                                            {
+                                                                _.get(invite, ['status']) == 'rejected' ?
+                                                                    <span className="padding-x-md red cursor-not-allowed">Rejected</span>
+                                                                    :
+                                                                    !_.get(invite, ['status']) ?
+                                                                        <Button className="padding-x-md border-red-lighten-1 background-white black" onClick={(e) => { handleReject(invite) }}>Decline</Button>
+                                                                        :
+                                                                        null
+                                                            }
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </React.Fragment>
+                            :
+                            null
+                    }
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                    <Card
+                        title="Other Carfreaks Club(s)"
+                    >
+                        <OtherClubsBox userId={props.userId} />
+                    </Card>
+                    </Col>
+                </Row>
+            </Tablet>
+
+            <Mobile>
             <Row gutter={[10, 10]}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                     {
@@ -156,6 +258,8 @@ const MyClubInvitationBox = (props) => {
                     </Card>
                 </Col> */}
             </Row>
+            </Mobile>
+            
         </React.Fragment >
     )
 

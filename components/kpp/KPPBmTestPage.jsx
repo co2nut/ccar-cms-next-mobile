@@ -124,6 +124,41 @@ const KPPBM = (props) => {
             <LayoutV2>
             <Beforeunload onBeforeunload={() => "Anda akan kembali ke lama utama sekolah memandu. Anda pasti?"} />
                 <div className='section'>
+                    <Tablet>
+                    <div style={{paddingLeft:'10px', paddingRight:'10px'}}>
+                        <Row gutter={[10, 0]}>
+                            <Col xs={24} sm={24} md={15} lg={18} xl={18}>
+                                <div className='h5 black margin-bottom-sm'>
+                                    UJIAN KPP
+                                </div>
+                                <div className='background-white'>
+                                    <QuestionList
+                                        questions={notEmptyLength(questions) ? questions : []}
+                                        itemClassName="margin-bottom-md box-shadow-thin round-border border-white"
+                                        handleChange={(questions) => { setQuestions(questions) }}
+                                        showCorrectAnswer={submited}
+                                        answerAble={!submited}
+                                        language="BM" />
+                                    {/* <Pagination current={page} total={total} onChange={(page) => { setPage(page); window.scroll(0, 0) }} showQuickJumper /> */}
+                                </div>
+                            </Col>
+                            <Col xs={0} sm={0} md={9} lg={6} xl={6}>
+                                <Affix offsetTop={isValidNumber(props.app.menuHeight ) ? parseInt(props.app.menuHeight) + 10 : 70} >
+                                    <AnswerPaperForm
+                                        questions={notEmptyLength(questions) ? questions : []}
+                                        handleChange={(questions) => { setQuestions(questions) }}
+                                        allAnswered={allAnswered}
+                                        showCorrectAnswer={submited}
+                                        answerAble={!submited}
+                                        timer={1800000}
+                                        handleSubmit={(questions) => { setSubmited(true); setSubmitedQuestions(questions) }}
+                                        language="BM" />
+                                </Affix>
+                            </Col>
+                        </Row>
+                    </div>
+                    </Tablet>
+                    
                     <Mobile>
                     <div className="container">
                         <Row gutter={[10, 0]}>

@@ -21,8 +21,7 @@ const Tablet = ({ children }) => {
 }
 const Mobile = ({ children }) => {
     const isMobile = useMediaQuery({ maxWidth: 767 })
-    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
-    return isMobile || isTablet ? children : null
+    return isMobile ? children : null
 }
 const Default = ({ children }) => {
     const isNotMobile = useMediaQuery({ minWidth: 768 })
@@ -68,6 +67,47 @@ const CarFreakLayout = (props) => {
         <React.Fragment>
 
             <div className="relative-wrapper">
+
+            <Tablet>
+                <div className="section-version3">
+                    <div className="container-version3 padding-x-sm">
+                    <Row gutter={[0, 30]}>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            <div className="width-100 flex-justify-space-between flex-items-align-center">
+                                <span className="flex-items-align-center flex-justify-start">
+                                    <Link shallow={false} href={routePaths.carFreaks.to || '/'} as={typeof(routePaths.carFreaks.as) == 'function' ? routePaths.carFreaks.as() : '/'}>
+                                        <a>
+                                            <span className={`d-inline-block cursor-pointer margin-right-lg h6 font-weight-bold ${tabKey == 'car-freaks' ? 'border-bottom-yellow yellow' : ' black'} `} >
+                                                CarFreaks
+                                            </span>
+                                        </a>
+                                    </Link>
+                                    <Link shallow={false} href={routePaths.socialBoard.to || '/'} as={typeof(routePaths.socialBoard.as) == 'function' ? routePaths.socialBoard.as() : '/'}>
+                                        <a>
+                                            <span className={`d-inline-block cursor-pointer margin-right-lg h6 font-weight-bold ${tabKey == 'social-board' ? 'border-bottom-yellow yellow' : tabKey == 'car-freaks' ? 'white' : 'black'} `}  >
+                                                Social Board
+                                            </span>
+                                        </a>
+                                    </Link>
+                                    <Link shallow={false} href={routePaths.socialClub.to || '/'} as={typeof(routePaths.socialClub.as) == 'function' ? routePaths.socialClub.as() : '/'}>
+                                        <a>
+                                            <span className={`d-inline-block cursor-pointer margin-right-lg h6 font-weight-bold ${tabKey == 'social-club' ? 'border-bottom-yellow yellow' : tabKey == 'car-freaks' ? 'white' : 'black'} `} >
+                                                CarFreaks Club
+                                            </span>
+                                        </a>
+                                    </Link>
+                                </span>
+                            </div>
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                            {
+                                props.children
+                            }
+                        </Col>
+                    </Row>
+                </div>
+            </div>
+            </Tablet>
 
                 <Mobile>
                     <div className="section-version3">
@@ -135,7 +175,7 @@ const CarFreakLayout = (props) => {
                             </Row>
                         </div>
                     </div>
-                </Mobile>
+                
 
                 {
                     menuOpened ?
@@ -191,7 +231,9 @@ const CarFreakLayout = (props) => {
                     </Dropdown>
                 </Affix>
                 }
+                </Mobile>
             </div>
+            
 
         </React.Fragment>
     );

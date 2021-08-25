@@ -60,3 +60,11 @@
     overflow: hidden;
     width: 100%
 }
+
+.grid-product-img-expand {
+    transition:  width 0.2s;
+}
+
+.grid-product-img-expand:hover {
+    width: 100%;
+}

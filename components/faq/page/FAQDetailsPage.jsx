@@ -35,7 +35,7 @@ const FAQDetails = (props) => {
     const _renderView = () => {
         switch (key) {
             case 'account':
-                return <MyAccount />
+                return <FAQAccountBox/>
                 break;
             case 'features':
                 return <FAQFeatureBox />

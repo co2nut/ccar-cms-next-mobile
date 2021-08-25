@@ -150,90 +150,46 @@ const AuthorList = (props) => {
     }
     return (
         <React.Fragment>
-            <div id="author-list-container" >
+             <div id="author-list-container" className={`width-100 ${props.className ? props.className : ''}`} style={{ ...props.style }}>
 
-                {/* {
-                    props.allowSearch != null || props.allowSearch == true ?
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                            <div className='width-30 round-border-big thin-border padding-x-sm padding-y-xs margin-bottom-lg'>
-                                <Input placeholder="Search" className='no-border-input' size="small" compact suffix={<Icon type="search" />} onChange={(e) => { setSearchWord(e.target.value) }} ></Input>
-                            </div>
-                        </Col>
-                        :
-                        null
-                } */}
-                        {/* <div style={{ height: 300 }}> */}
-                            <div className="width-100" style={{overflow:'scroll'}}>
-                            {
-                                _.isArray(authors) && notEmptyLength(authors) ?
-                                    _.map(authors, function (author) {
-                                        return (
-                                            <Row>
-                                                <Col span={24}>
-                                                <span style={{ textAlign: 'center' }} className={`relative-wrapper cursor-pointer`} onClick={(e) => {
-                                                    handleOnClick(author)
-                                                }}>
-                                                    <UserAvatar
-                                                        // showTooltip
-                                                        size={isValidNumber(props.size) ? props.size : 80}
-                                                        showName={!props.showName || props.showName == false ? false : true}
-                                                        textClassName={`text-truncate margin-top-md ${props.textClassName ? props.textClassName : ''} ${!props.selectedAuthor || props.selectedAuthor._id != author._id ? '' : 'ccar-yellow underline'}`}
-                                                        avatarClassName={`${props.avatarClassName ? props.avatarClassName : ''} `}
-                                                        data={{ avatar: author.avatar || author.thumbnailUrl, name: author.name }} />
-                                                </span>
-                                                </Col>
-                                            </Row>
-                                            
-                                        )
-                                    })
-                                    :
-                                    <div>
-                                        <Empty></Empty>
-                                    </div>
-                            }
-                            </div>
-                        {/* </div> */}
-                
-                {/* {
-                    !notEmptyLength(authors) || !overSize ?
-                        null
-                        :
-                        <div className="width-100 flex-items-align-center flex-justify-center margin-top-sm">
-                            {
-                                showMore ?
-                                    <Button type="primary" className='white width-30 round-border-big'
-                                        onClick={(e) => {
-                                            setShowMore(false);
-                                            var elmnt = document.getElementById("author-list-container");
-                                            var offset = 80;
-                                            var elementPosition = elmnt.offsetTop;
-                                            var offsetPosition = elementPosition - offset;
-                                            window.scrollTo({
-                                                top: offsetPosition,
-                                                behavior: "smooth"
-                                            });
-                                        }} >
-                                        Show Less <UpOutlined className='margin-left-sm' />
-                                    </Button>
-                                    :
-                                    <Button type="primary" className='white width-30 round-border-big'
-                                        onClick={(e) => {
-                                            setShowMore(true);
-                                            var elmnt = document.getElementById("author-list-container");
-                                            var offset = 80;
-                                            var elementPosition = elmnt.offsetTop;
-                                            var offsetPosition = elementPosition - offset;
-                                            window.scrollTo({
-                                                top: offsetPosition,
-                                                behavior: "smooth"
-                                            });
-                                        }}>
-                                        Show More <DownOutlined className='margin-left-sm' />
-                                    </Button>
-                            }
-                        </div>
-                } */}
+{
+    props.allowSearch != null || props.allowSearch == true ?
+        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+            <div className='width-30 round-border-big thin-border padding-x-sm padding-y-xs margin-bottom-lg'>
+                <Input placeholder="Search" className='no-border-input' size="small" compact suffix={<Icon type="search" />} onChange={(e) => { setSearchWord(e.target.value) }} ></Input>
             </div>
+        </Col>
+        :
+        null
+
+}
+<Scrollbars autoHide autoHeight>
+    <div className="width-100 padding-x-md flex-items-align-center">
+        {
+            _.isArray(authors) && notEmptyLength(authors) ?
+                _.map(authors, function (author) {
+                    return (
+                        <span style={{ textAlign: 'center' }} className={`relative-wrapper d-inline-block cursor-pointer margin-right-xl`} onClick={(e) => {
+                            handleOnClick(author)
+                        }}>
+                            <UserAvatar
+                                showTooltip
+                                size={isValidNumber(props.size) ? props.size : 80}
+                                showName={!props.showName || props.showName == false ? false : true}
+                                textClassName={`text-truncate margin-top-md ${props.textClassName ? props.textClassName : ''} ${!props.selectedAuthor || props.selectedAuthor._id != author._id ? '' : 'ccar-yellow underline'}`}
+                                avatarClassName={`${props.avatarClassName ? props.avatarClassName : ''} `}
+                                data={{ avatar: author.avatar || author.thumbnailUrl, name: author.name }} />
+                        </span>
+                    )
+                })
+                :
+                <div>
+                    <Empty></Empty>
+                </div>
+        }
+    </div>
+</Scrollbars>
+</div>
         </React.Fragment>
     )
 }

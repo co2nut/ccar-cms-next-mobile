@@ -13,10 +13,11 @@ import { routePaths } from '../../../route';
 import InfiniteScrollWrapper from '../../general/InfiniteScrollWrapper';
 import LayoutV2 from '../../general/LayoutV2';
 import BrandList from '../../product-list/brand-list';
+import BrandListTablet from '../../product-list/brand-list-tablet';
 import ReviewList from '../../rating/ReviewList';
 import ReviewList2 from '../../rating/ReviewList2';
 import WriteReviewButton from '../../rating/WriteReviewButton';
-
+import NoReview from '../NoReview';
 
 
 const Desktop = ({ children }) => {
@@ -333,14 +334,14 @@ const CarReviewHomePage = (props) => {
 
     return (
         <LayoutV2>
-            <Desktop>
+            <Tablet>
                 <div className="section">
                     <div className="container">
                         <div className="font-weight-thin grey-darken-1 h5">
                             Review and Rating
                         </div>
                         <div className="padding-y-lg flex-items-align-center">
-                            <BrandList showTooltip showAllIcon wrapperClassName="flex-justify-start" size={50} avatarClassName="margin-x-lg" data={brands} onClickBrand={(brand) => {
+                            <BrandListTablet value={filterGroup.make} showTooltip showAllIcon wrapperClassName="flex-justify-start" size={50} avatarClassName="margin-x-lg" data={brands} onClickBrand={(brand) => {
                                 if (_.get(brand, ['origData']) && _.get(brand, ['value']) != 'all') {
                                     setFilterGroup({
                                         make: brand.origData,
@@ -355,11 +356,111 @@ const CarReviewHomePage = (props) => {
                             />
                         </div>
                         <Divider />
-                        <div className="flex-justify-space-between flex-items-align-center">
-                            <span className='d-inline-block ' >
+                        <div className="flex-justify-space-between flex-items-align-center margin-y-md">
+                            <span className='d-inline-block width-80' >
+                                <div className="flex-justify-start flex-items-align-center ">
+                                    <span className='d-inline-block width-20 margin-right-md' >
+                                        <AutoComplete
+                                            disabled={!filterGroup.make}
+                                            placeholder="Model"
+                                            dataSource={models}
+                                            onSelect={(value) => {
+                                                setFilterGroup({
+                                                    ...filterGroup,
+                                                    model: value,
+                                                    year: undefined,
+                                                    variant: undefined,
+                                                })
+                                            }}
+                                            value={_.get(autoCompleteValue, `model`)}
+                                            onChange={(v) => {
+                                                setAutoCompleteValue({
+                                                    ...autoCompleteValue,
+                                                    model: v,
+                                                })
+                                            }}
+                                            onSearch={(value) => {
+                                                if (value) {
+                                                    setModels(_.filter(_.get(origOptions, ['models']) || [], function (item) {
+                                                        let regex = new RegExp(`^${value}`, 'i')
+                                                        return regex.test(item);
+                                                    }))
+                                                } else {
+                                                    setModels(_.get(origOptions, ['models']) || [])
+                                                }
+                                            }}
+                                        >
+                                        </AutoComplete>
+                                    </span>
+
+                                    <span className='d-inline-block width-20 margin-right-md' >
+                                        <AutoComplete
+                                            disabled={!filterGroup.make || !filterGroup.model}
+                                            placeholder="Manufactured Year"
+                                            dataSource={years}
+                                            onSelect={(value) => {
+                                                setFilterGroup({
+                                                    ...filterGroup,
+                                                    year: value,
+                                                    variant: undefined,
+                                                })
+                                            }}
+                                            value={_.get(autoCompleteValue, `year`)}
+                                            onChange={(v) => {
+                                                setAutoCompleteValue({
+                                                    ...autoCompleteValue,
+                                                    year: v,
+                                                })
+                                            }}
+                                            onSearch={(value) => {
+                                                if (value) {
+                                                    setYears(_.filter(_.get(origOptions, ['years']) || [], function (item) {
+                                                        let regex = new RegExp(`^${value}`, 'i')
+                                                        return regex.test(item);
+                                                    }))
+                                                } else {
+                                                    setYears(_.get(origOptions, ['years']) || [])
+                                                }
+                                            }}
+                                        >
+                                        </AutoComplete>
+                                    </span>
+                                    <span className='d-inline-block width-20 margin-right-md' >
+                                        <AutoComplete
+                                            disabled={!filterGroup.make || !filterGroup.model || !filterGroup.year}
+                                            placeholder="Variant"
+                                            dataSource={variants}
+                                            onSelect={(value) => {
+                                                setFilterGroup({
+                                                    ...filterGroup,
+                                                    variant: value,
+                                                })
+                                            }}
+                                            value={_.get(autoCompleteValue, `variant`)}
+                                            onChange={(v) => {
+                                                setAutoCompleteValue({
+                                                    ...autoCompleteValue,
+                                                    variant: v,
+                                                })
+                                            }}
+                                            onSearch={(value) => {
+                                                if (value) {
+                                                    setVariants(_.filter(_.get(origOptions, ['variants']) || [], function (item) {
+                                                        let regex = new RegExp(`^${value}`, 'i')
+                                                        return regex.test(item);
+                                                    }))
+                                                } else {
+                                                    setVariants(_.get(origOptions, ['variants']) || [])
+                                                }
+                                            }}
+                                        >
+                                        </AutoComplete>
+                                    </span>
+                                </div>
+
                             </span>
                             <span className='d-inline-block ' >
-                                <Link href={routePaths.writeCarReview.to || '/'} as={typeof(routePaths.writeCarReview.as) == 'function' ? routePaths.writeCarReview.as() : '/'} passHref>
+                                <Link href={routePaths.writeCarReview.to || '/'} as={typeof (routePaths.writeCarReview.as) == 'function' ? routePaths.writeCarReview.as() : '/'} passHref>
                                     <a>
                                         <Button style={{ color: '#F57F17' }}  ><Avatar src={'/assets/add-post/create-post.png'} shape="square" size="small" /></Button>
                                     </a>
@@ -375,12 +476,32 @@ const CarReviewHomePage = (props) => {
                             }}
                             hasMore={!ratingLoading && (RATING_SIZE * ratingPage) < ratingTotal}
                         >
-                            <ReviewList2 data={ratings || []} />
+                            {
+                                _.isArray(ratings) && !_.isEmpty(ratings) ?
+                                    <ReviewList2 
+                                    data={ratings || []}
+                                    onChange={(e)=> {
+                                        if(_.isPlainObject(e) && !_.isEmpty(e)){
+                                            setRatings(_.map(ratings, function(rating) { 
+                                              if(_.get(rating , `_id`) == _.get(e , `_id`)){
+                                                  return e;
+                                              }
+                                              return rating;
+                                            }))
+                                        }
+                                    }}
+                                     />
+                                    :
+                                    <div className="padding-y-xl">
+                                        <NoReview query={filterGroup} />
+                                    </div>
+
+                            }
                         </InfiniteScrollWrapper>
 
                     </div>
                 </div>
-            </Desktop>
+            </Tablet>
 
             <Mobile>
                 <div className="section-version3">
